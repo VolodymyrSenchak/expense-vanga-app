@@ -1,0 +1,13 @@
+.home-page {
+  display: flex;
+  height: 100%;
+  gap: 1rem;
+
+  .list-view-card {
+    max-width: 450px;
+  }
+
+  .chart-view-card {
+    flex: 1;
+  }
+}

@@ -1,0 +1,17 @@
+.app-layout {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  .page-content {
+    overflow-y: scroll;
+    flex: 1;
+    height: 0;
+
+    .page-content-inner {
+      height: 100%;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+  }
+}

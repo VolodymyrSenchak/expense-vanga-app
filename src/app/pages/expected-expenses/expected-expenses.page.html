@@ -1,0 +1,76 @@
+<div class="expected-expenses-page page-narrow">
+  <div class="header flex flex-gap-1">
+    <a mat-icon-button routerLink='/'>
+      <mat-icon>arrow_back</mat-icon>
+    </a>
+    <h2>Expected Expenses</h2>
+  </div>
+  <form [formGroup]="form" (ngSubmit)="submitForm()" class="flex-column flex-gap-1">
+    <mat-card appearance="outlined" class="padding-x-1">
+      <mat-card-title class="padding-y-1">General information</mat-card-title>
+      <mat-card-content>
+        <div>
+          <mat-form-field appearance="outline">
+            <mat-label>Main Earning</mat-label>
+            <input matInput type="number" formControlName="mainEarning">
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field appearance="outline">
+            <mat-label>Salary Day of Month</mat-label>
+            <input matInput type="number" formControlName="salaryDayOfMonth">
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card appearance="outlined" class="padding-x-1">
+      <mat-card-title class="padding-y-1">Weekly Expenses</mat-card-title>
+      <mat-card-content formArrayName="weeklyExpenses">
+        @for(expense of form.controls.weeklyExpenses.controls; track $index) {
+          <div [formGroupName]="$index">
+            <mat-form-field appearance="outline">
+               <mat-label>{{getDayOfWeek(expense)}}</mat-label>
+              <input matInput type="number" formControlName="amount">
+            </mat-form-field>
+          </div>
+        }
+
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card appearance="outlined" class="padding-x-1">
+      <mat-card-title class="padding-y-1">Daily Expenses</mat-card-title>
+      <mat-card-content formArrayName="dailyExpenses">
+        @for (expense of form.controls.dailyExpenses.controls; track $index) {
+          <div [formGroupName]="$index" class="flex flex-gap-1">
+            <mat-form-field appearance="outline">
+              <mat-label>Day of Month</mat-label>
+              <input matInput type="number" formControlName="dayOfMonth">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Amount</mat-label>
+              <input matInput type="number" formControlName="amount">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>Comment</mat-label>
+              <input matInput type="text" formControlName="comment">
+            </mat-form-field>
+
+            <button mat-icon-button color="warn" type="button" (click)="removeDailyExpense($index)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        }
+
+        <button mat-raised-button type="button" color="primary" (click)="addDailyExpense()">Add Daily Expense</button>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="padding-bottom-2">
+      <button mat-raised-button color="accent" type="submit" [disabled]="form.invalid">Submit</button>
+    </div>
+  </form>
+</div>

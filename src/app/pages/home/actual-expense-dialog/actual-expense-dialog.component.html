@@ -1,0 +1,16 @@
+<h2 class="mat-h2" mat-dialog-title>Actual expense for <strong>{{dateFormatted}}</strong></h2>
+<mat-dialog-content class="flex-column" style="display: flex">
+  <mat-form-field appearance="outline" style="margin-top: 1rem">
+    <mat-label>Amount</mat-label>
+    <input matInput type="number" step="10" [(ngModel)]="amount" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Comment</mat-label>
+    <input matInput [(ngModel)]="comment" />
+  </mat-form-field>
+  <mat-checkbox [(ngModel)]="isOverridingExpected">Override expected</mat-checkbox>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button (click)="onConfirm()">Save</button>
+</mat-dialog-actions>

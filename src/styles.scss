@@ -1,0 +1,84 @@
+@use '@angular/material' as mat;
+
+:root {
+  @include mat.toolbar-overrides((
+    container-background-color: var(--mat-sys-primary-container),
+    container-text-color: var(--mat-sys-primary),
+  ));
+
+  @include mat.table-overrides((
+    row-item-container-height: 24px,
+  ));
+
+  @include mat.theme((
+    typography: Roboto,
+    density: -5,
+  ));
+
+  @include  mat.all-component-typographies();
+
+  @include mat.card-overrides((
+    outlined-container-color: var(--mat-sys-variant-container),
+    title-text-font: var(--mat-sys-title-small-font),
+  ));
+}
+
+html, body { height: 100%; }
+//body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.flex {
+  display: flex;
+
+  &-center {
+    display: flex;
+    align-items: center;
+  }
+
+  &-column {
+    display: flex;
+    flex-direction: column;
+  }
+
+  @for $i from 1 through 12 {
+    &-#{$i} { display: flex; flex: #{$i} }
+    &-gap-#{$i} { display: flex; gap: #{$i}rem; }
+  }
+}
+
+.height {
+  &-full { height: 100%; }
+}
+
+.page {
+  &-narrow {
+    max-width: 1024px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@for $i from 1 through 12 {
+  .padding-top-#{$i} { padding-top: #{$i}rem; }
+  .padding-bottom-#{$i} { padding-bottom: #{$i}rem; }
+  .padding-x-#{$i} { padding-left: #{$i}rem; padding-right: #{$i}rem; }
+  .padding-y-#{$i} { padding-top: #{$i}rem; padding-bottom: #{$i}rem;  }
+  .padding-#{$i} { padding: #{$i}rem; }
+}
+
+.mat-mdc-card {
+  .mat-mdc-card-content {
+    padding: 0;
+  }
+
+  &.scrollable-content {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    .mat-mdc-card-content {
+      overflow-y: auto;
+    }
+  }
+}
+
+

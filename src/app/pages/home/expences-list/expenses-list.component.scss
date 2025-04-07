@@ -1,0 +1,47 @@
+.current-expenses-list {
+  .mdc-data-table__cell, .mdc-data-table__header-cell {
+    padding: 0 4px;
+  }
+
+  .mat-column-dateFormatted {
+    width: 100px;
+  }
+
+  .expense-row {
+    cursor: context-menu;
+
+    .actual-expense-cell {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      .less-expected {
+        color: darkolivegreen;
+      }
+
+      .above-expected {
+        color: indianred;
+      }
+
+      .edit-icon {
+        font-size: 1rem;
+      }
+      .edit-icon {
+        visibility: hidden;
+      }
+      &:hover {
+        .edit-icon {
+          visibility: visible;
+        }
+      }
+    }
+
+    &.weekend {
+      background-color: rgba(#ffdad6, 0.2);
+    }
+
+    &.previous-day {
+      color: #989898;
+    }
+  }
+}
