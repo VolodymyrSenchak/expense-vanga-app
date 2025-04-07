@@ -1,0 +1,48 @@
+.flex {
+  display: flex;
+
+  &-center {
+    display: flex;
+    align-items: center;
+  }
+
+  &-column {
+    display: flex;
+    flex-direction: column;
+  }
+
+  @for $i from 1 through 12 {
+    &-#{$i} { display: flex; flex: #{$i} }
+    &-gap-#{$i} { display: flex; gap: #{$i}rem; }
+  }
+}
+
+.grid {
+  @for $i from 1 through 12 {
+    &-template-columns-#{$i} {
+      display: grid;
+      grid-template-columns: repeat(#{$i}, 1fr);
+      gap: 1rem;
+    }
+  }
+}
+
+.height {
+  &-full { height: 100%; }
+}
+
+.page {
+  &-narrow {
+    max-width: 1024px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@for $i from 1 through 12 {
+  .padding-top-#{$i} { padding-top: #{$i}rem; }
+  .padding-bottom-#{$i} { padding-bottom: #{$i}rem; }
+  .padding-x-#{$i} { padding-left: #{$i}rem; padding-right: #{$i}rem; }
+  .padding-y-#{$i} { padding-top: #{$i}rem; padding-bottom: #{$i}rem;  }
+  .padding-#{$i} { padding: #{$i}rem; }
+}

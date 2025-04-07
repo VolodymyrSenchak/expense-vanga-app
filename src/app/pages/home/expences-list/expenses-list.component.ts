@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, signal} from '@angular/core';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {MatTableModule} from '@angular/material/table';
 import {CurrentExpensesService} from '@common/services/current-expenses.service';
@@ -10,7 +10,7 @@ import {
   ActualExpenseDialogComponent,
   ActualExpenseDialogParams
 } from '../actual-expense-dialog/actual-expense-dialog.component';
-import {BehaviorSubject, firstValueFrom, startWith, Subject, switchMap} from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-expenses-list',
@@ -31,6 +31,7 @@ export class ExpensesListComponent {
   ];
 
   readonly currentExpenses = toSignal(this.currentExpensesService.currentExpenses$);
+  readonly affectedExpenseDate = signal<string>('');
 
   async openActualResultDialog(expense: ExpenseForDay): Promise<void> {
     const dialogRef = this.dialog.open(ActualExpenseDialogComponent, {
@@ -42,6 +43,16 @@ export class ExpensesListComponent {
 
     const changed = await firstValueFrom(dialogRef.afterClosed()) as boolean;
 
-    if (changed) this.currentExpensesService.reloadExpenses();
+    if (changed) {
+      this.currentExpensesService.reloadExpenses();
+      this.highlightRow(expense.date);
+    }
+  }
+
+  private highlightRow(date: string): void {
+    this.affectedExpenseDate.set(date);
+    setTimeout(() => {
+      this.affectedExpenseDate.set('');
+    }, 1000);
   }
 }

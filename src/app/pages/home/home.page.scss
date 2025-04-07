@@ -1,13 +1,17 @@
 .home-page {
   display: flex;
+  flex-wrap: wrap;
   height: 100%;
   gap: 1rem;
+  $min-card-width: 380px;
 
   .list-view-card {
     max-width: 450px;
+    min-width: $min-card-width
   }
 
   .chart-view-card {
     flex: 1;
+    min-width: $min-card-width
   }
 }

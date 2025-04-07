@@ -32,6 +32,13 @@ export class ExpensesService {
     );
   }
 
+  deleteActualExpense$(forDate: string): Observable<boolean> {
+    return this.getActualExpenses$().pipe(
+      map(existing => ({ ...existing, expenses: existing.expenses.filter(e => e.date !== forDate) })),
+      switchMap(edited => this.saveActualExpenses$(edited))
+    );
+  }
+
   saveActualExpenses$(expenses: ActualExpensesModel): Observable<boolean> {
     this.saveToLocalStorage('actual-expenses', expenses);
     return of(true);

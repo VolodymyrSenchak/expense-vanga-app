@@ -42,8 +42,8 @@ export class ActualExpenseDialogComponent {
   readonly data = inject<ActualExpenseDialogParams>(MAT_DIALOG_DATA);
 
   readonly dateFormatted = DATE_UTILS.format(this.data.date, 'month-day');
-  readonly amount = model(this.data.existingActualExpense?.amount ?? 0);
-  readonly comment = model(this.data.existingActualExpense?.comment ?? '');
+  readonly amount = model(this.data.existingActualExpense?.amount);
+  readonly comment = model(this.data.existingActualExpense?.comment);
   readonly isOverridingExpected = model(this.data.existingActualExpense?.isOverridingExpected ?? false);
 
   onCancel(): void {
@@ -51,12 +51,17 @@ export class ActualExpenseDialogComponent {
   }
 
   async onConfirm(): Promise<void> {
-    await firstValueFrom(this.expensesService.addActualExpense$({
-      date: this.data.date,
-      amount: this.amount(),
-      comment: this.comment(),
-      isOverridingExpected: this.isOverridingExpected()
-    }));
+    if (!this.amount() || this.amount() === 0) {
+      await firstValueFrom(this.expensesService.deleteActualExpense$(this.data.date));
+    } else {
+      await firstValueFrom(this.expensesService.addActualExpense$({
+        date: this.data.date,
+        amount: this.amount() ?? 0,
+        comment: this.comment() ?? '',
+        isOverridingExpected: this.isOverridingExpected()
+      }));
+    }
+
     this.dialogRef.close(true);
   }
 }

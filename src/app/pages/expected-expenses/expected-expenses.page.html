@@ -26,16 +26,20 @@
 
     <mat-card appearance="outlined" class="padding-x-1">
       <mat-card-title class="padding-y-1">Weekly Expenses</mat-card-title>
-      <mat-card-content formArrayName="weeklyExpenses">
-        @for(expense of form.controls.weeklyExpenses.controls; track $index) {
-          <div [formGroupName]="$index">
-            <mat-form-field appearance="outline">
-               <mat-label>{{getDayOfWeek(expense)}}</mat-label>
-              <input matInput type="number" formControlName="amount">
-            </mat-form-field>
-          </div>
-        }
-
+      <mat-card-content formArrayName="weeklyExpenses" >
+        <div style="
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+          gap: 1rem;">
+          @for(expense of form.controls.weeklyExpenses.controls; track $index) {
+            <div [formGroupName]="$index">
+              <mat-form-field appearance="outline">
+                <mat-label>{{getDayOfWeek(expense)}}</mat-label>
+                <input matInput type="number" formControlName="amount">
+              </mat-form-field>
+            </div>
+          }
+        </div>
       </mat-card-content>
     </mat-card>
 
@@ -65,12 +69,19 @@
           </div>
         }
 
-        <button mat-raised-button type="button" color="primary" (click)="addDailyExpense()">Add Daily Expense</button>
+        <button mat-button type="button" (click)="addDailyExpense()">Add Daily Expense</button>
       </mat-card-content>
     </mat-card>
 
     <div class="padding-bottom-2">
-      <button mat-raised-button color="accent" type="submit" [disabled]="form.invalid">Submit</button>
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="form.invalid"
+      >
+        Submit
+      </button>
     </div>
   </form>
 </div>

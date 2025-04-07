@@ -1,6 +1,7 @@
 .current-expenses-list {
   .mdc-data-table__cell, .mdc-data-table__header-cell {
     padding: 0 4px;
+    line-height: 1.1;
   }
 
   .mat-column-dateFormatted {
@@ -8,30 +9,47 @@
   }
 
   .expense-row {
-    cursor: context-menu;
+    transition: background-color 0.3s ease;
 
-    .actual-expense-cell {
-      display: flex;
-      align-items: center;
-      gap: 4px;
+    &.affected {
+      background-color: #ECECEC;
+    }
 
-      .less-expected {
-        color: darkolivegreen;
-      }
-
-      .above-expected {
-        color: indianred;
-      }
-
-      .edit-icon {
-        font-size: 1rem;
-      }
-      .edit-icon {
-        visibility: hidden;
-      }
+    .mat-column-actualExpenseAmount {
+      cursor: text;
       &:hover {
-        .edit-icon {
-          visibility: visible;
+        background-color: #ECECEC;
+      }
+
+      &:focus {
+        outline: none;
+        background-color: #ECECEC;
+      }
+
+      .actual-expense-cell {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        .less-expected {
+          color: darkolivegreen;
+        }
+
+        .above-expected {
+          color: indianred;
+        }
+
+        .edit-button {
+          display: none;
+
+          .edit-icon {
+            font-size: 1rem;
+          }
+        }
+        &:hover {
+          @media only screen and (max-width: 600px) {
+            .edit-button { display: unset; }
+          }
         }
       }
     }
