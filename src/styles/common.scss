@@ -31,6 +31,10 @@
   &-full { height: 100%; }
 }
 
+.width {
+  &-full { width: 100%; }
+}
+
 .page {
   &-narrow {
     max-width: 1024px;

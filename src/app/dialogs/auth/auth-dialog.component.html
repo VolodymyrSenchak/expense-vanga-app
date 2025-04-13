@@ -1,0 +1,33 @@
+<h2 class="mat-h2" mat-dialog-title>Login</h2>
+<mat-dialog-content class="flex-column" style="display: flex">
+  <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+    <mat-form-field appearance="outline" style="width: 100%; margin-top: 0.5rem;">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" type="email" />
+      @if (loginForm.get('email')?.hasError('required')) {
+        <mat-error>Email is required</mat-error>
+      }
+      @if (loginForm.get('email')?.hasError('email')) {
+        <mat-error>Invalid email</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 1rem;">
+      <mat-label>Password</mat-label>
+      <input matInput formControlName="password" type="password" />
+      @if (loginForm.get('password')?.hasError('required')) {
+        <mat-error>Password is required</mat-error>
+      }
+      @if (loginForm.get('password')?.hasError('minlength')) {
+        <mat-error>Password must be at least 6 characters</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="flex flex-gap-1">
+      <button mat-flat-button color="primary" type="submit" [disabled]="loginForm.invalid">Login</button>
+      <button mat-button type="button" (click)="onContinueLocally()">Continue locally</button>
+    </div>
+  </form>
+</mat-dialog-content>
+<!--<mat-dialog-actions>-->
+<!--</mat-dialog-actions>-->

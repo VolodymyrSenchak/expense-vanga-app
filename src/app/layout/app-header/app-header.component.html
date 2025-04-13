@@ -1,8 +1,16 @@
-<mat-toolbar color="warn">
-  <span>Expense Vanga</span>
+<mat-toolbar>
+  <div class="flex-center width-full" style="justify-content: space-between">
+    <div class="flex-center">
+      <span>Expense Vanga</span>
 
-  <div class="pages padding-x-1">
-    <a routerLinkActive="active-button" [routerLinkActiveOptions]="{ exact: true }" mat-button routerLink='/'>Home</a>
-    <a routerLinkActive="active-button" mat-button routerLink='/expected-expenses'>Expected expenses</a>
+      <div class="pages padding-x-1">
+        <a routerLinkActive="active-button" [routerLinkActiveOptions]="{ exact: true }" mat-button routerLink='/'>Home</a>
+        <a routerLinkActive="active-button" mat-button routerLink='/expected-expenses'>Expected expenses</a>
+      </div>
+    </div>
+    <div>
+      <app-user-profile />
+    </div>
   </div>
+
 </mat-toolbar>

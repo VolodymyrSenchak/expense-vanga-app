@@ -1,0 +1,5 @@
+@if (isAuthenticated()) {
+  <span>authenticated</span>
+} @else {
+  <button mat-flat-button (click)="openAuthDialog()">Login</button>
+}
