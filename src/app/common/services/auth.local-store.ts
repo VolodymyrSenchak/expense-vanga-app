@@ -1,36 +1,32 @@
 import {Injectable} from '@angular/core';
 import {Session, User} from '@common/models/auth';
+import {BehaviorSubject} from 'rxjs';
+import {getFromLocalStorage, saveToLocalStorage} from '@common/utils/localStorage.utils';
 
 @Injectable({ providedIn: "root" })
 export class AuthStore {
-  get user(): User | null {
-    const userJson = localStorage.getItem('user-info');
-    return userJson ? JSON.parse(userJson) as User : null;
+  private readonly userStorageKey = 'user-info';
+  private readonly sessionStorageKey = 'session-info';
+
+  private readonly userSub = new BehaviorSubject<User | null>(getFromLocalStorage(this.userStorageKey));
+  private readonly sessionSub = new BehaviorSubject<Session | null>(getFromLocalStorage(this.sessionStorageKey));
+
+  readonly user$ = this.userSub.asObservable();
+  readonly session$ = this.sessionSub.asObservable();
+  readonly getSession = () => this.sessionSub.getValue();
+
+  setUser(user: User | null): void {
+    saveToLocalStorage(this.userStorageKey, user, true);
+    this.userSub.next(user);
   }
 
-  set user(user: User | null) {
-    this.setOrRemoveItem('user-info', user);
-  }
-
-  get session(): Session | null {
-    const sessionJson = localStorage.getItem('session-info');
-    return sessionJson ? JSON.parse(sessionJson) as Session : null;
-  }
-
-  set session(session: Session | null) {
-    this.setOrRemoveItem('session-info', session);
+  setSession(session: Session | null): void {
+    saveToLocalStorage(this.sessionStorageKey, session, true);
+    this.sessionSub.next(session);
   }
 
   clearAuth(): void {
-    this.session = null;
-    this.user = null;
-  }
-
-  private setOrRemoveItem<T>(key: string, value: T): void {
-    if (!value) {
-      localStorage.removeItem(key);
-    } else {
-      localStorage.setItem(key, JSON.stringify(value));
-    }
+    this.setUser(null);
+    this.setSession(null);
   }
 }

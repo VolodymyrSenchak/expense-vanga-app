@@ -30,7 +30,7 @@ export class AuthService {
   }
 
   private persistAuthResult(authResult: AuthResult): void {
-    this.authStore.user = authResult.user;
-    this.authStore.session = authResult.session;
+    this.authStore.setUser(authResult.user);
+    this.authStore.setSession(authResult.session);
   }
 }

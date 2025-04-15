@@ -7,7 +7,7 @@ export const HttpBaseUrlInterceptor: HttpInterceptorFn = (req, next) => {
   // Prepend the base URL if the request URL is relative
   const apiReq = req.url.startsWith('http')
     ? req
-    : req.clone({ url: `${apiUrl}${req.url}` });
+    : req.clone({ url: `${apiUrl}/${req.url}` });
 
   return next(apiReq);
 };

@@ -1,0 +1,11 @@
+.user-initials {
+  border-radius: 50%;
+  height: 32px;
+  width: 32px;
+  background-color: var(--mat-sys-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}

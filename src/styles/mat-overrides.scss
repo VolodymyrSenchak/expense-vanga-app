@@ -10,9 +10,15 @@
     row-item-container-height: 24px,
   ));
 
+  @include mat.button-overrides((
+    filled-container-height: 32px,
+    outlined-container-height: 32px,
+    text-container-height: 32px
+  ));
+
   @include mat.theme((
     typography: Roboto,
-    density: -5,
+    density: -3,
   ));
 
   @include  mat.all-component-typographies();

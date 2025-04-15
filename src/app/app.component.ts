@@ -3,14 +3,12 @@ import { RouterOutlet } from '@angular/router';
 import { AppHeader } from './layout/app-header/app-header.component';
 import {MatDialog} from '@angular/material/dialog';
 import {DialogManager, DialogType} from '@common/services';
-import {AuthDialogComponent} from './dialogs/auth';
+import {AuthDialogComponent, RegisterDialogComponent} from './dialogs/auth';
+import {UserProfileDialogComponent} from './layout/user-profile/user-profile-dialog';
 
 @Component({
   selector: 'app-root',
-  imports: [
-    RouterOutlet,
-    AppHeader,
-  ],
+  imports: [RouterOutlet, AppHeader],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -27,9 +25,11 @@ export class AppComponent {
     });
   }
 
-  private getDialogInstance(type: DialogType)  {
+  private getDialogInstance(type: DialogType): any  {
     switch (type) {
-      case "auth-form": return AuthDialogComponent; // change to login dialog
+      case "auth-form": return AuthDialogComponent;
+      case "register-form": return RegisterDialogComponent;
+      case "user-profile": return UserProfileDialogComponent;
       default: return null;
     }
   }

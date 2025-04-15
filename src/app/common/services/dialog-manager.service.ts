@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs';
 
-export type DialogType = 'auth-form' | 'unknown';
+export type DialogType = 'auth-form' | 'register-form' | 'user-profile' | 'unknown';
 
 export interface DialogParams {
   dialogType: DialogType;

@@ -1,5 +1,7 @@
 @if (isAuthenticated()) {
-  <span>authenticated</span>
+  <div class="user-initials" (click)="openUserProfile()">
+    {{userInitials()}}
+  </div>
 } @else {
   <button mat-flat-button (click)="openAuthDialog()">Login</button>
 }

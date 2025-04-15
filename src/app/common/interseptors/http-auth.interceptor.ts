@@ -8,7 +8,11 @@ export const HttpAuthInterceptor: HttpInterceptorFn = (req, next) => {
   const authStore = inject(AuthStore);
   const authService = inject(AuthService);
   const dialogManager = inject(DialogManager);
-  const session = authStore.session;
+  const session = authStore.getSession();
+
+  if (req.url.includes('/auth')) {
+    return next(req);
+  }
 
   const refreshTokenMethod = (
     request: HttpRequest<any>,
@@ -16,8 +20,8 @@ export const HttpAuthInterceptor: HttpInterceptorFn = (req, next) => {
   ): Observable<HttpEvent<any>> => {
     return authService.refreshToken(session?.refresh_token!).pipe(
       switchMap((res: AuthResult) => {
-        authStore.user = res.user;
-        authStore.session = res.session;
+        authStore.setUser(res.user);
+        authStore.setSession(res.session);
         request = request.clone({
           setHeaders: { Authorization: 'Bearer ' + res.session.access_token },
         });

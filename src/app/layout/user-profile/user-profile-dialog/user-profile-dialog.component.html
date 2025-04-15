@@ -1,0 +1,11 @@
+<h2 class="mat-h2" mat-dialog-title>User profile</h2>
+<mat-dialog-content class="flex-column" style="display: flex; width: 24rem">
+  <div class="flex-column padding-bottom-1">
+    <small>User email</small>
+    <span>{{user()?.email}}</span>
+  </div>
+
+  <button mat-stroked-button color="primary" (click)="onLogout()">
+    Logout
+  </button>
+</mat-dialog-content>
