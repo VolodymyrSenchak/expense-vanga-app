@@ -1,6 +1,5 @@
-import {Component, computed, inject, signal} from '@angular/core';
+import {Component, computed, inject } from '@angular/core';
 import {AuthStore, DialogManager} from '@common/services';
-import {User} from '@common/models/auth';
 import {MatButton} from '@angular/material/button';
 import {toSignal} from '@angular/core/rxjs-interop';
 

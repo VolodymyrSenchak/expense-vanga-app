@@ -1,7 +1,5 @@
-import {Component, computed, inject} from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {Component, inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogContent, MatDialogRef, MatDialogTitle} from "@angular/material/dialog";
-import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
 import {MatButton} from '@angular/material/button';
 import {ActualExpenseDialogParams} from '../../../pages/home/actual-expense-dialog/actual-expense-dialog.component';
 import { AuthStore } from '@common/services';
@@ -12,10 +10,7 @@ import {toSignal} from '@angular/core/rxjs-interop';
   imports: [
     MatButton,
     MatDialogContent,
-    MatDialogTitle,
-    MatFormField,
-    MatFormField,
-    MatLabel
+    MatDialogTitle
   ],
   templateUrl: './user-profile-dialog.component.html',
   styleUrl: './user-profile-dialog.component.scss'
