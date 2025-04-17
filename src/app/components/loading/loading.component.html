@@ -1,0 +1,19 @@
+@if (loadingOptions()?.isLoading) {
+  @if (mode() === 'spinner') {
+    <div class="loading-progress">
+      <div>
+        <mat-spinner [diameter]="32"></mat-spinner>
+      </div>
+      <div>
+        <span>{{loadingOptions()?.message}}</span>
+      </div>
+    </div>
+  }
+  @if (mode() === 'skeleton') {
+    <div class="skeleton-container">
+      @for (sk of skeletonBody(); track sk) {
+        <div class="skeleton-item" [style.width]="sk[0]" [style.height]="sk[1]" ></div>
+      }
+    </div>
+  }
+}

@@ -12,7 +12,7 @@ import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {ChartConfiguration, ChartOptions} from 'chart.js';
 import {BaseChartDirective} from 'ng2-charts';
-import {CurrentExpensesService} from '@common/services/current-expenses.service';
+import {CurrentExpensesService} from '@common/services/expenses/current-expenses.service';
 import {toSignal} from '@angular/core/rxjs-interop';
 
 interface ExpensesChartConfig {}

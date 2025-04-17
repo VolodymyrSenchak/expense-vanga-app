@@ -1,15 +1,13 @@
-import { Injectable } from "@angular/core";
-import {ExpectedExpensesModel, getDefaultExpectedExpensesModel} from "@common/models";
-import {map, Observable, of, switchMap} from "rxjs";
-import {ActualExpenseModel, ActualExpensesModel, getDefaultActualExpensesModel} from '../models/actual-expenses.model';
+import {Injectable} from '@angular/core';
+import {map, Observable, of, switchMap} from 'rxjs';
+import {ExpectedExpensesModel} from '@common/models';
 import {getFromLocalStorage, saveToLocalStorage} from '@common/utils/localStorage.utils';
+import {ActualExpenseModel, ActualExpensesModel} from '@common/models/actual-expenses.model';
 
 @Injectable({ providedIn: 'root' })
-export class ExpensesService {
+export class ExpensesLocalProvider {
   getExpectedExpenses$(): Observable<ExpectedExpensesModel> {
-    return of(
-      getFromLocalStorage<ExpectedExpensesModel>('expected-expenses') ?? getDefaultExpectedExpensesModel()
-    );
+    return of(getFromLocalStorage<ExpectedExpensesModel>('expected-expenses'));
   }
 
   saveExpectedExpenses$(expenses: ExpectedExpensesModel): Observable<boolean> {
@@ -18,9 +16,7 @@ export class ExpensesService {
   }
 
   getActualExpenses$(): Observable<ActualExpensesModel> {
-    return of(
-      getFromLocalStorage<ActualExpensesModel>('actual-expenses') ?? getDefaultActualExpensesModel()
-    );
+    return of(getFromLocalStorage<ActualExpensesModel>('actual-expenses'));
   }
 
   addActualExpense$(value: ActualExpenseModel): Observable<boolean> {

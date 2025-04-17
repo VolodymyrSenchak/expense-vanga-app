@@ -24,7 +24,7 @@ export class AuthService {
   }
 
   refreshToken(refreshToken: string): Observable<AuthResult> {
-    return this.http.post<AuthResult>(`auth/refresh-token`, {refreshToken}).pipe(
+    return this.http.post<AuthResult>(`auth/refreshToken`, {refreshToken}).pipe(
       tap(res => this.persistAuthResult(res))
     );
   }

@@ -1,17 +1,20 @@
 import {Injectable} from '@angular/core';
 import {ExpensesService} from './expenses.service';
-import {BehaviorSubject, combineLatest, map, Observable, switchMap} from 'rxjs';
-import {CurrentExpensesModel, ExpenseForDay} from '../models/current-expenses.model';
-import {ExpectedExpensesModel} from '../models';
-import {ActualExpensesModel} from '../models/actual-expenses.model';
-import {DATE_UTILS} from '../utils/date.utils';
+import {BehaviorSubject, combineLatest, map, Observable, shareReplay, switchMap} from 'rxjs';
+import {CurrentExpensesModel, ExpenseForDay} from '../../models/current-expenses.model';
+import {ExpectedExpensesModel} from '../../models';
+import {ActualExpensesModel} from '../../models/actual-expenses.model';
+import {DATE_UTILS} from '../../utils/date.utils';
 
 @Injectable({ providedIn: 'root' })
 export class CurrentExpensesService {
   constructor(private readonly expensesService: ExpensesService) {}
 
   private readonly expensesLoadSub = new BehaviorSubject<boolean>(true);
-  readonly currentExpenses$ = this.expensesLoadSub.pipe(switchMap(() => this.getCurrentExpenses$(new Date())));
+  readonly currentExpenses$ = this.expensesLoadSub.pipe(
+    switchMap(() => this.getCurrentExpenses$(new Date())),
+    shareReplay({ bufferSize: 1, refCount: true }),
+  );
 
   reloadExpenses(): void {
     this.expensesLoadSub.next(true);

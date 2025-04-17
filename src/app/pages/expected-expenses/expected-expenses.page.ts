@@ -2,7 +2,7 @@ import { Component, inject, linkedSignal, OnInit } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { Router, RouterLink } from "@angular/router";
-import { ExpensesService } from "../../common/services";
+import {ExpensesService, LoadingService} from "../../common/services";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { firstValueFrom, from } from "rxjs";
 import { DayOfWeek, ExpectedExpensesModel, getDefaultExpectedExpensesModel } from "../../common/models";
@@ -10,6 +10,7 @@ import {FormControl, ReactiveFormsModule, FormBuilder, Validators, FormGroup, Un
 import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
 import { MatCardModule } from "@angular/material/card";
+import {LoadingComponent} from '../../components/loading';
 
 @Component({
   selector: 'app-expected-expenses-page',
@@ -21,7 +22,8 @@ import { MatCardModule } from "@angular/material/card";
     MatInputModule,
     MatSelectModule,
     MatIconModule,
-    MatCardModule
+    MatCardModule,
+    LoadingComponent
   ],
   templateUrl: './expected-expenses.page.html',
 })
@@ -29,6 +31,7 @@ export class ExpectedExpensesPageComponent implements OnInit {
   readonly expensesService = inject(ExpensesService);
   readonly formBuilder = inject(FormBuilder);
   readonly router = inject(Router);
+  readonly loadingSrv = new LoadingService();
 
   readonly form = this.formBuilder.group({
     name: [''],
@@ -39,7 +42,7 @@ export class ExpectedExpensesPageComponent implements OnInit {
   });
 
   async ngOnInit(): Promise<void> {
-    const expectedExpenses = (await firstValueFrom(this.expensesService.getExpectedExpenses$()))
+    const expectedExpenses = (await this.loadingSrv.waitObservable(this.expensesService.getExpectedExpenses$()))
       ?? getDefaultExpectedExpensesModel();
 
     this.form.patchValue({
@@ -81,7 +84,7 @@ export class ExpectedExpensesPageComponent implements OnInit {
   async submitForm(): Promise<void> {
     if (this.form.valid) {
       const model = this.form.value as ExpectedExpensesModel;
-      await firstValueFrom(this.expensesService.saveExpectedExpenses$(model));
+      await this.loadingSrv.waitObservable(this.expensesService.saveExpectedExpenses$(model), "Saving...");
       await this.router.navigateByUrl('/');
     }
   }
