@@ -8,8 +8,6 @@ import {
   viewChild,
 } from '@angular/core';
 import {MatTableModule} from '@angular/material/table';
-import {MatIconButton} from '@angular/material/button';
-import {MatIcon} from '@angular/material/icon';
 import {ChartConfiguration, ChartOptions} from 'chart.js';
 import {BaseChartDirective} from 'ng2-charts';
 import {CurrentExpensesService} from '@common/services/expenses/current-expenses.service';

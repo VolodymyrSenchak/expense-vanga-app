@@ -16,6 +16,10 @@
     text-container-height: 32px
   ));
 
+  @include mat.button-toggle-overrides((
+    height: 32px
+  ));
+
   @include mat.theme((
     typography: Roboto,
     density: -3,

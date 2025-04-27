@@ -6,10 +6,19 @@
 
   .mat-column-dateFormatted {
     width: 100px;
+    min-width: 100px;
+  }
+
+  .mat-column-expectedExpenseAmount, .mat-column-actualExpenseAmount {
+    width: 140px;
   }
 
   .expense-row {
     transition: background-color 0.3s ease;
+
+    .comment {
+      font-style: italic;
+    }
 
     &.affected {
       background-color: #ECECEC;
@@ -55,7 +64,7 @@
     }
 
     &.weekend {
-      background-color: rgba(#ffdad6, 0.2);
+      background-color: color-mix(in srgb, var(--mat-sys-primary) 10%, white);
     }
 
     &.previous-day {

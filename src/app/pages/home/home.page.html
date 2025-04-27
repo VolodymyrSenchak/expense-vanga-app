@@ -1,8 +1,23 @@
 <main class="home-page">
   <mat-card appearance="outlined" class="padding-x-1 list-view-card scrollable-content">
-    <mat-card-title class="padding-top-1">List view</mat-card-title>
+    <mat-card-title class="padding-top-1">
+      List view
+      <mat-button-toggle-group
+      name="view-mode"
+      aria-label="View mode"
+      [value]="viewMode()"
+      (change)="viewMode.set($event.value)"
+    >
+      <mat-button-toggle value="table">Table</mat-button-toggle>
+      <mat-button-toggle value="list">List</mat-button-toggle>
+    </mat-button-toggle-group>
+    </mat-card-title>
     <mat-card-content>
-      <app-expenses-list />
+      @if (viewMode() === 'table') {
+        <app-expenses-list />
+      } @else {
+        <app-expenses-inline-list />
+      }
     </mat-card-content>
   </mat-card>
   <mat-card appearance="outlined" class="padding-x-1 chart-view-card">

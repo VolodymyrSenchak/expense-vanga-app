@@ -4,7 +4,7 @@
       <app-loading
         [loadingOptions]="{ isLoading: true, message: '' }"
         mode="skeleton"
-        [skeletonBody]="[['100%', '24px'],['100%', '24px'],['100%', '24px'],['100%', '24px'],['100%', '24px']]"
+        [skeletonBody]="skeleton"
       />
     } @else {
       <table mat-table [dataSource]="currentExpenses()?.expenses!" class="mat-elevation-z8">
@@ -26,8 +26,16 @@
 
         <ng-container matColumnDef="expectedExpenseAmount">
           <th mat-header-cell *matHeaderCellDef>Expected expense</th>
-          <td mat-cell *matCellDef="let element" [title]="element.expectedDailyComment || ''">
-            {{ element.expectedExpenseAmount }}
+          <td mat-cell *matCellDef="let element">
+            <div class="flex" style="gap: 4px;">
+              <span>{{ element.expectedExpenseAmount }}</span>
+              @if (element.expectedDailyComment) {
+                <span class="comment">
+                  ({{ element.expectedDailyComment }})
+                </span>
+              }
+            </div>
+            
           </td>
         </ng-container>
 
@@ -50,6 +58,11 @@
               [class.above-expected]="element.actualExpenseAmount > element.expectedExpenseAmount">
               {{ element.actualExpenseAmount }}
             </span>
+            @if (element.actualDailyComment) {
+              <span class="comment">
+                ({{ element.actualDailyComment }})
+              </span>
+            }
 
               <button class="edit-button" mat-icon-button (click)="openActualResultDialog(element)">
                 <mat-icon class="edit-icon">edit</mat-icon>

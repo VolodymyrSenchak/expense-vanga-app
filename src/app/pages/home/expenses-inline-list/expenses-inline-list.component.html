@@ -1,0 +1,28 @@
+<div class="expenses-inline-list">
+  @for (expense of currentExpenses()?.expenses; track $index) {
+    <div class="expense-item">
+      <div class="expense-details">
+        <span>{{ expense.dateFormatted }}</span>
+        <span>{{ expense.expectedExpenseAmount }}</span>
+        <span>{{ expense.actualAmountLeft }}</span>
+      </div>
+      @if (editingExpense === expense) {
+        <div class="expense-edit">
+          <mat-form-field appearance="outline">
+            <mat-label>Actual Expense</mat-label>
+            <input matInput [formControl]="amountControl" />
+          </mat-form-field>
+          <button mat-button color="primary" (click)="saveEdit()">Save</button>
+          <button mat-button color="warn" (click)="cancelEdit()">Cancel</button>
+        </div>
+      } @else {
+        <div class="expense-actions">
+          <span>{{ expense.actualExpenseAmount }}</span>
+          <button mat-icon-button (click)="startEditing(expense)">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </div>
+      }
+    </div>
+  }
+</div>

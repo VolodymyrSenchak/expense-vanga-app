@@ -28,8 +28,13 @@ export class ExpensesListComponent {
   readonly currentExpensesService = inject(CurrentExpensesService);
   readonly dialog = inject(MatDialog);
 
+  readonly skeleton = Array.from({length: 20}, () => ['100%', '24px']) as [string, string][];
   readonly columnsToDisplay: Array<keyof ExpenseForDay> = [
-    'dateFormatted', 'expectedAmountLeft', 'expectedExpenseAmount', 'actualAmountLeft', 'actualExpenseAmount'
+    'dateFormatted',
+    'expectedAmountLeft',
+    'expectedExpenseAmount',
+    'actualAmountLeft',
+    'actualExpenseAmount',
   ];
 
   readonly currentExpenses = toSignal(this.currentExpensesService.currentExpenses$);

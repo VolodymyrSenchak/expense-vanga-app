@@ -83,7 +83,11 @@ export class ExpectedExpensesPageComponent implements OnInit {
 
   async submitForm(): Promise<void> {
     if (this.form.valid) {
-      const model = this.form.value as ExpectedExpensesModel;
+      const formValue = this.form.value as ExpectedExpensesModel;
+      const model: ExpectedExpensesModel = {
+        ...formValue,
+        dailyExpenses: formValue.dailyExpenses.sort((a, b) => a.dayOfMonth - b.dayOfMonth),
+      };
       await this.loadingSrv.waitObservable(this.expensesService.saveExpectedExpenses$(model), "Saving...");
       await this.router.navigateByUrl('/');
     }

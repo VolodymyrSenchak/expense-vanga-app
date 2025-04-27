@@ -1,0 +1,26 @@
+.expenses-inline-list {
+  .expense-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    border-bottom: 1px solid #ccc;
+
+    .expense-details {
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .expense-edit {
+      display: flex;
+      gap: 8px;
+    }
+
+    .expense-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  }
+}
