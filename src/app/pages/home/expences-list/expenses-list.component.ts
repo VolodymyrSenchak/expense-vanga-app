@@ -42,10 +42,7 @@ export class ExpensesListComponent {
 
   async openActualResultDialog(expense: ExpenseForDay): Promise<void> {
     const dialogRef = this.dialog.open(ActualExpenseDialogComponent, {
-      data: <ActualExpenseDialogParams>{
-        date: expense.date,
-        existingActualExpense: expense.actualExpense
-      }
+      data: <ActualExpenseDialogParams>{ expense }
     });
 
     const changed = await firstValueFrom(dialogRef.afterClosed()) as boolean;

@@ -6,7 +6,7 @@
       name="view-mode"
       aria-label="View mode"
       [value]="viewMode()"
-      (change)="viewMode.set($event.value)"
+      (change)="changeViewMode($event.value)"
     >
       <mat-button-toggle value="table">Table</mat-button-toggle>
       <mat-button-toggle value="list">List</mat-button-toggle>

@@ -64,7 +64,7 @@ export class CurrentExpensesService {
         actualExpense: actualExpense,
         isWeekend: date.getDay() === 0 || date.getDay() === 6,
         isPreviousDay: DATE_UTILS.isBefore(date, forDate),
-        isToday: DATE_UTILS.isSame(date, forDate)
+        isToday: DATE_UTILS.isSame(date, forDate),
       });
     }
 

@@ -1,28 +1,54 @@
 <div class="expenses-inline-list">
-  @for (expense of currentExpenses()?.expenses; track $index) {
-    <div class="expense-item">
-      <div class="expense-details">
-        <span>{{ expense.dateFormatted }}</span>
-        <span>{{ expense.expectedExpenseAmount }}</span>
-        <span>{{ expense.actualAmountLeft }}</span>
+  @if (!currentExpenses()?.expenses) {
+    <app-loading
+      [loadingOptions]="{ isLoading: true, message: '' }"
+      mode="skeleton"
+      [skeletonBody]="skeleton"
+    />
+  } @else {
+    <p class="padding-top-1">
+      <mat-slide-toggle
+        [checked]="showPrevious()"
+        (change)="showPrevious.set($event.checked)"
+      >Show previous days</mat-slide-toggle>
+    </p>
+    @for (expense of currentExpensesPrepared(); track $index) {
+      <div class="expense-item"
+           (click)="startEditing(expense)"
+           [class.weekend]="expense.isWeekend"
+           [class.previous-day]="expense.isPreviousDay">
+        <div class="flex-column">
+          <h5>{{ expense.dateFormatted }}</h5>
+          <div class="flex">
+            <div class="flex-column flex-1">
+              <label>Expected</label>
+              <div>
+                <span>{{ expense.expectedExpenseAmount }}</span>
+                @if (expense.expectedDailyComment) {
+                  <span class="comment">
+              ({{ expense.expectedDailyComment }})
+            </span>
+                }
+              </div>
+              <span>{{expense.expectedAmountLeft}}</span>
+            </div>
+            <div class="flex-column flex-1">
+              <div class="flex">
+                <label>Actual</label>
+              </div>
+              <div>
+                <span>{{ expense.actualExpenseAmount }}</span>
+                @if (expense.actualDailyComment) {
+                  <span class="comment">
+              ({{ expense.actualDailyComment }})
+            </span>
+                }
+              </div>
+              <span>{{expense.actualAmountLeft}}</span>
+            </div>
+          </div>
+        </div>
       </div>
-      @if (editingExpense === expense) {
-        <div class="expense-edit">
-          <mat-form-field appearance="outline">
-            <mat-label>Actual Expense</mat-label>
-            <input matInput [formControl]="amountControl" />
-          </mat-form-field>
-          <button mat-button color="primary" (click)="saveEdit()">Save</button>
-          <button mat-button color="warn" (click)="cancelEdit()">Cancel</button>
-        </div>
-      } @else {
-        <div class="expense-actions">
-          <span>{{ expense.actualExpenseAmount }}</span>
-          <button mat-icon-button (click)="startEditing(expense)">
-            <mat-icon>edit</mat-icon>
-          </button>
-        </div>
-      }
-    </div>
+    }
   }
 </div>

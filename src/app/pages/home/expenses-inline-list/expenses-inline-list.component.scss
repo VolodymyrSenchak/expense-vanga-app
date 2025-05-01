@@ -1,26 +1,24 @@
 .expenses-inline-list {
   .expense-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px;
     border-bottom: 1px solid #ccc;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    padding: 0.3rem 0;
 
-    .expense-details {
-      flex: 1;
-      display: flex;
-      justify-content: space-between;
+    &:hover {
+      background-color: #ECECEC;
     }
 
-    .expense-edit {
-      display: flex;
-      gap: 8px;
+    .comment {
+      font-style: italic;
     }
 
-    .expense-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    &.weekend {
+      background-color: color-mix(in srgb, var(--mat-sys-primary) 10%, white);
+    }
+
+    &.previous-day {
+      color: #989898;
     }
   }
 }

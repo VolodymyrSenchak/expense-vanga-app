@@ -10,15 +10,14 @@ import {
   MatDialogRef,
   MatDialogTitle
 } from '@angular/material/dialog';
-import {ActualExpenseModel} from '@common/models/actual-expenses.model';
 import {ExpensesService} from '@common/services';
 import {firstValueFrom} from 'rxjs';
 import {MatCheckbox} from '@angular/material/checkbox';
 import {DATE_UTILS} from '@common/utils/date.utils';
+import {ExpenseForDay} from '@common/models/current-expenses.model';
 
 export interface ActualExpenseDialogParams {
-  date: string;
-  existingActualExpense: ActualExpenseModel | undefined;
+  expense: ExpenseForDay;
 }
 
 @Component({
@@ -41,10 +40,10 @@ export class ActualExpenseDialogComponent {
   readonly dialogRef = inject(MatDialogRef<ActualExpenseDialogComponent>);
   readonly data = inject<ActualExpenseDialogParams>(MAT_DIALOG_DATA);
 
-  readonly dateFormatted = DATE_UTILS.format(this.data.date, 'month-day');
-  readonly amount = model(this.data.existingActualExpense?.amount);
-  readonly comment = model(this.data.existingActualExpense?.comment);
-  readonly isOverridingExpected = model(this.data.existingActualExpense?.isOverridingExpected ?? false);
+  readonly dateFormatted = DATE_UTILS.format(this.data.expense.date, 'month-day');
+  readonly amount = model(this.data.expense.actualExpense?.amount);
+  readonly comment = model(this.data.expense.actualExpense?.comment);
+  readonly isOverridingExpected = model(this.data.expense.actualExpense?.isOverridingExpected ?? false);
 
   onCancel(): void {
     this.dialogRef.close(false);
@@ -52,10 +51,10 @@ export class ActualExpenseDialogComponent {
 
   async onConfirm(): Promise<void> {
     if (!this.amount() || this.amount() === 0) {
-      await firstValueFrom(this.expensesService.deleteActualExpense$(this.data.date));
+      await firstValueFrom(this.expensesService.deleteActualExpense$(this.data.expense.date));
     } else {
       await firstValueFrom(this.expensesService.addActualExpense$({
-        date: this.data.date,
+        date: this.data.expense.date,
         amount: this.amount() ?? 0,
         comment: this.comment() ?? '',
         isOverridingExpected: this.isOverridingExpected()

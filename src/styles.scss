@@ -3,3 +3,12 @@
 
 html, body { height: 100%; }
 body { margin: 0; }
+
+label {
+  font: var(--mat-sys-title-small);
+}
+
+h5 {
+  font-weight: 500 !important;
+  margin: 0 !important;
+}
