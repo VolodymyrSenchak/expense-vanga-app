@@ -37,7 +37,11 @@
                 <label>Actual</label>
               </div>
               <div>
-                <span>{{ expense.actualExpenseAmount }}</span>
+                <span
+                  [class.less-expected]="expense.actualExpenseAmount < expense.expectedExpenseAmount"
+                  [class.above-expected]="expense.actualExpenseAmount > expense.expectedExpenseAmount">
+                  {{ expense.actualExpenseAmount }}
+                </span>
                 @if (expense.actualDailyComment) {
                   <span class="comment">
               ({{ expense.actualDailyComment }})

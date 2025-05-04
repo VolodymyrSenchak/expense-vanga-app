@@ -1,11 +1,23 @@
 <mat-toolbar>
   <div class="flex-center width-full" style="justify-content: space-between">
     <div class="flex-center">
-      <span>Expense Vanga</span>
+      <img src="images/logo.png" alt="App Logo" height="40" width="40">
 
-      <div class="pages padding-x-1">
-        <a routerLinkActive="active-button" [routerLinkActiveOptions]="{ exact: true }" mat-button routerLink='/'>Home</a>
-        <a routerLinkActive="active-button" mat-button routerLink='/expected-expenses'>Expected expenses</a>
+      <div class="pages-list desktop padding-x-1">
+        @for(page of pages; track $index) {
+          <a routerLinkActive="active-button" [routerLinkActiveOptions]="{ exact: true }" mat-button routerLink='{{page.url}}'>{{page.name}}</a>
+        }
+      </div>
+
+      <div class="pages-list mobile">
+        <button mat-button [matMenuTriggerFor]="menu">{{currentPageName()}}</button>
+        <mat-menu #menu="matMenu">
+          @for(page of pages; track $index) {
+            <div>
+              <a mat-button routerLink='{{page.url}}'>{{page.name}}</a>
+            </div>
+          }
+        </mat-menu>
       </div>
     </div>
     <div>

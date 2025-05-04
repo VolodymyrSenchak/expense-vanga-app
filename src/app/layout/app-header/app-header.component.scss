@@ -1,14 +1,22 @@
-@use '@angular/material' as mat;
-
-// Customize the entire app. Change :root to your selector if you want to scope the styles.
-:root {
-  @include mat.toolbar-overrides((
-    container-background-color: orange,
-    container-text-color: red,
-  ));
-}
-
 .active-button {
   background:
     color-mix(in srgb, var(--mat-sys-primary) 10%, transparent);
+}
+
+.pages-list.desktop {
+  display: none;
+}
+
+.pages-list.mobile {
+  display: flex;
+}
+
+@media (min-width: 501px) {
+  .pages-list.desktop {
+    display: flex; // Visible on screens larger than 400px
+  }
+
+  .pages-list.mobile {
+    display: none; // Hidden on screens larger than 400px
+  }
 }

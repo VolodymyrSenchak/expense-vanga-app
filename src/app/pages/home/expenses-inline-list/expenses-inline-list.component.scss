@@ -20,5 +20,13 @@
     &.previous-day {
       color: #989898;
     }
+
+    .less-expected {
+      color: darkolivegreen;
+    }
+
+    .above-expected {
+      color: indianred;
+    }
   }
 }
