@@ -15,6 +15,7 @@ export interface ExpenseForDay {
   actualDailyComment?: string;
   isWeekend: boolean;
   actualExpense: ActualExpenseModel | undefined;
+  weeklyExpenseAmount: number;
   isPreviousDay: boolean;
   isToday: boolean;
 }

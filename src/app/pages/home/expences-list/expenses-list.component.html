@@ -1,11 +1,13 @@
 <div class="current-expenses-list">
   <div class="list">
     @if (!currentExpenses()?.expenses) {
-      <app-loading
-        [loadingOptions]="{ isLoading: true, message: '' }"
-        mode="skeleton"
-        [skeletonBody]="skeleton"
-      />
+      <div class="padding-top-1">
+        <app-loading
+          [loadingOptions]="{ isLoading: true, message: '' }"
+          mode="skeleton"
+          [skeletonBody]="skeleton"
+        />
+      </div>
     } @else {
       <table mat-table [dataSource]="currentExpenses()?.expenses!" class="mat-elevation-z8">
         <ng-container matColumnDef="dateFormatted">
@@ -31,11 +33,11 @@
               <span>{{ element.expectedExpenseAmount }}</span>
               @if (element.expectedDailyComment) {
                 <span class="comment">
-                  ({{ element.expectedDailyComment }})
+                  ({{ (element.expectedExpenseAmount - element.weeklyExpenseAmount) + ' ' + element.expectedDailyComment }})
                 </span>
               }
             </div>
-            
+
           </td>
         </ng-container>
 
@@ -60,7 +62,7 @@
             </span>
             @if (element.actualDailyComment) {
               <span class="comment">
-                ({{ element.actualDailyComment }})
+                ({{ (element.actualExpenseAmount - element.weeklyExpenseAmount) + ' ' + element.actualDailyComment }})
               </span>
             }
 

@@ -49,6 +49,11 @@ export class ActualExpenseDialogComponent {
     this.dialogRef.close(false);
   }
 
+  async onRemove(): Promise<void> {
+    await firstValueFrom(this.expensesService.deleteActualExpense$(this.data.expense.date));
+    this.dialogRef.close(true);
+  }
+
   async onConfirm(): Promise<void> {
     if (!this.amount() || this.amount() === 0) {
       await firstValueFrom(this.expensesService.deleteActualExpense$(this.data.expense.date));

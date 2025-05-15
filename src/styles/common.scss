@@ -6,6 +6,11 @@
     align-items: center;
   }
 
+  &-space-between {
+    display: flex;
+    justify-content: space-between;
+  }
+
   &-column {
     display: flex;
     flex-direction: column;
@@ -49,4 +54,10 @@
   .padding-x-#{$i} { padding-left: #{$i}rem; padding-right: #{$i}rem; }
   .padding-y-#{$i} { padding-top: #{$i}rem; padding-bottom: #{$i}rem;  }
   .padding-#{$i} { padding: #{$i}rem; }
+
+  .margin-top-#{$i} { margin-top: #{$i}rem; }
+  .margin-bottom-#{$i} { margin-bottom: #{$i}rem; }
+  .margin-x-#{$i} { margin-left: #{$i}rem; margin-right: #{$i}rem; }
+  .margin-y-#{$i} { margin-top: #{$i}rem; margin-bottom: #{$i}rem;  }
+  .margin-#{$i} { margin: #{$i}rem; }
 }

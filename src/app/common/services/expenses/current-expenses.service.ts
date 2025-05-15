@@ -42,9 +42,9 @@ export class CurrentExpensesService {
       const actualExpense = actualExpenses.expenses.find(d => DATE_UTILS.isSame(d.date, date));
       const weeklyExpectedExpense = expectedExpenses.weeklyExpenses.find(w => DATE_UTILS.isDayOfWeek(date, w.dayOfWeek));
       const dailyExpectedExpense = expectedExpenses.dailyExpenses.find(w => w.dayOfMonth === date.getDate());
-      // Maybe in the future it would be nice to add, if daily expense overrides or adds amount to weekly expense
-      const expectedExpense = ((weeklyExpectedExpense?.amount ?? 0) * (expectedExpenses.weeklyExpenseCoefficient ?? 1))
-        + (dailyExpectedExpense?.amount ?? 0);
+      const weeklyExpenseAmount = ((weeklyExpectedExpense?.amount ?? 0) * (expectedExpenses.weeklyExpenseCoefficient ?? 1));
+      const expectedExpense = weeklyExpenseAmount + (dailyExpectedExpense?.amount ?? 0);
+
       const actualExpenseAmount = !actualExpense
         ? expectedExpense
         : actualExpense.isOverridingExpected ? actualExpense.amount : actualExpense.amount + expectedExpense;
@@ -55,7 +55,7 @@ export class CurrentExpensesService {
       expensesForDay.push({
         date: DATE_UTILS.format(date, 'date'),
         dateFormatted: DATE_UTILS.format(date, 'month-day'),
-        actualExpenseAmount: actualExpenseAmount,
+        actualExpenseAmount,
         expectedExpenseAmount: expectedExpense,
         expectedDailyComment: dailyExpectedExpense?.comment,
         actualDailyComment: actualExpense?.comment,
@@ -65,6 +65,7 @@ export class CurrentExpensesService {
         isWeekend: date.getDay() === 0 || date.getDay() === 6,
         isPreviousDay: DATE_UTILS.isBefore(date, forDate),
         isToday: DATE_UTILS.isSame(date, forDate),
+        weeklyExpenseAmount,
       });
     }
 

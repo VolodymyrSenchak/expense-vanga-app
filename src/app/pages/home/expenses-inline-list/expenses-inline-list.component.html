@@ -1,10 +1,12 @@
 <div class="expenses-inline-list">
   @if (!currentExpenses()?.expenses) {
-    <app-loading
-      [loadingOptions]="{ isLoading: true, message: '' }"
-      mode="skeleton"
-      [skeletonBody]="skeleton"
-    />
+    <div class="padding-top-1">
+      <app-loading
+        [loadingOptions]="{ isLoading: true, message: '' }"
+        mode="skeleton"
+        [skeletonBody]="skeleton"
+      />
+    </div>
   } @else {
     <p class="padding-top-1">
       <mat-slide-toggle
@@ -26,7 +28,7 @@
                 <span>{{ expense.expectedExpenseAmount }}</span>
                 @if (expense.expectedDailyComment) {
                   <span class="comment">
-              ({{ expense.expectedDailyComment }})
+              ({{ (expense.expectedExpenseAmount - expense.weeklyExpenseAmount) + ' ' + expense.expectedDailyComment }})
             </span>
                 }
               </div>
@@ -44,8 +46,8 @@
                 </span>
                 @if (expense.actualDailyComment) {
                   <span class="comment">
-              ({{ expense.actualDailyComment }})
-            </span>
+                    ({{ (expense.actualExpenseAmount - expense.weeklyExpenseAmount) + ' ' + expense.actualDailyComment }})
+                  </span>
                 }
               </div>
               <span>{{expense.actualAmountLeft}}</span>

@@ -11,6 +11,11 @@
   <mat-checkbox [(ngModel)]="isOverridingExpected">Override expected</mat-checkbox>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-flat-button (click)="onConfirm()">Save</button>
+  <div class="flex-space-between width-full">
+    <button mat-button (click)="onRemove()">Remove</button>
+    <div>
+      <button mat-button (click)="onCancel()">Cancel</button>
+      <button mat-flat-button (click)="onConfirm()">Save</button>
+    </div>
+  </div>
 </mat-dialog-actions>
