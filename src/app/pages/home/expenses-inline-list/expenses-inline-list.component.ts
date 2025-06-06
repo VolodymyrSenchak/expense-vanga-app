@@ -15,6 +15,7 @@ import {firstValueFrom} from 'rxjs';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {LoadingComponent} from '@components/loading';
+import { BaseExpensesListComponent } from '../base-expenses-list';
 
 @Component({
   selector: 'app-expenses-inline-list',
@@ -30,28 +31,12 @@ import {LoadingComponent} from '@components/loading';
     LoadingComponent
   ],
 })
-export class ExpensesInlineListComponent {
-  readonly currentExpensesService = inject(CurrentExpensesService);
-  readonly dialog = inject(MatDialog);
+export class ExpensesInlineListComponent extends BaseExpensesListComponent {
   readonly skeleton = Array.from({length: 10}, () => ['100%', '64px']) as [string, string][];
-
   readonly showPrevious = signal(false);
 
-  readonly currentExpenses = toSignal(this.currentExpensesService.currentExpenses$);
   readonly currentExpensesPrepared = computed(() =>
     (this.currentExpenses()?.expenses ?? [])
       .filter(e => this.showPrevious() ? e : !e.isPreviousDay)
   );
-
-  async startEditing(expense: ExpenseForDay): Promise<void> {
-    const dialogRef = this.dialog.open(ActualExpenseDialogComponent, {
-      data: <ActualExpenseDialogParams>{ expense }
-    });
-
-    const changed = await firstValueFrom(dialogRef.afterClosed()) as boolean;
-
-    if (changed) {
-      this.currentExpensesService.reloadExpenses();
-    }
-  }
 }

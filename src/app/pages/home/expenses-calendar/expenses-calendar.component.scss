@@ -1,0 +1,41 @@
+.expenses-calendar {
+  min-width: 600px;
+
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.3rem;
+
+    .calendar-grid-cell {
+      &.header {
+        font-weight: 500;
+      }
+
+      &.content {
+        border: 1px solid #ccc; /* Adds a border around each cell */
+        border-radius: 1rem;
+        box-sizing: border-box; /* Ensures padding doesn't affect the border */
+        padding: 0.5rem;
+
+        .red {
+          color: indianred;
+        }
+
+        .green {
+          color: darkolivegreen;
+        }
+
+        &.weekend {
+          background-color: color-mix(in srgb, var(--mat-sys-primary) 10%, white);
+        }
+
+        .month-day {
+          font-weight: 500;
+          width: 100%;
+          box-sizing: border-box;
+          text-align: right;
+        }
+      }
+    }
+  }
+}

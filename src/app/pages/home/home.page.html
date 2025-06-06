@@ -10,13 +10,14 @@
     >
       <mat-button-toggle value="table">Table</mat-button-toggle>
       <mat-button-toggle value="list">List</mat-button-toggle>
+      <mat-button-toggle value="calendar">Calendar</mat-button-toggle>
     </mat-button-toggle-group>
     </mat-card-title>
     <mat-card-content>
-      @if (viewMode() === 'table') {
-        <app-expenses-list />
-      } @else {
-        <app-expenses-inline-list />
+      @switch (viewMode()) {
+        @case ('calendar') { <app-expenses-calendar /> }
+        @case ('list') { <app-expenses-inline-list /> }
+        @default { <app-expenses-list /> }
       }
     </mat-card-content>
   </mat-card>

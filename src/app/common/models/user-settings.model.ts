@@ -1,3 +1,3 @@
 export interface UserSettings {
-  viewMode: 'table' | 'list';
+  viewMode: 'table' | 'list' | 'calendar';
 }

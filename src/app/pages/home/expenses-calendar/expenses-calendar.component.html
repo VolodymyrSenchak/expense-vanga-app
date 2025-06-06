@@ -1,0 +1,45 @@
+<div class="expenses-calendar padding-top-1">
+  @if (!currentExpenses()) {
+  <app-loading [loadingOptions]="{ isLoading: true, message: '' }" mode="skeleton" [skeletonBody]="skeleton" />
+  } @else {
+  <mat-button-toggle-group name="display-type" aria-label="Display type" class="margin-bottom-1" [value]="displayType()"
+    (change)="displayType.set($event.value)">
+    <mat-button-toggle value="Actual">Actual</mat-button-toggle>
+    <mat-button-toggle value="Expected">Expected</mat-button-toggle>
+  </mat-button-toggle-group>
+
+  <div class="calendar-grid">
+    @for (weekDay of weekdays; track $index) {
+      <div class="calendar-grid-cell header">
+        {{ weekDay }}
+      </div>
+    }
+  </div>
+  <div class="calendar-grid">
+    @for (expense of currentExpensesPrepared(); track $index) {
+    <div class="calendar-grid-cell content" [class.weekend]="expense.isWeekend" [class.previous-day]="expense.isPreviousDay">
+      <div class="month-day">{{ expense.monthDay }}</div>
+      @switch (displayType()) {
+        @case ('Actual') {
+          <div class="flex-column" (click)="startEditing(expense.expense!)">
+            <small
+              [class.red]="(expense.expense?.actualExpenseAmount ?? 0) >= 0"
+              [class.green]="(expense.expense?.actualExpenseAmount ?? 0) < 0"
+            >
+              {{ expense.expense?.actualExpenseAmount }}
+            </small>
+            <small>{{ expense.expense?.actualAmountLeft }}</small>
+          </div>
+        }
+        @case ('Expected') {
+          <div class="flex-column">
+            <small>{{ expense.expense?.expectedExpenseAmount }}</small>
+            <small>{{ expense.expense?.expectedAmountLeft }}</small>
+          </div>
+        }
+      }
+    </div>
+    }
+  </div>
+  }
+</div>

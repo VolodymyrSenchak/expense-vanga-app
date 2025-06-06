@@ -1,17 +1,10 @@
-import {Component, inject, signal} from '@angular/core';
-import {toSignal} from '@angular/core/rxjs-interop';
+import {Component, signal} from '@angular/core';
 import {MatTableModule} from '@angular/material/table';
-import {CurrentExpensesService} from '@common/services/expenses/current-expenses.service';
 import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {ExpenseForDay} from '@common/models/current-expenses.model';
-import {MatDialog} from '@angular/material/dialog';
-import {
-  ActualExpenseDialogComponent,
-  ActualExpenseDialogParams
-} from '../actual-expense-dialog/actual-expense-dialog.component';
-import { firstValueFrom } from 'rxjs';
 import {LoadingComponent} from '../../../components/loading';
+import { BaseExpensesListComponent } from '../base-expenses-list';
 
 @Component({
   selector: 'app-expenses-list',
@@ -24,10 +17,7 @@ import {LoadingComponent} from '../../../components/loading';
   templateUrl: './expenses-list.component.html',
   styleUrl: './expenses-list.component.scss'
 })
-export class ExpensesListComponent {
-  readonly currentExpensesService = inject(CurrentExpensesService);
-  readonly dialog = inject(MatDialog);
-
+export class ExpensesListComponent extends BaseExpensesListComponent {
   readonly skeleton = Array.from({length: 20}, () => ['100%', '24px']) as [string, string][];
   readonly columnsToDisplay: Array<keyof ExpenseForDay> = [
     'dateFormatted',
@@ -37,26 +27,14 @@ export class ExpensesListComponent {
     'actualExpenseAmount',
   ];
 
-  readonly currentExpenses = toSignal(this.currentExpensesService.currentExpenses$);
   readonly affectedExpenseDate = signal<string>('');
 
-  async openActualResultDialog(expense: ExpenseForDay): Promise<void> {
-    const dialogRef = this.dialog.open(ActualExpenseDialogComponent, {
-      data: <ActualExpenseDialogParams>{ expense }
-    });
-
-    const changed = await firstValueFrom(dialogRef.afterClosed()) as boolean;
-
+  override async startEditing(expense: ExpenseForDay): Promise<boolean> {
+    const changed = await super.startEditing(expense);
     if (changed) {
-      this.currentExpensesService.reloadExpenses();
-      this.highlightRow(expense.date);
+        this.affectedExpenseDate.set(expense.date);
+        setTimeout(() => this.affectedExpenseDate.set(''), 1000);
     }
-  }
-
-  private highlightRow(date: string): void {
-    this.affectedExpenseDate.set(date);
-    setTimeout(() => {
-      this.affectedExpenseDate.set('');
-    }, 1000);
+    return changed;
   }
 }

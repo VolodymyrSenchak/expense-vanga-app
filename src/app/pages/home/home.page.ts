@@ -5,6 +5,7 @@ import {ExpensesChartComponent} from './expenses-chart/expenses-chart.component'
 import { ExpensesInlineListComponent } from "./expenses-inline-list/expenses-inline-list.component";
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { UserSettingsStore } from "@common/services";
+import {ExpensesCalendarComponent} from './expenses-calendar/expenses-calendar.component';
 
 @Component({
   selector: 'app-home-page',
@@ -14,15 +15,16 @@ import { UserSettingsStore } from "@common/services";
     ExpensesChartComponent,
     ExpensesInlineListComponent,
     MatButtonToggleModule,
-],
+    ExpensesCalendarComponent,
+  ],
   styleUrl: './home.page.scss',
   templateUrl: './home.page.html',
 })
 export class HomePageComponent {
   readonly userSettingsStore = inject(UserSettingsStore);
-  readonly viewMode = signal<'table' | 'list'>(this.userSettingsStore.getUserSettings().viewMode);
+  readonly viewMode = signal<'table' | 'list' | 'calendar'>(this.userSettingsStore.getUserSettings().viewMode);
 
-  changeViewMode(viewMode: 'table' | 'list'): void {
+  changeViewMode(viewMode: 'table' | 'list' | 'calendar'): void {
     this.userSettingsStore.saveUserSettings({ viewMode });
     this.viewMode.set(viewMode);
   }

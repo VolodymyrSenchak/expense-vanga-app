@@ -53,8 +53,8 @@
             *matCellDef="let element; let idx"
             [title]="element.actualDailyComment || 'Double click to edit'"
             [tabindex]="idx"
-            (keydown.enter)="openActualResultDialog(element)">
-            <div class="actual-expense-cell" (dblclick)="openActualResultDialog(element)">
+            (keydown.enter)="startEditing(element)">
+            <div class="actual-expense-cell" (dblclick)="startEditing(element)">
             <span
               [class.less-expected]="element.actualExpenseAmount < element.expectedExpenseAmount"
               [class.above-expected]="element.actualExpenseAmount > element.expectedExpenseAmount">
@@ -66,7 +66,7 @@
               </span>
             }
 
-              <button class="edit-button" mat-icon-button (click)="openActualResultDialog(element)">
+              <button class="edit-button" mat-icon-button (click)="startEditing(element)">
                 <mat-icon class="edit-icon">edit</mat-icon>
               </button>
             </div>
