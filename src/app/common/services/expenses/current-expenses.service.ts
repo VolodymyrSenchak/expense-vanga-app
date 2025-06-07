@@ -29,14 +29,17 @@ export class CurrentExpensesService {
     )
   }
 
+
+
   private buildCurrentExpenses(
     forDate: Date,
     expectedExpenses: ExpectedExpensesModel,
     actualExpenses: ActualExpensesModel
   ): CurrentExpensesModel {
     const expensesForDay: ExpenseForDay[] = [];
-    let expectedAmountLeft = expectedExpenses.mainEarning;
-    let actualAmountLeft = expectedExpenses.mainEarning;
+    const mainEarning = this.calculateMainEarning(expectedExpenses);
+    let expectedAmountLeft = mainEarning;
+    let actualAmountLeft = mainEarning;
 
     for (const date of this.getDatesBetweenSalary(forDate, expectedExpenses.salaryDayOfMonth)) {
       const actualExpense = actualExpenses.expenses.find(d => DATE_UTILS.isSame(d.date, date));
@@ -84,5 +87,19 @@ export class CurrentExpensesService {
     } while (current.getDate() !== salaryDay);
 
     return dates;
+  }
+
+  private calculateMainEarning(expectedExpenses: ExpectedExpensesModel): number {
+    const currencies = expectedExpenses.currencies || [];
+    const earnings = expectedExpenses.earnings;
+    if (!earnings) {
+      return expectedExpenses.mainEarning || 0;
+    }
+    const earningsInMainCurrency = earnings.map(e => {
+      if (e.currency === expectedExpenses.mainCurrency) return e.amount;
+      const rate = currencies.find(c => c.from === e.currency && c.to === expectedExpenses.mainCurrency)?.rate;
+      return rate ? e.amount * rate : e.amount;
+    });
+    return earningsInMainCurrency.reduce((sum, amount) => sum + amount, 0);
   }
 }

@@ -1,16 +1,14 @@
-import { Component, inject, linkedSignal, OnInit } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { Router, RouterLink } from "@angular/router";
-import {ExpensesService, LoadingService} from "../../common/services";
-import { toSignal } from "@angular/core/rxjs-interop";
-import { firstValueFrom, from } from "rxjs";
+import { ExpensesService, LoadingService} from "../../common/services";
 import { DayOfWeek, ExpectedExpensesModel, getDefaultExpectedExpensesModel } from "../../common/models";
-import {FormControl, ReactiveFormsModule, FormBuilder, Validators, FormGroup, UntypedFormGroup} from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, UntypedFormGroup} from '@angular/forms';
 import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
 import { MatCardModule } from "@angular/material/card";
-import {LoadingComponent} from '../../components/loading';
+import { LoadingComponent} from '../../components/loading';
 
 @Component({
   selector: 'app-expected-expenses-page',
@@ -35,8 +33,11 @@ export class ExpectedExpensesPageComponent implements OnInit {
 
   readonly form = this.formBuilder.group({
     name: [''],
+    mainCurrency: [''],
     mainEarning: [0, [Validators.required, Validators.min(0)]],
     salaryDayOfMonth: [0, [Validators.required, Validators.min(1), Validators.max(31)]],
+    currencies: this.formBuilder.array<UntypedFormGroup>([]),
+    earnings: this.formBuilder.array<UntypedFormGroup>([]),
     dailyExpenses: this.formBuilder.array<UntypedFormGroup>([]),
     weeklyExpenses: this.formBuilder.array<UntypedFormGroup>([]),
   });
@@ -47,19 +48,44 @@ export class ExpectedExpensesPageComponent implements OnInit {
 
     this.form.patchValue({
       name: expectedExpenses.name,
+      mainCurrency: expectedExpenses.mainCurrency || 'PLN',
       mainEarning: expectedExpenses.mainEarning,
       salaryDayOfMonth: expectedExpenses.salaryDayOfMonth
     });
 
+    this.form.controls.currencies.clear();
+    this.form.controls.earnings.clear();
     this.form.controls.weeklyExpenses.clear();
     this.form.controls.dailyExpenses.clear();
 
-    expectedExpenses.weeklyExpenses.forEach(we => this.addWeeklyExpense(we.dayOfWeek, we.amount));
-    expectedExpenses.dailyExpenses.forEach(de => this.addDailyExpense(de.dayOfMonth, de.amount, de.comment));
+    const earnings = expectedExpenses.earnings || [
+      { name: 'Zloti', amount: expectedExpenses.mainEarning, currency: 'PLN' }
+    ];
+
+    (expectedExpenses.currencies || []).forEach(c => this.addCurrency(c.from, c.to, c.rate));
+    earnings.forEach(e => this.addEarning(e.name, e.amount, e.currency));
+    (expectedExpenses.weeklyExpenses || []).forEach(we => this.addWeeklyExpense(we.dayOfWeek, we.amount));
+    (expectedExpenses.dailyExpenses || []).forEach(de => this.addDailyExpense(de.dayOfMonth, de.amount, de.comment));
   }
 
   getDayOfWeek(weeklyExpense: FormGroup): string {
     return DayOfWeek[(weeklyExpense.controls as any).dayOfWeek.value!];
+  }
+
+  addEarning(name: string = '', amount: number = 0, currency: string = ''): void {
+    this.form.controls.earnings.push(this.formBuilder.group({
+      name: [name, [Validators.required, Validators.min(1), Validators.max(31)]],
+      amount: [amount, [Validators.required, Validators.min(0)]],
+      currency: [currency, [Validators.required]]
+    }) as any);
+  }
+
+  addCurrency(from: string = '', to: string = '', rate: number = 1): void {
+    this.form.controls.currencies.push(this.formBuilder.group({
+      from: [from, [Validators.required]],
+      to: [to, [Validators.required]],
+      rate: [rate, [Validators.required, Validators.min(0)]]
+    }) as any);
   }
 
   addDailyExpense(day: number = 1, amount: number = 0, comment: string = ''): void {
@@ -70,15 +96,23 @@ export class ExpectedExpensesPageComponent implements OnInit {
     }) as any);
   }
 
-  removeDailyExpense(index: number): void {
-    this.form.controls.dailyExpenses.removeAt(index);
-  }
-
   addWeeklyExpense(day: DayOfWeek, amount: number): void {
     this.form.controls.weeklyExpenses.push(this.formBuilder.group({
       dayOfWeek: [day, Validators.required],
       amount: [amount, [Validators.required, Validators.min(0)]]
     }) as any);
+  }
+
+  removeDailyExpense(index: number): void {
+    this.form.controls.dailyExpenses.removeAt(index);
+  }
+
+  removeEarning(index: number): void {
+    this.form.controls.earnings.removeAt(index);
+  }
+
+  removeCurrency(index: number): void {
+    this.form.controls.currencies.removeAt(index);
   }
 
   async submitForm(): Promise<void> {
