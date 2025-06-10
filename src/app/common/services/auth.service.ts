@@ -1,8 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import {inject, Injectable} from "@angular/core";
 import {Observable, tap} from 'rxjs';
-import {AuthCommand} from '@common/models/auth';
-import {AuthResult} from '@common/models/auth/auth-result.model';
+import {AuthCommand, PasswordResetCommand, User} from '@common/models/auth';
+import {AuthResult, PasswordResetResult} from '@common/models/auth/auth-result.model';
 import {AuthRegisterCommand} from '@common/models/auth/auth-register-command.model';
 import {AuthStore} from '@common/services/auth.local-store';
 
@@ -27,6 +27,14 @@ export class AuthService {
     return this.http.post<AuthResult>(`auth/refreshToken`, {refreshToken}).pipe(
       tap(res => this.persistAuthResult(res))
     );
+  }
+
+  getUserDetails(): Observable<User> {
+    return this.http.get<User>(`auth/userDetails`);
+  }
+
+  resetPassword(command: PasswordResetCommand): Observable<PasswordResetResult> {
+    return this.http.post<PasswordResetResult>(`auth/resetPassword`, command);
   }
 
   private persistAuthResult(authResult: AuthResult): void {

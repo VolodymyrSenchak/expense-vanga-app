@@ -66,6 +66,11 @@ export class AuthDialogComponent {
     this.dialogManager.openDialog('register-form', {});
   }
 
+  resetPassword(): void {
+    this.dialogRef.close();
+    this.dialogManager.openDialog('password-reset-dialog', {});
+  }
+
   onContinueLocally(): void {
     this.authStore.clearAuth();
     this.dialogRef.close();
