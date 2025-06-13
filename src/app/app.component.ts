@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { AppHeader } from './layout/app-header/app-header.component';
 import {MatDialog} from '@angular/material/dialog';
 import {DialogManager, DialogType} from '@common/services';
-import {AuthDialogComponent, RegisterDialogComponent, PasswordResetDialogComponent} from './dialogs/auth';
+import {AuthDialogComponent, RegisterDialogComponent, PasswordResetDialogComponent, PasswordChangeDialogComponent} from './dialogs/auth';
 import {UserProfileDialogComponent} from './layout/user-profile/user-profile-dialog';
 
 @Component({
@@ -31,6 +31,7 @@ export class AppComponent {
       case "register-form": return RegisterDialogComponent;
       case "user-profile": return UserProfileDialogComponent;
       case "password-reset-dialog": return PasswordResetDialogComponent;
+      case "password-change-dialog": return PasswordChangeDialogComponent;
       default: return null;
     }
   }

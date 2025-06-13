@@ -1,4 +1,4 @@
-import {Component, inject, model} from "@angular/core";
+import {Component, inject, model, signal} from "@angular/core";
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -41,9 +41,10 @@ export class ActualExpenseDialogComponent {
   readonly data = inject<ActualExpenseDialogParams>(MAT_DIALOG_DATA);
 
   readonly dateFormatted = DATE_UTILS.format(this.data.expense.date, 'month-day');
-  readonly amount = model(this.data.expense.actualExpense?.amount);
-  readonly comment = model(this.data.expense.actualExpense?.comment);
-  readonly isOverridingExpected = model(this.data.expense.actualExpense?.isOverridingExpected ?? false);
+  readonly isActualExpenseExists = signal(!!this.data.expense.actualExpense);
+  readonly amount = signal(this.data.expense.actualExpense?.amount);
+  readonly comment = signal(this.data.expense.actualExpense?.comment);
+  readonly isOverridingExpected = signal(this.data.expense.actualExpense?.isOverridingExpected ?? false);
 
   onCancel(): void {
     this.dialogRef.close(false);

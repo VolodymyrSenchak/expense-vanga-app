@@ -16,7 +16,9 @@ export const getDefaultExpectedExpensesModel = (): ExpectedExpensesModel => {
   return {
     name : 'Default',
     mainCurrency: 'PLN',
-    currencies: [],
+    currencies: [
+      { from: 'USD', to: 'PLN', rate: 4.0 },
+    ],
     earnings: [
       { name: 'Main Salary', amount: 5000, currency: 'PLN' },
       { name: 'Side Job', amount: 2000, currency: 'PLN' }

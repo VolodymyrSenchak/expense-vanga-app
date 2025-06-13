@@ -34,7 +34,6 @@ export class ExpectedExpensesPageComponent implements OnInit {
   readonly form = this.formBuilder.group({
     name: [''],
     mainCurrency: [''],
-    mainEarning: [0, [Validators.required, Validators.min(0)]],
     salaryDayOfMonth: [0, [Validators.required, Validators.min(1), Validators.max(31)]],
     currencies: this.formBuilder.array<UntypedFormGroup>([]),
     earnings: this.formBuilder.array<UntypedFormGroup>([]),
@@ -49,7 +48,6 @@ export class ExpectedExpensesPageComponent implements OnInit {
     this.form.patchValue({
       name: expectedExpenses.name,
       mainCurrency: expectedExpenses.mainCurrency || 'PLN',
-      mainEarning: expectedExpenses.mainEarning,
       salaryDayOfMonth: expectedExpenses.salaryDayOfMonth
     });
 

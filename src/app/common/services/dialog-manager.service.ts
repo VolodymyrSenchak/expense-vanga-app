@@ -6,6 +6,7 @@ export type DialogType =
   | 'register-form'
   | 'password-reset-dialog'
   | 'user-profile'
+  | 'password-change-dialog'
   | 'unknown';
 
 export interface DialogParams {

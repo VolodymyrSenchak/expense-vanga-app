@@ -1,10 +1,4 @@
 <div class="expected-expenses-page page-narrow">
-  <div class="header flex flex-gap-1">
-    <a mat-icon-button routerLink='/'>
-      <mat-icon>arrow_back</mat-icon>
-    </a>
-    <h2>Expected Expenses</h2>
-  </div>
   @if (loadingSrv.loadingOptions().isLoading) {
     <app-loading
       [loadingOptions]="loadingSrv.loadingOptions()"
@@ -13,6 +7,16 @@
     />
   } @else {
   <form [formGroup]="form" (ngSubmit)="submitForm()" class="flex-column flex-gap-1">
+    <div class="header flex flex-gap-1">
+      <a mat-icon-button routerLink='/'>
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+      <h2>Expected Expenses</h2>
+      <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+        Submit
+      </button>
+    </div>
+
     <mat-card appearance="outlined" class="padding-x-1">
       <mat-card-title class="padding-y-1">General information</mat-card-title>
       <mat-card-content>
@@ -141,12 +145,6 @@
         <button mat-button type="button" (click)="addDailyExpense()">Add Daily Expense</button>
       </mat-card-content>
     </mat-card>
-
-    <div class="padding-bottom-2">
-      <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
-        Submit
-      </button>
-    </div>
   </form>
   }
 </div>

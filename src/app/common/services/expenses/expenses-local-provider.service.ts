@@ -22,7 +22,8 @@ export class ExpensesLocalProvider {
   addActualExpense$(value: ActualExpenseModel): Observable<boolean> {
     return this.getActualExpenses$().pipe(
       map(existing => {
-        const expenses = [...existing.expenses.filter(e => e.date !== value.date), value];
+        const existingExpenses = existing?.expenses || [];
+        const expenses = [...existingExpenses.filter(e => e.date !== value.date), value];
         return { ...existing, expenses };
       }),
       switchMap(edited => this.saveActualExpenses$(edited))

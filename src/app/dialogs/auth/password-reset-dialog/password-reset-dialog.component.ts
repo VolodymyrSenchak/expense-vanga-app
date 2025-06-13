@@ -45,7 +45,7 @@ export class PasswordResetDialogComponent {
           redirectTo: `${window.location.origin}/auth/reset-password`
         })
       );
-      this.snackBar.open('Password reset mail message successfully sent to your email', 'Close', {duration: 2000});
+      this.snackBar.open('Password reset mail message successfully sent to your email', 'Close', {duration: 5000});
       this.dialogRef.close();
     } catch (err) {
       this.snackBar.open('Could not send recovery link, please check your email.', 'Close', {duration: 2000});
