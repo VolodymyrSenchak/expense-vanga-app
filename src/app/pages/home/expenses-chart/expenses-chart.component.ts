@@ -38,14 +38,14 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
       datasets: [
         {
           label: 'Expected expenses',
-          borderColor: 'blue',
-          backgroundColor: 'blue',
+          borderColor: '#213448',
+          backgroundColor: '#213448',
           data: expenses.map(e => e.expectedAmountLeft)
         },
         {
           label: 'Actual expenses',
-          borderColor: 'red',
-          backgroundColor: 'red',
+          borderColor: '#94B4C1',
+          backgroundColor: '#94B4C1',
           data: expenses.map(e => e.actualAmountLeft)
         }
       ]
