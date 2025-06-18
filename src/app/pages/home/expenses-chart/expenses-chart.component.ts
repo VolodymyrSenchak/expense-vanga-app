@@ -31,6 +31,10 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
   readonly chart = viewChild(BaseChartDirective);
 
   readonly chartData = computed<ChartConfiguration<'line'>['data']>(() => {
+    if (!this.currentExpenses()) {
+      return { labels: [], datasets: [] };
+    }
+
     const { expenses } = this.currentExpenses()!;
 
     return {

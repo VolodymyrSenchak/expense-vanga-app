@@ -1,6 +1,6 @@
 import {inject, Injectable} from "@angular/core";
-import {ExpectedExpensesModel, getDefaultExpectedExpensesModel} from "@common/models";
-import {firstValueFrom, map, Observable, tap} from "rxjs";
+import {CurrentMoneyAmountModel, ExpectedExpensesModel, getDefaultExpectedExpensesModel} from "@common/models";
+import {firstValueFrom, map, Observable, of, tap} from "rxjs";
 import {ActualExpenseModel, ActualExpensesModel, getDefaultActualExpensesModel} from '../../models/actual-expenses.model';
 import {AuthStore} from '@common/services/auth.local-store';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -16,6 +16,7 @@ export class ExpensesService {
 
   private isExpectedLoaded = false;
   private isActualLoaded = false;
+  private isCurrentMoneyAmountLoaded = false;
 
   private isApiMode(): boolean {
     return !!this.authStore.getSession()?.access_token;
@@ -47,6 +48,33 @@ export class ExpensesService {
         map(expenses => expenses ?? getDefaultActualExpensesModel()),
       );
     }
+  }
+
+  getCurrentMoneyAmount$(): Observable<CurrentMoneyAmountModel> {
+    // TODO: when api is ready, remove false
+    if (this.isApiMode() && !this.isCurrentMoneyAmountLoaded && false) {
+      return this.apiProvider.getCurrentMoneyAmount$().pipe(
+        map(money => money ?? { money: [] }),
+        tap(() => this.isCurrentMoneyAmountLoaded = true),
+        tap((money) => this.localProvider.saveCurrentMoneyAmount$(money)),
+      );
+    } else {
+      return this.localProvider.getCurrentMoneyAmount$().pipe(
+        map(expenses => expenses ?? { money: [] }),
+      );
+    }
+  }
+
+  saveCurrentMoneyAmount$(money: CurrentMoneyAmountModel): Observable<boolean> {
+    return this.localProvider.saveCurrentMoneyAmount$(money).pipe(
+      tap(async () => {
+        // TODO: when api is ready, remove false
+        if (this.isApiMode() && false) {
+          this.showNotification('Saving current money amount...');
+          await firstValueFrom(this.apiProvider.saveCurrentMoneyAmount$(money));
+        }
+      })
+    );
   }
 
   saveExpectedExpenses$(expenses: ExpectedExpensesModel): Observable<boolean> {

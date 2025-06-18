@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {map, Observable, of, switchMap} from 'rxjs';
-import {ExpectedExpensesModel} from '@common/models';
+import {CurrentMoneyAmountModel, ExpectedExpensesModel} from '@common/models';
 import {getFromLocalStorage, saveToLocalStorage} from '@common/utils/localStorage.utils';
 import {ActualExpenseModel, ActualExpensesModel} from '@common/models/actual-expenses.model';
 
@@ -17,6 +17,15 @@ export class ExpensesLocalProvider {
 
   getActualExpenses$(): Observable<ActualExpensesModel> {
     return of(getFromLocalStorage<ActualExpensesModel>('actual-expenses'));
+  }
+
+  getCurrentMoneyAmount$(): Observable<CurrentMoneyAmountModel> {
+    return of(getFromLocalStorage<CurrentMoneyAmountModel>('current-money'));
+  }
+
+  saveCurrentMoneyAmount$(money: CurrentMoneyAmountModel): Observable<boolean> {
+    saveToLocalStorage('current-money', money);
+    return of(true);
   }
 
   addActualExpense$(value: ActualExpenseModel): Observable<boolean> {

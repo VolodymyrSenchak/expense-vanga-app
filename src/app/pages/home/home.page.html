@@ -1,17 +1,19 @@
 <main class="home-page">
   <mat-card appearance="outlined" class="padding-x-1 list-view-card scrollable-content">
-    <mat-card-title class="padding-top-1">
-      List view
+    <mat-card-title class="padding-top-1" style="display: flex; justify-content: space-between; align-items: center;">
       <mat-button-toggle-group
-      name="view-mode"
-      aria-label="View mode"
-      [value]="viewMode()"
-      (change)="changeViewMode($event.value)"
-    >
-      <mat-button-toggle value="table">Table</mat-button-toggle>
-      <mat-button-toggle value="list">List</mat-button-toggle>
-      <mat-button-toggle value="calendar">Calendar</mat-button-toggle>
-    </mat-button-toggle-group>
+        name="view-mode"
+        aria-label="View mode"
+        [value]="viewMode()"
+        (change)="changeViewMode($event.value)"
+      >
+        <mat-button-toggle value="table">Table</mat-button-toggle>
+        <mat-button-toggle value="list">List</mat-button-toggle>
+        <mat-button-toggle value="calendar">Calendar</mat-button-toggle>
+      </mat-button-toggle-group>
+      <button mat-icon-button  aria-label="Actualize expenses for today" (click)="refreshExpenses()">
+        <mat-icon>sync</mat-icon>
+      </button>
     </mat-card-title>
     <mat-card-content>
       @switch (viewMode()) {

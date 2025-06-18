@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {map, Observable} from 'rxjs';
-import {ExpectedExpensesModel} from '@common/models';
+import {CurrentMoneyAmountModel, ExpectedExpensesModel} from '@common/models';
 import {ActualExpenseModel, ActualExpensesModel} from '@common/models/actual-expenses.model';
 
 @Injectable({ providedIn: 'root' })
@@ -26,5 +26,13 @@ export class ExpensesApiProvider {
 
   deleteActualExpense$(forDate: string): Observable<boolean> {
     return this.http.delete<boolean>(`expenses/actual?date=${forDate}`);
+  }
+
+  getCurrentMoneyAmount$(): Observable<CurrentMoneyAmountModel> {
+    return this.http.get<CurrentMoneyAmountModel>(`expenses/current-amount`);
+  }
+
+  saveCurrentMoneyAmount$(currentMoney: CurrentMoneyAmountModel): Observable<boolean> {
+    return this.http.post<boolean>(`expenses/current-amount`, currentMoney);
   }
 }
