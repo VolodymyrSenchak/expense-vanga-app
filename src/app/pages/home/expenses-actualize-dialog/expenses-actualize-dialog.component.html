@@ -6,21 +6,25 @@
       [mode]="'spinner'"
     />
   } @else {
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" style="min-width: 300px">
       <div formArrayName="money" class="flex-column flex-gap-1">
+        @if (form.controls.money.controls.length === 0) {
+          <p>Provide list of your current money amount to simply actualize expenses</p>
+        }
+
         @for (expense of form.controls.money.controls; track $index) {
-          <div [formGroupName]="$index" class="flex flex-gap-1">
-            <mat-form-field appearance="outline">
+          <div [formGroupName]="$index" class="flex flex-gap-1 padding-top-1 flex-wrap">
+            <mat-form-field appearance="outline" class="flex-1" style="min-width: 100px">
               <mat-label>Name</mat-label>
               <input matInput type="text" formControlName="name">
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" style="width: 110px">
               <mat-label>Amount</mat-label>
-              <input matInput type="number" formControlName="amount">
+              <input matInput step="10" type="number" formControlName="amount">
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="flex-1">
+            <mat-form-field appearance="outline" style="width: 110px">
               <mat-label>Currency</mat-label>
               <input matInput type="text" formControlName="currency">
             </mat-form-field>
@@ -30,12 +34,14 @@
             </button>
           </div>
         }
-        <button mat-button type="button" (click)="addMoneyPart()">Add more</button>
+        <div>
+          <button mat-button type="button" (click)="addMoneyPart()">Add more</button>
+        </div>
       </div>
 
-      <div class="flex">
-        <button mat-button (click)="onCancel()">Cancel</button>
-        <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">Submit</button>
+      <div class="flex-end">
+        <button mat-button type="button" (click)="onCancel()">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">Save</button>
       </div>
     </form>
   }

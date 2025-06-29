@@ -1,6 +1,11 @@
 .flex {
   display: flex;
 
+  &-wrap {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
   &-center {
     display: flex;
     align-items: center;
@@ -9,6 +14,11 @@
   &-space-between {
     display: flex;
     justify-content: space-between;
+  }
+
+  &-end {
+    display: flex;
+    justify-content: flex-end;
   }
 
   &-column {

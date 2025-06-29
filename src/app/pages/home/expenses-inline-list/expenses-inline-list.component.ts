@@ -16,6 +16,8 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {LoadingComponent} from '@components/loading';
 import { BaseExpensesListComponent } from '../base-expenses-list';
+import {ActualizeExpensesButtonComponent} from '../actualize-expenses-button/actualize-expenses-button.component';
+import {DecimalPipe} from '@angular/common';
 
 @Component({
   selector: 'app-expenses-inline-list',
@@ -28,7 +30,9 @@ import { BaseExpensesListComponent } from '../base-expenses-list';
     ReactiveFormsModule,
     MatCheckboxModule,
     MatSlideToggle,
-    LoadingComponent
+    LoadingComponent,
+    ActualizeExpensesButtonComponent,
+    DecimalPipe
   ],
 })
 export class ExpensesInlineListComponent extends BaseExpensesListComponent {

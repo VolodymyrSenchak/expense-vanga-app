@@ -8,49 +8,60 @@
       />
     </div>
   } @else {
-    <p class="padding-top-1">
+    <div class="padding-bottom-2 flex-space-between">
       <mat-slide-toggle
         [checked]="showPrevious()"
         (change)="showPrevious.set($event.checked)"
-      >Show previous days</mat-slide-toggle>
-    </p>
+      >Show previous days
+      </mat-slide-toggle>
+
+      <app-actualize-expenses-button/>
+    </div>
     @for (expense of currentExpensesPrepared(); track $index) {
       <div class="expense-item"
            (click)="startEditing(expense)"
            [class.weekend]="expense.isWeekend"
            [class.previous-day]="expense.isPreviousDay">
         <div class="flex-column">
-          <h5>{{ expense.dateFormatted }}</h5>
-          <div class="flex">
-            <div class="flex-column flex-1">
-              <label>Expected</label>
+          <div class="date-separator">
+            <h5>{{ expense.dateFormatted }}</h5>
+          </div>
+
+          <div>
+            <label>Expected</label>
+            <div class="flex-space-between">
               <div>
-                <span>{{ expense.expectedExpenseAmount }}</span>
+                <span>{{ expense.expectedExpenseAmount | number }}</span>
                 @if (expense.expectedDailyComment) {
                   <span class="comment">
-              ({{ (expense.expectedExpenseAmount - expense.weeklyExpenseAmount) + ' ' + expense.expectedDailyComment }})
-            </span>
+                    ({{ (expense.expectedExpenseAmount - expense.weeklyExpenseAmount) + ' ' + expense.expectedDailyComment }}
+                    )
+                  </span>
                 }
               </div>
-              <span>{{expense.expectedAmountLeft}}</span>
-            </div>
-            <div class="flex-column flex-1">
-              <div class="flex">
-                <label>Actual</label>
+              <div>
+                <span>{{ expense.expectedAmountLeft | number }}</span>
               </div>
+            </div>
+
+            <label>Actual</label>
+            <div class="flex-space-between">
               <div>
                 <span
                   [class.less-expected]="expense.actualExpenseAmount < expense.expectedExpenseAmount"
                   [class.above-expected]="expense.actualExpenseAmount > expense.expectedExpenseAmount">
-                  {{ expense.actualExpenseAmount }}
+                  {{ expense.actualExpenseAmount | number }}
                 </span>
                 @if (expense.actualDailyComment) {
                   <span class="comment">
-                    ({{ (expense.actualExpenseAmount - expense.weeklyExpenseAmount) + ' ' + expense.actualDailyComment }})
+                    ({{ (expense.actualExpenseAmount - expense.weeklyExpenseAmount) + ' ' + expense.actualDailyComment }}
+                    )
                   </span>
                 }
               </div>
-              <span>{{expense.actualAmountLeft}}</span>
+              <div>
+                <span>{{ expense.actualAmountLeft | number }}</span>
+              </div>
             </div>
           </div>
         </div>

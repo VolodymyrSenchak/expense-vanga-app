@@ -6,11 +6,12 @@ import { ExpensesInlineListComponent } from "./expenses-inline-list/expenses-inl
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { UserSettingsStore} from "@common/services";
 import {ExpensesCalendarComponent} from './expenses-calendar/expenses-calendar.component';
-import {firstValueFrom} from 'rxjs';
+import {map} from 'rxjs';
 import { MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
-import {MatDialog} from '@angular/material/dialog';
-import {ExpensesActualizeDialogComponent} from './expenses-actualize-dialog';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import {toSignal} from '@angular/core/rxjs-interop';
+import {ActualizeExpensesButtonComponent} from './actualize-expenses-button/actualize-expenses-button.component';
 
 @Component({
   selector: 'app-home-page',
@@ -22,23 +23,23 @@ import {ExpensesActualizeDialogComponent} from './expenses-actualize-dialog';
     MatButtonToggleModule,
     ExpensesCalendarComponent,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    ActualizeExpensesButtonComponent
   ],
   styleUrl: './home.page.scss',
   templateUrl: './home.page.html',
 })
 export class HomePageComponent {
   readonly userSettingsStore = inject(UserSettingsStore);
-  readonly dialog = inject(MatDialog);
-  readonly viewMode = signal<'table' | 'list' | 'calendar'>(this.userSettingsStore.getUserSettings().viewMode);
+  readonly breakpointObserver = inject(BreakpointObserver);
+  readonly viewMode = signal<'table' | 'calendar'>(this.userSettingsStore.getUserSettings().viewMode);
 
-  changeViewMode(viewMode: 'table' | 'list' | 'calendar'): void {
+  readonly isMobile = toSignal(
+    this.breakpointObserver.observe([Breakpoints.Handset]).pipe(map(result => result.matches))
+  );
+
+  changeViewMode(viewMode: 'table' | 'calendar'): void {
     this.userSettingsStore.saveUserSettings({ viewMode });
     this.viewMode.set(viewMode);
-  }
-
-  async refreshExpenses(): Promise<void> {
-    const dialogRef = this.dialog.open(ExpensesActualizeDialogComponent);
-    await firstValueFrom(dialogRef.afterClosed());
   }
 }

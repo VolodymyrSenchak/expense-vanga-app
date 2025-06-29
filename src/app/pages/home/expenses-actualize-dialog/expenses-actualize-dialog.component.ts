@@ -7,6 +7,7 @@ import {LoadingComponent} from '@components/loading';
 import {MatFormField, MatInput, MatLabel} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
+import { switchMap, tap} from 'rxjs';
 
 @Component({
   selector: 'app-expenses-actualize-dialog',
@@ -44,7 +45,7 @@ export class ExpensesActualizeDialogComponent implements OnInit {
 
   addMoneyPart(name: string = '', amount: number = 0, currency: string = ''): void {
     this.form.controls.money.push(this.formBuilder.group({
-      from: [name, [Validators.required]],
+      name: [name, [Validators.required]],
       amount: [amount, [Validators.required, Validators.min(0)]],
       currency: [currency, [Validators.required]]
     }) as any);
@@ -58,7 +59,10 @@ export class ExpensesActualizeDialogComponent implements OnInit {
     if (this.form.valid) {
       const model = this.form.value as CurrentMoneyAmountModel;
       await this.loadingSrv.waitObservable(
-        this.expensesService.saveCurrentMoneyAmount$(model),
+        this.expensesService.saveCurrentMoneyAmount$(model).pipe(
+          switchMap(() => this.currentExpensesService.actualizeActualExpenseForToday$(model)),
+          tap(() => this.currentExpensesService.reloadExpenses())
+        ),
         "Saving..."
       );
       this.dialogRef.close(true);

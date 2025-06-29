@@ -4,7 +4,7 @@
   --mat-sys-primary: #213448;
   --mat-sys-primary-container: #c3d6e0;
   // --mat-sys-primary-container: #EBFFD8; // Light Cyan
-  // --mat-sys-variant-container: #EBFFD8; 
+  // --mat-sys-variant-container: #EBFFD8;
 
   @include mat.toolbar-overrides((
     container-background-color: var(--mat-sys-primary-container),
@@ -55,6 +55,6 @@
 }
 
 //.mat-mdc-form-field-infix {
-//  width: auto !important;
+//  width: 150px !important;
 //  min-width: 90px !important;
 //}

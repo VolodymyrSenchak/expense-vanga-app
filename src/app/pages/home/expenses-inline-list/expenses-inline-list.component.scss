@@ -1,12 +1,26 @@
+:host {
+  width: 100%;
+}
+
 .expenses-inline-list {
+  margin-bottom: 2rem;
+
   .expense-item {
-    border-bottom: 1px solid #ccc;
     transition: background-color 0.3s ease;
     cursor: pointer;
-    padding: 0.3rem 0;
+    margin-bottom: 1.5rem;
+    padding-top: 1rem;
+    position: relative;
+    border-top: 1px solid #ccc;
 
-    &:hover {
-      background-color: #ECECEC;
+    .date-separator {
+      background-color: white;
+      position: absolute;
+      top: -10px;
+      left: 12px;
+      border: 1px solid #ccc;
+      padding: 0 0.5rem;
+      border-radius: 1rem;
     }
 
     .comment {
@@ -14,7 +28,10 @@
     }
 
     &.weekend {
-      background-color: color-mix(in srgb, var(--mat-sys-primary) 10%, white);
+      .date-separator {
+        color: white;
+        background-color: var(--mat-sys-primary);
+      }
     }
 
     &.previous-day {
