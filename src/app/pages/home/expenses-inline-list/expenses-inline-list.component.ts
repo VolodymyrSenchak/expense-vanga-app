@@ -18,6 +18,7 @@ import {LoadingComponent} from '@components/loading';
 import { BaseExpensesListComponent } from '../base-expenses-list';
 import {ActualizeExpensesButtonComponent} from '../actualize-expenses-button/actualize-expenses-button.component';
 import {DecimalPipe} from '@angular/common';
+import {ExpenseSignPipe} from '@common/pipes';
 
 @Component({
   selector: 'app-expenses-inline-list',
@@ -32,7 +33,8 @@ import {DecimalPipe} from '@angular/common';
     MatSlideToggle,
     LoadingComponent,
     ActualizeExpensesButtonComponent,
-    DecimalPipe
+    DecimalPipe,
+    ExpenseSignPipe
   ],
 })
 export class ExpensesInlineListComponent extends BaseExpensesListComponent {

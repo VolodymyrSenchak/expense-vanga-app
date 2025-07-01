@@ -26,10 +26,16 @@
     flex-direction: column;
   }
 
+  &-gap-0-5 { gap: 0.5rem; }
+
   @for $i from 1 through 12 {
-    &-#{$i} { display: flex; flex: #{$i} }
-    &-gap-#{$i} { display: flex; gap: #{$i}rem; }
+    &-#{$i} { flex: #{$i} }
+    &-gap-#{$i} { gap: #{$i}rem; }
   }
+}
+
+.line-height {
+  &-1 { line-height: 1 !important; }
 }
 
 .grid {

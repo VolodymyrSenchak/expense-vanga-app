@@ -27,40 +27,48 @@
             <h5>{{ expense.dateFormatted }}</h5>
           </div>
 
-          <div>
-            <label>Expected</label>
-            <div class="flex-space-between">
-              <div>
-                <span>{{ expense.expectedExpenseAmount | number }}</span>
-                @if (expense.expectedDailyComment) {
-                  <span class="comment">
-                    ({{ (expense.expectedExpenseAmount - expense.weeklyExpenseAmount) + ' ' + expense.expectedDailyComment }}
-                    )
+          <div class="flex">
+            <div class="flex-1">
+              <label>Actual</label>
+              <div class="flex-column flex-gap-0-5" style="padding-top: 0.5rem">
+                <div>
+                  <h5 class="line-height-1">Spent</h5>
+                  <span
+                    [class.less-expected]="expense.actualExpenseAmount < expense.expectedExpenseAmount"
+                    [class.above-expected]="expense.actualExpenseAmount > expense.expectedExpenseAmount">
+                    {{ expense.actualExpenseAmount | expenseSign | number:'1.2-2' }}
                   </span>
-                }
-              </div>
-              <div>
-                <span>{{ expense.expectedAmountLeft | number }}</span>
+                    @if (expense.actualDailyComment) {
+                      <span class="comment">
+                      ({{ (expense.actualExpenseAmount - expense.weeklyExpenseAmount) + ' ' + expense.actualDailyComment }}
+                        )
+                    </span>
+                    }
+                </div>
+                <div>
+                  <h5 class="line-height-1">Left</h5>
+                  <span>{{ expense.actualAmountLeft | number:'1.2-2' }}</span>
+                </div>
               </div>
             </div>
-
-            <label>Actual</label>
-            <div class="flex-space-between">
-              <div>
-                <span
-                  [class.less-expected]="expense.actualExpenseAmount < expense.expectedExpenseAmount"
-                  [class.above-expected]="expense.actualExpenseAmount > expense.expectedExpenseAmount">
-                  {{ expense.actualExpenseAmount | number }}
-                </span>
-                @if (expense.actualDailyComment) {
-                  <span class="comment">
-                    ({{ (expense.actualExpenseAmount - expense.weeklyExpenseAmount) + ' ' + expense.actualDailyComment }}
-                    )
+            <div class="flex-1" style="border-left: 1px solid #ccc; padding-left: 1rem">
+              <label>Expected</label>
+              <div class="flex-column flex-gap-0-5" style="padding-top: 0.5rem">
+                <div>
+                  <h5 class="line-height-1">Spent</h5>
+                  <span>{{ expense.expectedExpenseAmount | expenseSign | number:'1.2-2' }}</span>
+                  @if (expense.expectedDailyComment) {
+                    <span class="comment">
+                    ({{ (expense.expectedExpenseAmount - expense.weeklyExpenseAmount) + ' ' + expense.expectedDailyComment }}
+                      )
                   </span>
-                }
-              </div>
-              <div>
-                <span>{{ expense.actualAmountLeft | number }}</span>
+                  }
+                </div>
+
+                <div>
+                  <h5 class="line-height-1">Left</h5>
+                  <span>{{ expense.expectedAmountLeft | number:'1.2-2' }}</span>
+                </div>
               </div>
             </div>
           </div>
