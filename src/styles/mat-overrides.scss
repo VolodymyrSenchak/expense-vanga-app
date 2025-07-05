@@ -3,12 +3,14 @@
 :root {
   --mat-sys-primary: #213448;
   --mat-sys-primary-container: #c3d6e0;
+  --mat-toolbar-mobile-height: 48px;
   // --mat-sys-primary-container: #EBFFD8; // Light Cyan
   // --mat-sys-variant-container: #EBFFD8;
 
   @include mat.toolbar-overrides((
     container-background-color: var(--mat-sys-primary-container),
     container-text-color: var(--mat-sys-primary),
+    mobile-height: 52px,
   ));
 
   @include mat.table-overrides((

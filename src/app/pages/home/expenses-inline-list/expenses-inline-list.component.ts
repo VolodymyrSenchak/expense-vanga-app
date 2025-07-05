@@ -1,17 +1,8 @@
-import {Component, computed, inject, signal} from '@angular/core';
+import {Component, computed, signal} from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CurrentExpensesService } from '@common/services/expenses/current-expenses.service';
-import { ExpenseForDay } from '@common/models/current-expenses.model';
-import { toSignal } from '@angular/core/rxjs-interop';
-import {MatDialog} from '@angular/material/dialog';
-import {
-  ActualExpenseDialogComponent,
-  ActualExpenseDialogParams
-} from '../actual-expense-dialog/actual-expense-dialog.component';
-import {firstValueFrom} from 'rxjs';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {LoadingComponent} from '@components/loading';
