@@ -1,8 +1,14 @@
 <div class="app-layout">
-  <app-header />
-  <div class="page-content">
-    <div class="page-content-inner">
-      <router-outlet></router-outlet>
+  @if (loading.loadingOptions().isLoading) {
+    <div class="flex-center" style="width: 100vw; height: 100vh; justify-content: center">
+      <img src="images/logo.png" alt="App Logo" height="240" width="240">
     </div>
-  </div>
+  } @else {
+    <app-header/>
+    <div class="page-content">
+      <div class="page-content-inner">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  }
 </div>
