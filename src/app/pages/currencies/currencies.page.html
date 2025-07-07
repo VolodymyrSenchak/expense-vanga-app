@@ -4,7 +4,7 @@
       <a mat-icon-button routerLink='/'>
         <mat-icon>arrow_back</mat-icon>
       </a>
-      <h2>Savings</h2>
+      <h2>Currencies</h2>
       <button
         mat-flat-button
         color="primary"
@@ -18,43 +18,9 @@
       <app-loading
         [loadingOptions]="loadingSrv.loadingOptions()"
         [mode]="'skeleton'"
-        [skeletonBody]="[['100%', '300px'], ['100%', '300px']]"
+        [skeletonBody]="[['100%', '300px']]"
       />
     } @else {
-      <mat-card appearance="outlined" class="padding-x-1">
-        <mat-card-title class="padding-y-1">Savings</mat-card-title>
-        <mat-card-content formArrayName="savings">
-          @for (expense of form.controls.savings.controls; track $index) {
-            <div [formGroupName]="$index" class="flex flex-gap-1">
-              <mat-form-field appearance="outline" class="flex-1">
-                <mat-label>Name</mat-label>
-                <input matInput type="text" formControlName="name">
-              </mat-form-field>
-
-              <mat-form-field appearance="outline" class="flex-1">
-                <mat-label>Amount</mat-label>
-                <input matInput type="number" formControlName="amount">
-              </mat-form-field>
-
-              <mat-form-field appearance="outline" class="flex-1">
-                <mat-label>Currency</mat-label>
-                <input matInput type="text" formControlName="currency">
-              </mat-form-field>
-
-              <button mat-icon-button color="warn" type="button" (click)="removeSaving($index)">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </div>
-          }
-
-          <button mat-button type="button" (click)="addSaving()">Add new saving</button>
-
-          <div class="totals padding-top-1 flex-column">
-            <label>Total savings</label>
-            <span>{{savingsTotals() | number:'1.2-2'}} {{defaultCurrency}}</span>
-          </div>
-        </mat-card-content>
-      </mat-card>
       <mat-card appearance="outlined" class="padding-x-1">
         <mat-card-title class="padding-y-1">Currencies</mat-card-title>
         <mat-card-content>

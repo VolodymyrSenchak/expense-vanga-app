@@ -29,10 +29,10 @@ export class ExpensesApiProvider {
   }
 
   getCurrentMoneyAmount$(): Observable<CurrentMoneyAmountModel> {
-    return this.http.get<CurrentMoneyAmountModel>(`expenses/current-amount`);
+    return this.http.get<CurrentMoneyAmountModel>(`currentMoney`);
   }
 
   saveCurrentMoneyAmount$(currentMoney: CurrentMoneyAmountModel): Observable<boolean> {
-    return this.http.post<boolean>(`expenses/current-amount`, currentMoney);
+    return this.http.post<boolean>(`currentMoney`, currentMoney);
   }
 }

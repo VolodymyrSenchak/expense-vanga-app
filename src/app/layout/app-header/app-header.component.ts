@@ -27,6 +27,7 @@ export class AppHeader {
   readonly pages = [
     { url: '/', name: 'Home' },
     { url: '/expected-expenses', name: 'Expected Expenses' },
+    { url: '/currencies', name: 'Currencies' },
     { url: '/savings', name: 'Savings' },
   ];
 

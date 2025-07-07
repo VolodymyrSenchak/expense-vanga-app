@@ -51,8 +51,7 @@ export class ExpensesService {
   }
 
   getCurrentMoneyAmount$(): Observable<CurrentMoneyAmountModel> {
-    // TODO: when api is ready, remove false
-    if (this.isApiMode() && !this.isCurrentMoneyAmountLoaded && false) {
+    if (this.isApiMode() && !this.isCurrentMoneyAmountLoaded) {
       return this.apiProvider.getCurrentMoneyAmount$().pipe(
         map(money => money ?? { money: [] }),
         tap(() => this.isCurrentMoneyAmountLoaded = true),
@@ -68,8 +67,7 @@ export class ExpensesService {
   saveCurrentMoneyAmount$(money: CurrentMoneyAmountModel): Observable<boolean> {
     return this.localProvider.saveCurrentMoneyAmount$(money).pipe(
       tap(async () => {
-        // TODO: when api is ready, remove false
-        if (this.isApiMode() && false) {
+        if (this.isApiMode()) {
           this.showNotification('Saving current money amount...');
           await firstValueFrom(this.apiProvider.saveCurrentMoneyAmount$(money));
         }
