@@ -64,7 +64,7 @@
     }
 
     &.weekend {
-      background-color: color-mix(in srgb, var(--mat-sys-primary) 10%, white);
+      background-color: color-mix(in srgb, var(--mat-sys-primary) 5%, white);
     }
 
     &.previous-day {

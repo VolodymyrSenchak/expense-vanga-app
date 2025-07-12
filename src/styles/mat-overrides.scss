@@ -4,8 +4,7 @@
   --mat-sys-primary: #213448;
   --mat-sys-primary-container: #c3d6e0;
   --mat-toolbar-mobile-height: 48px;
-  // --mat-sys-primary-container: #EBFFD8; // Light Cyan
-  // --mat-sys-variant-container: #EBFFD8;
+  --mdc-outlined-card-container-color: transparent;
 
   @include mat.toolbar-overrides((
     container-background-color: var(--mat-sys-primary-container),
@@ -29,14 +28,18 @@
 
   @include mat.theme((
     typography: Roboto,
-    density: -3,
+    density: -3
   ));
 
   @include  mat.all-component-typographies();
 
   @include mat.card-overrides((
-    outlined-container-color: var(--mat-sys-variant-container),
     title-text-font: var(--mat-sys-title-small-font),
+  ));
+
+  @include mat.table-overrides((
+    background-color: transparent,
+    row-item-outline-color: #D0D0D0,
   ));
 }
 
@@ -55,8 +58,3 @@
     }
   }
 }
-
-//.mat-mdc-form-field-infix {
-//  width: 150px !important;
-//  min-width: 90px !important;
-//}

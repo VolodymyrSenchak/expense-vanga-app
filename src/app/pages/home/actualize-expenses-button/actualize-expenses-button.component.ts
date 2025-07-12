@@ -2,14 +2,12 @@ import {Component, inject} from '@angular/core';
 import {ExpensesActualizeDialogComponent} from '../expenses-actualize-dialog';
 import {firstValueFrom} from 'rxjs';
 import {MatDialog} from '@angular/material/dialog';
-import {MatIconButton} from '@angular/material/button';
-import {MatIcon} from '@angular/material/icon';
+import { MatButtonModule} from '@angular/material/button';
 
 @Component({
   selector: 'app-actualize-expenses-button',
   imports: [
-    MatIcon,
-    MatIconButton
+    MatButtonModule
   ],
   templateUrl: './actualize-expenses-button.component.html',
 })
