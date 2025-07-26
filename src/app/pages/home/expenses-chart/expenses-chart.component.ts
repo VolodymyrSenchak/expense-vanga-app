@@ -12,6 +12,7 @@ import {ChartConfiguration, ChartOptions} from 'chart.js';
 import {BaseChartDirective} from 'ng2-charts';
 import {CurrentExpensesService} from '@common/services/expenses/current-expenses.service';
 import {toSignal} from '@angular/core/rxjs-interop';
+import {DATE_UTILS} from '@common/utils/date.utils';
 
 interface ExpensesChartConfig {}
 
@@ -36,6 +37,9 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
     }
 
     const { expenses } = this.currentExpenses()!;
+    const todayDateIndex = expenses.findIndex(
+      e => e.dateFormatted === DATE_UTILS.format(new Date(), 'month-day')
+    );
 
     return {
       labels: expenses.map(e => e.dateFormatted),
@@ -44,13 +48,17 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
           label: 'Expected expenses',
           borderColor: '#213448',
           backgroundColor: '#213448',
-          data: expenses.map(e => e.expectedAmountLeft)
+          data: expenses.map(e => e.expectedAmountLeft),
+          pointRadius: (ctx) => ctx.dataIndex === todayDateIndex ? 4 : 3,
+          pointStyle: 'rectRounded',
         },
         {
           label: 'Actual expenses',
           borderColor: '#94B4C1',
           backgroundColor: '#94B4C1',
-          data: expenses.map(e => e.actualAmountLeft)
+          data: expenses.map(e => e.actualAmountLeft),
+          pointRadius: (ctx) => ctx.dataIndex === todayDateIndex ? 4 : 3,
+          pointStyle: 'rectRounded'
         }
       ]
     };

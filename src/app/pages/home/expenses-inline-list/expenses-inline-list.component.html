@@ -8,7 +8,7 @@
       />
     </div>
   } @else {
-    <div class="padding-bottom-2 flex-space-between">
+    <div class="flex-space-between padding-bottom-1">
       <mat-slide-toggle
         [checked]="showPrevious()"
         (change)="showPrevious.set($event.checked)"
@@ -16,6 +16,28 @@
       </mat-slide-toggle>
 
       <app-actualize-expenses-button/>
+    </div>
+    <div class="padding-bottom-1 padding-top-1 flex flex-gap-2 final-results">
+      <div class="flex-column">
+        <h5 class="line-height-1">Expected final left</h5>
+        <span>{{ monthAnalytics().expectedAmountLeft | number:'1.2-2' }}</span>
+      </div>
+      <div class="flex-column">
+        <h5 class="line-height-1">Actual final left</h5>
+        <span>{{ monthAnalytics().actualAmountLeft | number:'1.2-2' }}</span>
+      </div>
+      <div class="flex-column">
+        <h5 class="line-height-1">Monthly diff</h5>
+        <div>
+          @if (monthAnalytics().diff < 0) {
+            <mat-icon style="color: green; vertical-align: middle; margin-left: -6px">keyboard_double_arrow_up</mat-icon>
+          } @else if (monthAnalytics().diff > 0) {
+            <mat-icon style="color: red; vertical-align: middle; margin-left: -6px">keyboard_double_arrow_down</mat-icon>
+          }
+          <span>{{ monthAnalytics().diff | expenseSign | number:'1.2-2' }}</span>
+        </div>
+
+      </div>
     </div>
     @for (expense of currentExpensesPrepared(); track $index) {
       <div class="expense-item"

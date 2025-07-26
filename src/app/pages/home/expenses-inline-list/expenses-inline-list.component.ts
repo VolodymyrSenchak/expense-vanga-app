@@ -36,4 +36,15 @@ export class ExpensesInlineListComponent extends BaseExpensesListComponent {
     (this.currentExpenses()?.expenses ?? [])
       .filter(e => this.showPrevious() ? e : !e.isPreviousDay)
   );
+
+  readonly monthAnalytics = computed(() => {
+    const expenses = this.currentExpenses()?.expenses ?? [];
+    const lastDayExpense = expenses[expenses.length - 1];
+    const { expectedAmountLeft, actualAmountLeft } = lastDayExpense;
+    return {
+      expectedAmountLeft,
+      actualAmountLeft,
+      diff: expectedAmountLeft - actualAmountLeft,
+    };
+  });
 }
