@@ -1,7 +1,7 @@
 import { firstValueFrom } from "rxjs";
 import { ActualExpenseDialogComponent, ActualExpenseDialogParams } from "../actual-expense-dialog/actual-expense-dialog.component";
 import { ExpenseForDay } from "@common/models/current-expenses.model";
-import { inject } from "@angular/core";
+import {computed, inject} from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { CurrentExpensesService } from "@common/services";
 import { toSignal } from "@angular/core/rxjs-interop";

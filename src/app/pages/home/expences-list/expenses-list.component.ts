@@ -1,10 +1,12 @@
-import {Component, signal} from '@angular/core';
+import {Component, computed, signal} from '@angular/core';
 import {MatTableModule} from '@angular/material/table';
 import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {ExpenseForDay} from '@common/models/current-expenses.model';
 import {LoadingComponent} from '../../../components/loading';
 import { BaseExpensesListComponent } from '../base-expenses-list';
+import {DecimalPipe} from "@angular/common";
+import {ExpenseSignPipe} from "@common/pipes";
 
 @Component({
   selector: 'app-expenses-list',
@@ -13,6 +15,8 @@ import { BaseExpensesListComponent } from '../base-expenses-list';
     MatIconButton,
     MatIcon,
     LoadingComponent,
+    DecimalPipe,
+    ExpenseSignPipe,
   ],
   templateUrl: './expenses-list.component.html',
   styleUrl: './expenses-list.component.scss'
@@ -26,6 +30,13 @@ export class ExpensesListComponent extends BaseExpensesListComponent {
     'actualAmountLeft',
     'actualExpenseAmount',
   ];
+
+  readonly showPrevious = signal(false);
+
+  readonly currentExpensesPrepared = computed(() =>
+    (this.currentExpenses()?.expenses ?? [])
+      .filter(e => this.showPrevious() ? e : !e.isPreviousDay)
+  );
 
   readonly affectedExpenseDate = signal<string>('');
 

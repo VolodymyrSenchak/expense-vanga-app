@@ -1,4 +1,6 @@
 <div class="chart-container">
+  <app-month-analytics [monthAnalytics]="monthAnalytics()" />
+
   <canvas baseChart
     type="line"
     [data]="chartData()"

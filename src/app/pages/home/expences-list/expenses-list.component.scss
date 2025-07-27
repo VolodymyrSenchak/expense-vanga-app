@@ -10,7 +10,11 @@
   }
 
   .mat-column-expectedExpenseAmount, .mat-column-actualExpenseAmount {
-    width: 160px;
+    width: 180px;
+  }
+
+  .mat-column-actualAmountLeft, .mat-column-expectedAmountLeft {
+    width: 95px;
   }
 
   .expense-row {

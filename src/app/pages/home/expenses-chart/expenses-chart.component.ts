@@ -13,6 +13,7 @@ import {BaseChartDirective} from 'ng2-charts';
 import {CurrentExpensesService} from '@common/services/expenses/current-expenses.service';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {DATE_UTILS} from '@common/utils/date.utils';
+import {MonthAnalyticsComponent} from '../month-analytics/month-analytics.component';
 
 interface ExpensesChartConfig {}
 
@@ -21,6 +22,7 @@ interface ExpensesChartConfig {}
   imports: [
     BaseChartDirective,
     MatTableModule,
+    MonthAnalyticsComponent,
   ],
   templateUrl: './expenses-chart.component.html',
 })
@@ -28,21 +30,26 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
   readonly currentExpensesService = inject(CurrentExpensesService);
   readonly expensesChartConfig = signal<ExpensesChartConfig>({});
   readonly currentExpenses = toSignal(this.currentExpensesService.currentExpenses$);
+  readonly monthAnalytics = toSignal(this.currentExpensesService.monthAnalytics$, {
+    initialValue: {
+      diff: 0, expectedAmountLeft: 0, actualAmountLeft: 0
+    }
+  });
 
   readonly chart = viewChild(BaseChartDirective);
 
   readonly chartData = computed<ChartConfiguration<'line'>['data']>(() => {
-    if (!this.currentExpenses()) {
+    const expenses = this.currentExpenses()?.expenses;
+    if (!expenses) {
       return { labels: [], datasets: [] };
     }
 
-    const { expenses } = this.currentExpenses()!;
     const todayDateIndex = expenses.findIndex(
       e => e.dateFormatted === DATE_UTILS.format(new Date(), 'month-day')
     );
 
     return {
-      labels: expenses.map(e => e.dateFormatted),
+      labels: expenses!.map(e => e.dateFormatted),
       datasets: [
         {
           label: 'Expected expenses',

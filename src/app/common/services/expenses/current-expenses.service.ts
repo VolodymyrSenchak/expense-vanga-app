@@ -2,19 +2,22 @@ import {Injectable} from '@angular/core';
 import {ExpensesService} from './expenses.service';
 import {BehaviorSubject, combineLatest, map, Observable, of, shareReplay, switchMap} from 'rxjs';
 import {CurrentExpensesModel, ExpenseForDay} from '../../models/current-expenses.model';
-import {CurrencyModel, CurrentMoneyAmountModel, ExpectedExpensesModel} from '../../models';
+import {CurrencyModel, CurrentMoneyAmountModel, ExpectedExpensesModel, MonthAnalyticsModel} from '../../models';
 import {ActualExpenseModel, ActualExpensesModel} from '../../models/actual-expenses.model';
 import {DATE_UTILS} from '../../utils/date.utils';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class CurrentExpensesService {
-  constructor(private readonly expensesService: ExpensesService) {}
+  constructor(private readonly expensesService: ExpensesService) {
+  }
 
   private readonly expensesLoadSub = new BehaviorSubject<boolean>(true);
   readonly currentExpenses$ = this.expensesLoadSub.pipe(
     switchMap(() => this.getCurrentExpenses$(new Date())),
-    shareReplay({ bufferSize: 1, refCount: true }),
+    shareReplay({bufferSize: 1, refCount: true}),
   );
+
+  readonly monthAnalytics$ = this.currentExpenses$.pipe(map((exp) => this.getMonthAnalytics(exp)));
 
   reloadExpenses(): void {
     this.expensesLoadSub.next(true);
@@ -25,7 +28,7 @@ export class CurrentExpensesService {
       this.expensesService.getExpectedExpenses$(),
       this.getCurrentExpenses$(new Date()),
     ]).pipe(
-      map(([{ currencies, mainCurrency }, currentExpenses]) => (
+      map(([{currencies, mainCurrency}, currentExpenses]) => (
         this.calculateActualExpenseForToday(currentExpenses, mainCurrency, currencies, currentMoney)
       )),
       switchMap(actualExpenseForToday => actualExpenseForToday
@@ -50,7 +53,7 @@ export class CurrentExpensesService {
     if (totalMoney !== currentExpenseForTodayAmount) {
       const difference = currentExpenseForTodayAmount - totalMoney;
       const amount = difference + (currentExpenseForToday?.actualExpense?.amount || 0);
-      return { amount, date: DATE_UTILS.format(today, 'date'), isOverridingExpected: false, comment: '' };
+      return {amount, date: DATE_UTILS.format(today, 'date'), isOverridingExpected: false, comment: ''};
     }
 
     return null;
@@ -106,12 +109,12 @@ export class CurrentExpensesService {
       });
     }
 
-    return { expenses: expensesForDay };
+    return {expenses: expensesForDay};
   }
 
   private getDatesBetweenSalary(date: Date, salaryDay: number): Date[] {
     const dates: Date[] = [];
-    date = date.getDate() < salaryDay ? DATE_UTILS.add(date, -1, 'month')  : date;
+    date = date.getDate() < salaryDay ? DATE_UTILS.add(date, -1, 'month') : date;
     let current = new Date(date.getFullYear(), date.getMonth(), salaryDay);
     dates.push(current);
 
@@ -143,5 +146,16 @@ export class CurrentExpensesService {
     if (val.currency === mainCurrency) return val.amount;
     const rate = currencies.find(c => c.from === val.currency && c.to === mainCurrency)?.rate;
     return rate ? val.amount * rate : val.amount;
+  }
+
+  private getMonthAnalytics(currentExpenses: CurrentExpensesModel): MonthAnalyticsModel {
+    const expenses = currentExpenses?.expenses ?? [];
+    const lastDayExpense = expenses[expenses.length - 1];
+    const {expectedAmountLeft, actualAmountLeft} = lastDayExpense;
+    return {
+      expectedAmountLeft,
+      actualAmountLeft,
+      diff: expectedAmountLeft - actualAmountLeft,
+    };
   }
 }

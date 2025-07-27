@@ -3,3 +3,4 @@ export * from './user-settings.model';
 export * from './savings.model';
 export * from './currency.model';
 export * from './current-money-amount.model';
+export * from './month-analytics.model';
