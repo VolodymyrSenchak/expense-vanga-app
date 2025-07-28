@@ -17,6 +17,10 @@
     width: 95px;
   }
 
+  .list {
+    flex: 1;
+  }
+
   .expense-row {
     transition: background-color 0.3s ease;
 

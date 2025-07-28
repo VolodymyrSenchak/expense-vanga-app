@@ -11,6 +11,11 @@
     align-items: center;
   }
 
+  &-align-items-center {
+    display: flex;
+    align-items: center;
+  }
+
   &-space-between {
     display: flex;
     justify-content: space-between;
@@ -50,6 +55,7 @@
 
 .height {
   &-full { height: 100%; }
+  &-0 { height: 0; }
 }
 
 .width {
@@ -76,4 +82,8 @@
   .margin-x-#{$i} { margin-left: #{$i}rem; margin-right: #{$i}rem; }
   .margin-y-#{$i} { margin-top: #{$i}rem; margin-bottom: #{$i}rem;  }
   .margin-#{$i} { margin: #{$i}rem; }
+}
+
+.scrollable-content {
+  overflow-y: auto;
 }

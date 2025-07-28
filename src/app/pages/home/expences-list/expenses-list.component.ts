@@ -1,4 +1,4 @@
-import {Component, computed, signal} from '@angular/core';
+import {Component, computed, input, output, signal} from '@angular/core';
 import {MatTableModule} from '@angular/material/table';
 import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
@@ -7,6 +7,9 @@ import {LoadingComponent} from '../../../components/loading';
 import { BaseExpensesListComponent } from '../base-expenses-list';
 import {DecimalPipe} from "@angular/common";
 import {ExpenseSignPipe} from "@common/pipes";
+import { ExpensesDetailsHeaderComponent } from "../expenses-details-header";
+import { DesktopViewMode } from '@common/models';
+import { MatSlideToggle } from "@angular/material/slide-toggle";
 
 @Component({
   selector: 'app-expenses-list',
@@ -17,11 +20,16 @@ import {ExpenseSignPipe} from "@common/pipes";
     LoadingComponent,
     DecimalPipe,
     ExpenseSignPipe,
-  ],
+    ExpensesDetailsHeaderComponent,
+    MatSlideToggle
+],
   templateUrl: './expenses-list.component.html',
   styleUrl: './expenses-list.component.scss'
 })
 export class ExpensesListComponent extends BaseExpensesListComponent {
+  readonly viewMode = input<DesktopViewMode>();
+  readonly viewModeChanged = output<DesktopViewMode>();
+
   readonly skeleton = Array.from({length: 20}, () => ['100%', '24px']) as [string, string][];
   readonly columnsToDisplay: Array<keyof ExpenseForDay> = [
     'dateFormatted',

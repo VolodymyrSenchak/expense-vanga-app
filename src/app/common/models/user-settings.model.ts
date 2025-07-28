@@ -1,3 +1,5 @@
 export interface UserSettings {
-  viewMode: 'table' | 'calendar';
+  viewMode: DesktopViewMode;
 }
+
+export type DesktopViewMode = 'table' | 'calendar';

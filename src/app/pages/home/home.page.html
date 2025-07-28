@@ -2,23 +2,11 @@
   @if (isMobile()) {
     <app-expenses-inline-list />
   } @else {
-    <mat-card appearance="outlined" class="padding-x-1 list-view-card scrollable-content">
-      <mat-card-title class="padding-top-1" style="display: flex; justify-content: space-between; align-items: center;">
-        <mat-button-toggle-group
-          name="view-mode"
-          aria-label="View mode"
-          [value]="viewMode()"
-          (change)="changeViewMode($event.value)"
-        >
-          <mat-button-toggle value="table">Table</mat-button-toggle>
-          <mat-button-toggle value="calendar">Calendar</mat-button-toggle>
-        </mat-button-toggle-group>
-        <app-actualize-expenses-button />
-      </mat-card-title>
-      <mat-card-content>
+    <mat-card appearance="outlined" class="padding-x-1 list-view-card">
+      <mat-card-content style="height: 100%; box-sizing: border-box;">
         @switch (viewMode()) {
-          @case ('calendar') { <app-expenses-calendar /> }
-          @default { <app-expenses-list /> }
+          @case ('calendar') { <app-expenses-calendar [viewMode]="viewMode()" (viewModeChanged)="changeViewMode($event)" /> }
+          @default { <app-expenses-list [viewMode]="viewMode()" (viewModeChanged)="changeViewMode($event)" /> }
         }
       </mat-card-content>
     </mat-card>

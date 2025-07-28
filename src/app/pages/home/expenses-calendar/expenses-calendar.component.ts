@@ -1,13 +1,11 @@
-import {Component, computed, inject, model, signal} from '@angular/core';
-import {CurrentExpensesService} from '@common/services';
-import {toSignal} from '@angular/core/rxjs-interop';
+import {Component, computed, input, output, signal} from '@angular/core';
 import {CurrentExpensesModel, ExpenseForDay} from '@common/models/current-expenses.model';
 import {DATE_UTILS} from '@common/utils/date.utils';
-import {map} from 'rxjs';
 import {LoadingComponent} from '@components/loading';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { BaseExpensesListComponent } from '../base-expenses-list';
+import { ExpensesDetailsHeaderComponent } from '../expenses-details-header';
+import { DesktopViewMode } from '@common/models';
 
 interface ExpenseForDayWrapper {
   monthDay: number;
@@ -22,11 +20,14 @@ interface ExpenseForDayWrapper {
   imports: [
     LoadingComponent,
     MatButtonToggleModule,
-  ],
+    ExpensesDetailsHeaderComponent
+],
   templateUrl: './expenses-calendar.component.html',
   styleUrl: './expenses-calendar.component.scss'
 })
 export class ExpensesCalendarComponent extends BaseExpensesListComponent {
+  readonly viewMode = input<DesktopViewMode>();
+  readonly viewModeChanged = output<DesktopViewMode>();
   readonly skeleton = Array.from({ length: 6 }, () => ['100%', '32px']) as [string, string][];
   readonly weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   readonly displayType = signal<'Expected' | 'Actual'>('Actual');
