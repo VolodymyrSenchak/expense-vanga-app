@@ -1,10 +1,6 @@
-import { CurrencyModel } from "./currency.model";
-
 export interface ExpectedExpensesModel {
   name: string;
-  mainCurrency: string;
   earnings: { name: string; amount: number; currency: string }[];
-  currencies: CurrencyModel[];
   salaryDayOfMonth: number;
   mainEarning?: number;
   weeklyExpenseCoefficient: number;
@@ -15,10 +11,6 @@ export interface ExpectedExpensesModel {
 export const getDefaultExpectedExpensesModel = (): ExpectedExpensesModel => {
   return {
     name : 'Default',
-    mainCurrency: 'PLN',
-    currencies: [
-      { from: 'USD', to: 'PLN', rate: 4.0 },
-    ],
     earnings: [
       { name: 'Main Salary', amount: 5000, currency: 'PLN' },
       { name: 'Side Job', amount: 2000, currency: 'PLN' }

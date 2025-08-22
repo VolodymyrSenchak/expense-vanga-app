@@ -8,12 +8,13 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatCardModule} from '@angular/material/card';
 import {LoadingComponent} from '@components/loading';
 import {LoadingService} from '@common/services';
-import {CurrencyModel, SavingModel, SavingsModel} from '@common/models';
+import {CurrenciesModel, CurrencyModel, SavingModel, SavingsModel} from '@common/models';
 import {SavingsService} from '@common/services/savings';
 import {MatFormFieldModule} from '@angular/material/form-field';
-import {map} from 'rxjs';
+import {combineLatest, map, shareReplay} from 'rxjs';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {DecimalPipe} from '@angular/common';
+import {CurrenciesService} from '@common/services/currencies';
 
 @Component({
   selector: 'app-savings-page',
@@ -34,35 +35,32 @@ import {DecimalPipe} from '@angular/common';
 export class SavingsPageComponent implements OnInit {
   readonly savingsService = inject(SavingsService);
   readonly formBuilder = inject(FormBuilder);
+  readonly currenciesService = inject(CurrenciesService);
   readonly loadingSrv = new LoadingService();
 
   readonly form = this.formBuilder.group({
     savings: this.formBuilder.array<UntypedFormGroup>([]),
-    currencies: this.formBuilder.array<UntypedFormGroup>([]),
-    defaultCurrency: ['', [Validators.required]],
   });
 
-  readonly savingsTotals = toSignal(
-    this.form.valueChanges.pipe(map(val => this.calculateTotals(val as SavingsModel)))
-  );
+  readonly currencies$ = this.currenciesService.getCurrencies$()
+    .pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
-  get defaultCurrency(): string {
-    return this.form.value.defaultCurrency!;
-  }
+  readonly defaultCurrency = toSignal(this.currencies$.pipe(map(c => c.defaultCurrency)));
+  readonly savingsTotals = toSignal(
+    combineLatest([this.form.valueChanges, this.currencies$]).pipe(
+      map(([formValue, currencies]) => this.calculateTotals(formValue as SavingsModel, currencies))
+    )
+  );
 
   async ngOnInit(): Promise<void> {
     const savings = await this.loadingSrv.waitObservable(this.savingsService.getSavings$());
 
-    this.form.patchValue({ defaultCurrency: savings.defaultCurrency });
-
     this.form.controls.savings.clear();
-    this.form.controls.currencies.clear();
     savings.savings.forEach(s => this.addSaving(s));
-    savings.currencies.forEach(c => this.addCurrency(c));
   }
 
   addSaving(saving: SavingModel | undefined = undefined): void {
-    const currency = saving?.currency ?? this.defaultCurrency;
+    const currency = saving?.currency ?? this.defaultCurrency();
     this.form.controls.savings.push(this.formBuilder.group({
       name: [saving?.name ?? '', [Validators.required]],
       amount: [saving?.amount ?? 0, [Validators.required, Validators.min(1), Validators.max(10000000)]],
@@ -70,20 +68,8 @@ export class SavingsPageComponent implements OnInit {
     }) as any);
   }
 
-  addCurrency(currency: CurrencyModel | undefined = undefined): void {
-    this.form.controls.currencies.push(this.formBuilder.group({
-      from: [currency?.from ?? '', [Validators.required]],
-      to: [currency?.to ?? '', [Validators.required]],
-      rate: [currency?.rate ?? 1, [Validators.required]],
-    }) as any);
-  }
-
   removeSaving(index: number): void {
     this.form.controls.savings.removeAt(index);
-  }
-
-  removeCurrency(index: number): void {
-    this.form.controls.currencies.removeAt(index);
   }
 
   async submitForm(): Promise<void> {
@@ -93,11 +79,11 @@ export class SavingsPageComponent implements OnInit {
     }
   }
 
-  private calculateTotals(savings: SavingsModel): number {
+  private calculateTotals(savings: SavingsModel, currenciesModel: CurrenciesModel): number {
     return savings.savings.reduce((total, saving) => {
-      const currency = savings.currencies.find(c =>
-        (c.from === saving.currency && c.to === savings.defaultCurrency)
-        || (c.from === savings.defaultCurrency && c.to === saving.currency)
+      const currency = currenciesModel.currencies.find(c =>
+        (c.from === saving.currency && c.to === currenciesModel.defaultCurrency)
+        || (c.from === currenciesModel.defaultCurrency && c.to === saving.currency)
       );
       const rate = !currency ? 1 : (
         currency.from === saving.currency

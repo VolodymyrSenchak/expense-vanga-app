@@ -25,10 +25,6 @@
             <mat-label>Salary Day of Month</mat-label>
             <input matInput type="number" formControlName="salaryDayOfMonth">
           </mat-form-field>
-          <mat-form-field appearance="outline" class="flex-1" style="max-width: 160px">
-            <mat-label>Display in currency</mat-label>
-            <input matInput type="text" formControlName="mainCurrency">
-          </mat-form-field>
         </div>
 
         <h3>Earnings</h3>
@@ -56,38 +52,6 @@
             </div>
           }
           <button mat-button type="button" (click)="addEarning()">Add Earning</button>
-        </div>
-
-      </mat-card-content>
-    </mat-card>
-
-    <mat-card appearance="outlined" class="padding-x-1">
-      <mat-card-title class="padding-y-1">Currencies</mat-card-title>
-      <mat-card-content>
-        <div formArrayName="currencies">
-          @for (expense of form.controls.currencies.controls; track $index) {
-            <div [formGroupName]="$index" class="flex flex-gap-1">
-              <mat-form-field appearance="outline" class="flex-1">
-                <mat-label>From</mat-label>
-                <input matInput type="text" formControlName="from">
-              </mat-form-field>
-
-              <mat-form-field appearance="outline" class="flex-1">
-                <mat-label>To</mat-label>
-                <input matInput type="text" formControlName="to">
-              </mat-form-field>
-
-              <mat-form-field appearance="outline" class="flex-1">
-                <mat-label>Rate</mat-label>
-                <input matInput type="number" formControlName="rate">
-              </mat-form-field>
-
-              <button mat-icon-button color="warn" type="button" (click)="removeCurrency($index)">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </div>
-          }
-          <button mat-button type="button" (click)="addCurrency()">Add Currency</button>
         </div>
 
       </mat-card-content>

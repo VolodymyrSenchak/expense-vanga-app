@@ -1,9 +1,5 @@
-import { CurrencyModel } from "./currency.model";
-
 export interface SavingsModel {
   savings: SavingModel[];
-  currencies: CurrencyModel[];
-  defaultCurrency: string;
 }
 
 export interface SavingModel {

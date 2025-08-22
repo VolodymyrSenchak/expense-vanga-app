@@ -2,14 +2,23 @@ import {Injectable} from '@angular/core';
 import {ExpensesService} from './expenses.service';
 import {BehaviorSubject, combineLatest, map, Observable, of, shareReplay, switchMap} from 'rxjs';
 import {CurrentExpensesModel, ExpenseForDay} from '../../models/current-expenses.model';
-import {CurrencyModel, CurrentMoneyAmountModel, ExpectedExpensesModel, MonthAnalyticsModel} from '../../models';
+import {
+  CurrenciesModel,
+  CurrencyModel,
+  CurrentMoneyAmountModel,
+  ExpectedExpensesModel,
+  MonthAnalyticsModel
+} from '../../models';
 import {ActualExpenseModel, ActualExpensesModel} from '../../models/actual-expenses.model';
 import {DATE_UTILS} from '../../utils/date.utils';
+import {CurrenciesService} from '@common/services/currencies';
 
 @Injectable({providedIn: 'root'})
 export class CurrentExpensesService {
-  constructor(private readonly expensesService: ExpensesService) {
-  }
+  constructor(
+    private readonly expensesService: ExpensesService,
+    private readonly currenciesService: CurrenciesService
+  ) {}
 
   private readonly expensesLoadSub = new BehaviorSubject<boolean>(true);
   readonly currentExpenses$ = this.expensesLoadSub.pipe(
@@ -25,11 +34,11 @@ export class CurrentExpensesService {
 
   actualizeActualExpenseForToday$(currentMoney: CurrentMoneyAmountModel): Observable<boolean> {
     return combineLatest([
-      this.expensesService.getExpectedExpenses$(),
       this.getCurrentExpenses$(new Date()),
+      this.currenciesService.getCurrencies$(),
     ]).pipe(
-      map(([{currencies, mainCurrency}, currentExpenses]) => (
-        this.calculateActualExpenseForToday(currentExpenses, mainCurrency, currencies, currentMoney)
+      map(([currentExpenses, { currencies, defaultCurrency }]) => (
+        this.calculateActualExpenseForToday(currentExpenses, defaultCurrency, currencies, currentMoney)
       )),
       switchMap(actualExpenseForToday => actualExpenseForToday
         ? this.expensesService.addActualExpense$(actualExpenseForToday)
@@ -62,19 +71,21 @@ export class CurrentExpensesService {
   private getCurrentExpenses$(forDate: Date): Observable<CurrentExpensesModel> {
     return combineLatest([
       this.expensesService.getExpectedExpenses$(),
-      this.expensesService.getActualExpenses$()
+      this.expensesService.getActualExpenses$(),
+      this.currenciesService.getCurrencies$(),
     ]).pipe(
-      map(([expected, actual]) => this.buildCurrentExpenses(forDate, expected, actual))
+      map(([expected, actual, currencyModel]) => this.buildCurrentExpenses(forDate, expected, actual, currencyModel))
     )
   }
 
   private buildCurrentExpenses(
     forDate: Date,
     expectedExpenses: ExpectedExpensesModel,
-    actualExpenses: ActualExpensesModel
+    actualExpenses: ActualExpensesModel,
+    currency: CurrenciesModel
   ): CurrentExpensesModel {
     const expensesForDay: ExpenseForDay[] = [];
-    const mainEarning = this.calculateMainEarning(expectedExpenses);
+    const mainEarning = this.calculateMainEarning(expectedExpenses, currency);
     let expectedAmountLeft = mainEarning;
     let actualAmountLeft = mainEarning;
 
@@ -126,14 +137,14 @@ export class CurrentExpensesService {
     return dates;
   }
 
-  private calculateMainEarning(expectedExpenses: ExpectedExpensesModel): number {
-    const currencies = expectedExpenses.currencies || [];
+  private calculateMainEarning(expectedExpenses: ExpectedExpensesModel, currency: CurrenciesModel): number {
+    const currencies = currency.currencies || [];
     const earnings = expectedExpenses.earnings;
     if (!earnings) {
       return expectedExpenses.mainEarning || 0;
     }
     const earningsInMainCurrency = earnings.map(e => (
-      this.calculateInMainCurrency(e, expectedExpenses.mainCurrency, currencies)
+      this.calculateInMainCurrency(e, currency.defaultCurrency, currencies)
     ));
     return earningsInMainCurrency.reduce((sum, amount) => sum + amount, 0);
   }

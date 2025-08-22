@@ -8,7 +8,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatCardModule} from '@angular/material/card';
 import {LoadingComponent} from '@components/loading';
 import {LoadingService} from '@common/services';
-import {CurrencyModel, SavingsModel} from '@common/models';
+import {CurrenciesModel, CurrencyModel, SavingsModel} from '@common/models';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {CurrenciesService} from '@common/services/currencies';
 
@@ -59,7 +59,7 @@ export class CurrenciesPageComponent implements OnInit {
 
   async submitForm(): Promise<void> {
     if (this.form.valid) {
-      const formValue = this.form.value as SavingsModel;
+      const formValue = this.form.value as CurrenciesModel;
       await this.loadingSrv.waitObservable(this.currenciesService.saveCurrencies$(formValue), "Saving...");
     }
   }

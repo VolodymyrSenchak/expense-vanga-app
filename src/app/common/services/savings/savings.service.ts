@@ -38,7 +38,7 @@ export class SavingsService {
   }
 
   private getDefaultSavingsModel(): SavingsModel {
-    return { savings: [], currencies: [], defaultCurrency: 'USD' };
+    return { savings: [] };
   }
 
   private isApiMode(): boolean {

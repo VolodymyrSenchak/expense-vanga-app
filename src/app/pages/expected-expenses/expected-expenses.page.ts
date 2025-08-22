@@ -33,9 +33,7 @@ export class ExpectedExpensesPageComponent implements OnInit {
 
   readonly form = this.formBuilder.group({
     name: [''],
-    mainCurrency: [''],
     salaryDayOfMonth: [0, [Validators.required, Validators.min(1), Validators.max(31)]],
-    currencies: this.formBuilder.array<UntypedFormGroup>([]),
     earnings: this.formBuilder.array<UntypedFormGroup>([]),
     dailyExpenses: this.formBuilder.array<UntypedFormGroup>([]),
     weeklyExpenses: this.formBuilder.array<UntypedFormGroup>([]),
@@ -47,11 +45,9 @@ export class ExpectedExpensesPageComponent implements OnInit {
 
     this.form.patchValue({
       name: expectedExpenses.name,
-      mainCurrency: expectedExpenses.mainCurrency || 'PLN',
       salaryDayOfMonth: expectedExpenses.salaryDayOfMonth
     });
 
-    this.form.controls.currencies.clear();
     this.form.controls.earnings.clear();
     this.form.controls.weeklyExpenses.clear();
     this.form.controls.dailyExpenses.clear();
@@ -60,7 +56,6 @@ export class ExpectedExpensesPageComponent implements OnInit {
       { name: 'Zloti', amount: expectedExpenses.mainEarning, currency: 'PLN' }
     ];
 
-    (expectedExpenses.currencies || []).forEach(c => this.addCurrency(c.from, c.to, c.rate));
     earnings.forEach(e => this.addEarning(e.name, e.amount, e.currency));
     (expectedExpenses.weeklyExpenses || []).forEach(we => this.addWeeklyExpense(we.dayOfWeek, we.amount));
     (expectedExpenses.dailyExpenses || []).forEach(de => this.addDailyExpense(de.dayOfMonth, de.amount, de.comment));
@@ -78,18 +73,10 @@ export class ExpectedExpensesPageComponent implements OnInit {
     }) as any);
   }
 
-  addCurrency(from: string = '', to: string = '', rate: number = 1): void {
-    this.form.controls.currencies.push(this.formBuilder.group({
-      from: [from, [Validators.required]],
-      to: [to, [Validators.required]],
-      rate: [rate, [Validators.required, Validators.min(0)]]
-    }) as any);
-  }
-
   addDailyExpense(day: number = 1, amount: number = 0, comment: string = ''): void {
     this.form.controls.dailyExpenses.push(this.formBuilder.group({
       dayOfMonth: [day, [Validators.required, Validators.min(1), Validators.max(31)]],
-      amount: [amount, [Validators.required, Validators.min(0)]],
+      amount: [amount, [Validators.required]],
       comment: [comment]
     }) as any);
   }
@@ -107,10 +94,6 @@ export class ExpectedExpensesPageComponent implements OnInit {
 
   removeEarning(index: number): void {
     this.form.controls.earnings.removeAt(index);
-  }
-
-  removeCurrency(index: number): void {
-    this.form.controls.currencies.removeAt(index);
   }
 
   async submitForm(): Promise<void> {
