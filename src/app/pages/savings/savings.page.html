@@ -25,7 +25,7 @@
         <mat-card-title class="padding-y-1">Savings</mat-card-title>
         <mat-card-content formArrayName="savings">
           @for (expense of form.controls.savings.controls; track $index) {
-            <div [formGroupName]="$index" class="flex flex-gap-1">
+            <div [formGroup]="expense" class="flex flex-gap-1">
               <mat-form-field appearance="outline" class="flex-1">
                 <mat-label>Name</mat-label>
                 <input matInput type="text" formControlName="name">

@@ -4,7 +4,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { Router, RouterLink } from "@angular/router";
 import { ExpensesService, LoadingService} from "../../common/services";
 import { DayOfWeek, ExpectedExpensesModel, getDefaultExpectedExpensesModel } from "../../common/models";
-import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, UntypedFormGroup} from '@angular/forms';
+import {ReactiveFormsModule, FormBuilder, Validators, FormGroup, UntypedFormGroup, FormArray} from '@angular/forms';
 import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
 import { MatCardModule } from "@angular/material/card";

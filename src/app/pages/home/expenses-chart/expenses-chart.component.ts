@@ -52,19 +52,19 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
       labels: expenses!.map(e => e.dateFormatted),
       datasets: [
         {
-          label: 'Expected expenses',
+          label: 'Expected left',
           borderColor: '#213448',
           backgroundColor: '#213448',
           data: expenses.map(e => e.expectedAmountLeft),
-          pointRadius: (ctx) => ctx.dataIndex === todayDateIndex ? 4 : 3,
+          pointRadius: (ctx) => ctx.dataIndex === todayDateIndex ? 6 : 3,
           pointStyle: 'rectRounded',
         },
         {
-          label: 'Actual expenses',
+          label: 'Actual left',
           borderColor: '#94B4C1',
           backgroundColor: '#94B4C1',
           data: expenses.map(e => e.actualAmountLeft),
-          pointRadius: (ctx) => ctx.dataIndex === todayDateIndex ? 4 : 3,
+          pointRadius: (ctx) => ctx.dataIndex === todayDateIndex ? 6 : 3,
           pointStyle: 'rectRounded'
         }
       ]

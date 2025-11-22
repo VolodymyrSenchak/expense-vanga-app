@@ -63,7 +63,7 @@ export class SavingsPageComponent implements OnInit {
     const currency = saving?.currency ?? this.defaultCurrency();
     this.form.controls.savings.push(this.formBuilder.group({
       name: [saving?.name ?? '', [Validators.required]],
-      amount: [saving?.amount ?? 0, [Validators.required, Validators.min(1), Validators.max(10000000)]],
+      amount: [saving?.amount ?? 0, [Validators.required, Validators.min(0), Validators.max(10000000)]],
       currency: [currency, [Validators.required]],
     }) as any);
   }
