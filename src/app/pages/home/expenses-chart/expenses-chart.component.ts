@@ -38,7 +38,7 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
 
   readonly chart = viewChild(BaseChartDirective);
 
-  readonly chartData = computed<ChartConfiguration<'line'>['data']>(() => {
+  readonly chartData = computed<ChartConfiguration<'line' | 'bar'>['data']>(() => {
     const expenses = this.currentExpenses()?.expenses;
     if (!expenses) {
       return { labels: [], datasets: [] };
@@ -52,6 +52,7 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
       labels: expenses!.map(e => e.dateFormatted),
       datasets: [
         {
+          type: 'line',
           label: 'Expected left',
           borderColor: '#213448',
           backgroundColor: '#213448',
@@ -60,18 +61,29 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
           pointStyle: 'rectRounded',
         },
         {
+          type: 'line',
           label: 'Actual left',
           borderColor: '#94B4C1',
           backgroundColor: '#94B4C1',
           data: expenses.map(e => e.actualAmountLeft),
           pointRadius: (ctx) => ctx.dataIndex === todayDateIndex ? 6 : 3,
           pointStyle: 'rectRounded'
+        },
+        {
+          type: 'bar',
+          data: expenses.map(e => e.actualExpenseAmount),
+          backgroundColor: '#213448',
+        },
+        {
+          type: 'bar',
+          data: expenses.map(e => e.expectedExpenseAmount),
+          backgroundColor: '#94B4C1'
         }
       ]
     };
   });
 
-  readonly lineChartOptions: ChartOptions<'line'> = {
+  readonly lineChartOptions: ChartOptions<'line' | 'bar'> = {
     responsive: true,
     animation: {
       duration: 0
