@@ -1,5 +1,14 @@
 <div class="chart-container">
-  <app-month-analytics [monthAnalytics]="monthAnalytics()" />
+  <div class="flex-center flex-gap-1">
+    <app-month-analytics [monthAnalytics]="monthAnalytics()" />
+
+    <mat-checkbox
+      class="margin-bottom-1"
+      [checked]="showFromToday()"
+      (change)="showFromToday.set($event.checked)"
+    >From Today
+    </mat-checkbox>
+  </div>
 
   <canvas baseChart
     [data]="chartData()"

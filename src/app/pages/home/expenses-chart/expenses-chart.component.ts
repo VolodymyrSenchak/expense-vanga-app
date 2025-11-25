@@ -14,6 +14,7 @@ import {CurrentExpensesService} from '@common/services/expenses/current-expenses
 import {toSignal} from '@angular/core/rxjs-interop';
 import {DATE_UTILS} from '@common/utils/date.utils';
 import {MonthAnalyticsComponent} from '../month-analytics/month-analytics.component';
+import {MatCheckbox} from '@angular/material/checkbox';
 
 interface ExpensesChartConfig {}
 
@@ -23,12 +24,14 @@ interface ExpensesChartConfig {}
     BaseChartDirective,
     MatTableModule,
     MonthAnalyticsComponent,
+    MatCheckbox,
   ],
   templateUrl: './expenses-chart.component.html',
 })
 export class ExpensesChartComponent implements OnInit, OnDestroy {
   readonly currentExpensesService = inject(CurrentExpensesService);
   readonly expensesChartConfig = signal<ExpensesChartConfig>({});
+  readonly showFromToday = signal(false);
   readonly currentExpenses = toSignal(this.currentExpensesService.currentExpenses$);
   readonly monthAnalytics = toSignal(this.currentExpensesService.monthAnalytics$, {
     initialValue: {
@@ -39,7 +42,12 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
   readonly chart = viewChild(BaseChartDirective);
 
   readonly chartData = computed<ChartConfiguration<'line' | 'bar'>['data']>(() => {
-    const expenses = this.currentExpenses()?.expenses;
+    let expenses = this.currentExpenses()?.expenses;
+
+    if (this.showFromToday()) {
+      expenses = expenses?.filter(e => !DATE_UTILS.isBefore(e.date, new Date()));
+    }
+
     if (!expenses) {
       return { labels: [], datasets: [] };
     }
@@ -71,14 +79,16 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
         },
         {
           type: 'bar',
-          data: expenses.map(e => e.actualExpenseAmount),
-          backgroundColor: '#213448',
+          label: 'Expected spent',
+          data: expenses.map(e => e.expectedExpenseAmount),
+          backgroundColor: '#66717B'
         },
         {
           type: 'bar',
-          data: expenses.map(e => e.expectedExpenseAmount),
-          backgroundColor: '#94B4C1'
-        }
+          label: 'Actual spent',
+          data: expenses.map(e => e.actualExpenseAmount),
+          backgroundColor: '#A7BAC2',
+        },
       ]
     };
   });
