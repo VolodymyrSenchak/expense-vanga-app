@@ -56,6 +56,8 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
       e => e.dateFormatted === DATE_UTILS.format(new Date(), 'month-day')
     );
 
+    const getRow = (idx: number) => expenses[idx];
+
     return {
       labels: expenses!.map(e => e.dateFormatted),
       datasets: [
@@ -66,7 +68,6 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
           backgroundColor: '#213448',
           data: expenses.map(e => e.expectedAmountLeft),
           pointRadius: (ctx) => ctx.dataIndex === todayDateIndex ? 6 : 3,
-          pointStyle: 'rectRounded',
         },
         {
           type: 'line',
@@ -75,7 +76,6 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
           backgroundColor: '#94B4C1',
           data: expenses.map(e => e.actualAmountLeft),
           pointRadius: (ctx) => ctx.dataIndex === todayDateIndex ? 6 : 3,
-          pointStyle: 'rectRounded'
         },
         {
           type: 'bar',
@@ -87,7 +87,14 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
           type: 'bar',
           label: 'Actual spent',
           data: expenses.map(e => e.actualExpenseAmount),
-          backgroundColor: '#A7BAC2',
+          backgroundColor: (ctx) => {
+            const row = getRow(ctx.dataIndex);
+            if (row.actualExpenseAmount == row.expectedExpenseAmount) return '#A7BAC2';
+            if (row.actualExpenseAmount > row.expectedExpenseAmount) return '#E57373';
+            if (row.actualExpenseAmount < row.expectedExpenseAmount) return '#81C784';
+
+            return '#A7BAC2';
+          },
         },
       ]
     };

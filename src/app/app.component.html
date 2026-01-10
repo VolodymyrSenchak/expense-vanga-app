@@ -1,7 +1,8 @@
 <div class="app-layout">
   @if (loading.loadingOptions().isLoading) {
-    <div class="flex-center" style="width: 100vw; height: 100vh; justify-content: center">
+    <div class="flex-center flex-column" style="width: 100vw; height: 100vh; justify-content: center">
       <img src="images/logo.png" alt="App Logo" height="240" width="240">
+      <h1 style="font-size: 40px">Monivis</h1>
     </div>
   } @else {
     <app-header/>
