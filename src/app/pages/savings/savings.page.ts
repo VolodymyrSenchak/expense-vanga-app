@@ -48,7 +48,17 @@ export class SavingsPageComponent implements OnInit {
   readonly defaultCurrency = toSignal(this.currencies$.pipe(map(c => c.defaultCurrency)));
   readonly savingsTotals = toSignal(
     combineLatest([this.form.valueChanges, this.currencies$]).pipe(
-      map(([formValue, currencies]) => this.calculateTotals(formValue as SavingsModel, currencies))
+      map(([formValue, currencies]) => this.calculateTotalsInCurrency(formValue as SavingsModel, currencies, currencies.defaultCurrency))
+    )
+  );
+  readonly savingsTotalsUsd = toSignal(
+    combineLatest([this.form.valueChanges, this.currencies$]).pipe(
+      map(([formValue, currencies]) => this.calculateTotalsInCurrency(formValue as SavingsModel, currencies, 'USD'))
+    )
+  );
+  readonly savingsTotalsEur = toSignal(
+    combineLatest([this.form.valueChanges, this.currencies$]).pipe(
+      map(([formValue, currencies]) => this.calculateTotalsInCurrency(formValue as SavingsModel, currencies, 'EUR'))
     )
   );
 
@@ -79,11 +89,12 @@ export class SavingsPageComponent implements OnInit {
     }
   }
 
-  private calculateTotals(savings: SavingsModel, currenciesModel: CurrenciesModel): number {
+  private calculateTotalsInCurrency(savings: SavingsModel, currenciesModel: CurrenciesModel, targetCurrency: string): number {
     return savings.savings.reduce((total, saving) => {
+      if (saving.currency === targetCurrency) return total + saving.amount;
       const currency = currenciesModel.currencies.find(c =>
-        (c.from === saving.currency && c.to === currenciesModel.defaultCurrency)
-        || (c.from === currenciesModel.defaultCurrency && c.to === saving.currency)
+        (c.from === saving.currency && c.to === targetCurrency)
+        || (c.from === targetCurrency && c.to === saving.currency)
       );
       const rate = !currency ? 1 : (
         currency.from === saving.currency

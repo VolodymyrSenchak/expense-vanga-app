@@ -51,7 +51,15 @@
 
           <div class="totals padding-top-1 flex-column">
             <label>Total savings</label>
-            <span>{{savingsTotals() | number:'1.2-2'}} {{defaultCurrency()}}</span>
+            <div class="flex flex-gap-2">
+              <span>{{savingsTotals() | number:'1.2-2'}} {{defaultCurrency()}}</span>
+              @if (defaultCurrency() !== 'USD') {
+                <span>{{savingsTotalsUsd() | number:'1.2-2'}} USD</span>
+              }
+              @if (defaultCurrency() !== 'EUR') {
+                <span>{{savingsTotalsEur() | number:'1.2-2'}} EUR</span>
+              }
+            </div>
           </div>
         </mat-card-content>
       </mat-card>
