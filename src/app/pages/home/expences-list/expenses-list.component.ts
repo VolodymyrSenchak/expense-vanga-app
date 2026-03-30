@@ -1,7 +1,5 @@
 import {Component, computed, input, output, signal} from '@angular/core';
 import {MatTableModule} from '@angular/material/table';
-import {MatIconButton} from '@angular/material/button';
-import {MatIcon} from '@angular/material/icon';
 import {ExpenseForDay} from '@common/models/current-expenses.model';
 import {LoadingComponent} from '../../../components/loading';
 import { BaseExpensesListComponent } from '../base-expenses-list';
@@ -15,8 +13,6 @@ import { MatSlideToggle } from "@angular/material/slide-toggle";
   selector: 'app-expenses-list',
   imports: [
     MatTableModule,
-    MatIconButton,
-    MatIcon,
     LoadingComponent,
     DecimalPipe,
     ExpenseSignPipe,
@@ -31,13 +27,7 @@ export class ExpensesListComponent extends BaseExpensesListComponent {
   readonly viewModeChanged = output<DesktopViewMode>();
 
   readonly skeleton = Array.from({length: 20}, () => ['100%', '24px']) as [string, string][];
-  readonly columnsToDisplay: Array<keyof ExpenseForDay> = [
-    'dateFormatted',
-    'expectedAmountLeft',
-    'expectedExpenseAmount',
-    'actualAmountLeft',
-    'actualExpenseAmount',
-  ];
+  readonly columnsToDisplay = ['dateFormatted', 'expected', 'actual'];
 
   readonly showPrevious = signal(false);
 

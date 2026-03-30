@@ -106,6 +106,7 @@ export class CurrentExpensesService {
       expensesForDay.push({
         date: DATE_UTILS.format(date, 'date'),
         dateFormatted: DATE_UTILS.format(date, 'month-day'),
+        dayOfWeekFormatted: DATE_UTILS.format(date, 'day-of-week'),
         actualExpenseAmount,
         expectedExpenseAmount: expectedExpense,
         expectedDailyComment: dailyExpectedExpense?.comment,

@@ -7,6 +7,7 @@ export interface CurrentExpensesModel {
 export interface ExpenseForDay {
   date: string;
   dateFormatted: string;
+  dayOfWeekFormatted: string;
   expectedExpenseAmount: number;
   actualExpenseAmount: number;
   expectedAmountLeft: number;

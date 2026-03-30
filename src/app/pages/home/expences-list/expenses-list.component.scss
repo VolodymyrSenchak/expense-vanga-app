@@ -1,7 +1,12 @@
 .current-expenses-list {
   .mdc-data-table__cell, .mdc-data-table__header-cell {
-    padding: 0 4px;
+    padding: 0 8px;
     line-height: 1.1;
+    vertical-align: baseline;
+  }
+
+  .mat-mdc-header-row {
+    height: 32px;
   }
 
   .mat-column-dateFormatted {
@@ -9,31 +14,73 @@
     min-width: 110px;
   }
 
-  .mat-column-expectedExpenseAmount, .mat-column-actualExpenseAmount {
-    width: 180px;
+  .date-cell {
+    display: flex;
+    flex-direction: column;
+    padding: 4px 0;
+
+    .day-of-week {
+      font-size: 0.75em;
+      color: #777;
+    }
   }
 
-  .mat-column-actualAmountLeft, .mat-column-expectedAmountLeft {
-    width: 95px;
+  .mat-column-expected, .mat-column-actual {
+    width: 50%;
+    border-left: 1px solid #e0e0e0;
+  }
+
+  .column-header {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    .subheader-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8em;
+      font-weight: 500;
+    }
   }
 
   .list {
     flex: 1;
   }
 
-  .expense-row {
-    transition: background-color 0.3s ease;
+  .amount-cell {
+    padding: 4px 0;
+    min-height: 26px;
+
+    .amount-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+
+      .left-amount {
+        color: #666;
+      }
+    }
 
     .comment {
+      font-size: 0.8em;
+      color: #aaa;
       font-style: italic;
+      margin-top: 2px;
+      text-align: right;
+      font-weight: 500;
     }
+  }
+
+  .expense-row {
+    transition: background-color 0.3s ease;
 
     &.affected {
       background-color: #ECECEC;
     }
 
-    .mat-column-actualExpenseAmount {
-      cursor: text;
+    .mat-column-actual {
+      cursor: pointer;
       &:hover {
         background-color: #ECECEC;
       }
@@ -43,32 +90,17 @@
         background-color: #ECECEC;
       }
 
-      .actual-expense-cell {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-
-        .less-expected {
-          color: darkolivegreen;
-        }
-
-        .above-expected {
-          color: indianred;
-        }
-
-        .edit-button {
-          display: none;
-
-          .edit-icon {
-            font-size: 1rem;
-          }
-        }
-        &:hover {
-          @media only screen and (max-width: 600px) {
-            .edit-button { display: unset; }
-          }
-        }
+      .less-expected {
+        color: #3e8840;
       }
+
+      .above-expected {
+        color: #f44336;
+      }
+    }
+
+    &.today {
+      background-color: #f0f8ff;
     }
 
     &.weekend {
