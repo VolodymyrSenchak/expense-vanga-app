@@ -6,7 +6,7 @@ export type DateFormat = 'date' | 'month-year' | 'month-day' | 'day-of-week';
 const DATE_FORMATS: Record<DateFormat, string> = {
   'month-year': 'MMM-YY',
   'date': 'YYYY-MM-DD',
-  'month-day': 'MMM D',
+  'month-day': 'MMM DD',
   'day-of-week': 'dddd',
 };
 
