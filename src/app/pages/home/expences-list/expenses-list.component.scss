@@ -64,11 +64,41 @@
 
     .comment {
       font-size: 0.8em;
-      color: #aaa;
+      opacity: 0.6;
       font-style: italic;
       margin-top: 2px;
       text-align: right;
       font-weight: 500;
+    }
+  }
+
+  &.dark {
+    .expense-row.previous-day {
+      color: #555;
+    }
+
+    .expense-row {
+      &.affected, &.today, &.weekend {
+        background-color: color-mix(in srgb, var(--mat-sys-primary) 12%, #000000);
+      }
+
+      .mat-column-actual {
+        &:hover, &:focus {
+          background-color: color-mix(in srgb, var(--mat-sys-primary) 12%, #000000);
+        }
+      }
+
+      .amount-cell .amount-row .left-amount {
+        color: #8a9890;
+      }
+
+      .amount-cell .comment {
+        color: #6a7a6a;
+      }
+
+      .date-cell .day-of-week {
+        color: #8a9890;
+      }
     }
   }
 

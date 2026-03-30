@@ -11,6 +11,7 @@ import {MatTableModule} from '@angular/material/table';
 import {ChartConfiguration, ChartOptions} from 'chart.js';
 import {BaseChartDirective} from 'ng2-charts';
 import {CurrentExpensesService} from '@common/services/expenses/current-expenses.service';
+import {ThemeService} from '@common/services/theme.service';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {DATE_UTILS} from '@common/utils/date.utils';
 import {MonthAnalyticsComponent} from '../month-analytics/month-analytics.component';
@@ -30,6 +31,7 @@ interface ExpensesChartConfig {}
 })
 export class ExpensesChartComponent implements OnInit, OnDestroy {
   readonly currentExpensesService = inject(CurrentExpensesService);
+  readonly themeService = inject(ThemeService);
   readonly expensesChartConfig = signal<ExpensesChartConfig>({});
   readonly showFromToday = signal(false);
   readonly currentExpenses = toSignal(this.currentExpensesService.currentExpenses$);
@@ -43,6 +45,7 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
 
   readonly chartData = computed<ChartConfiguration<'line' | 'bar'>['data']>(() => {
     let expenses = this.currentExpenses()?.expenses;
+    const dark = this.themeService.isDark();
 
     if (this.showFromToday()) {
       expenses = expenses?.filter(e => !DATE_UTILS.isBefore(e.date, new Date()));
@@ -56,6 +59,15 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
       e => e.dateFormatted === DATE_UTILS.format(new Date(), 'month-day')
     );
 
+    const colors = {
+      expectedLeft:  dark ? '#80c883' : '#213448',
+      actualLeft:    dark ? '#7ec8e3' : '#94B4C1',
+      expectedSpent: dark ? '#5a6e5a' : '#66717B',
+      neutral:       dark ? '#6e8a8e' : '#A7BAC2',
+      over:          dark ? '#ef5350' : '#E57373',
+      under:         dark ? '#66bb6a' : '#81C784',
+    };
+
     const getRow = (idx: number) => expenses[idx];
 
     return {
@@ -64,16 +76,16 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
         {
           type: 'line',
           label: 'Expected left',
-          borderColor: '#213448',
-          backgroundColor: '#213448',
+          borderColor: colors.expectedLeft,
+          backgroundColor: colors.expectedLeft,
           data: expenses.map(e => e.expectedAmountLeft),
           pointRadius: (ctx) => ctx.dataIndex === todayDateIndex ? 6 : 3,
         },
         {
           type: 'line',
           label: 'Actual left',
-          borderColor: '#94B4C1',
-          backgroundColor: '#94B4C1',
+          borderColor: colors.actualLeft,
+          backgroundColor: colors.actualLeft,
           data: expenses.map(e => e.actualAmountLeft),
           pointRadius: (ctx) => ctx.dataIndex === todayDateIndex ? 6 : 3,
         },
@@ -81,7 +93,7 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
           type: 'bar',
           label: 'Expected spent',
           data: expenses.map(e => e.expectedExpenseAmount),
-          backgroundColor: '#66717B'
+          backgroundColor: colors.expectedSpent,
         },
         {
           type: 'bar',
@@ -89,11 +101,10 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
           data: expenses.map(e => e.actualExpenseAmount),
           backgroundColor: (ctx) => {
             const row = getRow(ctx.dataIndex);
-            if (row.actualExpenseAmount == row.expectedExpenseAmount) return '#A7BAC2';
-            if (row.actualExpenseAmount > row.expectedExpenseAmount) return '#E57373';
-            if (row.actualExpenseAmount < row.expectedExpenseAmount) return '#81C784';
-
-            return '#A7BAC2';
+            if (row.actualExpenseAmount == row.expectedExpenseAmount) return colors.neutral;
+            if (row.actualExpenseAmount > row.expectedExpenseAmount) return colors.over;
+            if (row.actualExpenseAmount < row.expectedExpenseAmount) return colors.under;
+            return colors.neutral;
           },
         },
       ]

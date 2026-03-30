@@ -1,4 +1,4 @@
-<div class="current-expenses-list height-full flex-column">
+<div class="current-expenses-list height-full flex-column" [class.dark]="theme.isDark()">
   <app-expenses-details-header [viewMode]="viewMode()" (viewModeChanged)="viewModeChanged.emit($event)">
     <mat-slide-toggle [checked]="showPrevious()" (change)="showPrevious.set($event.checked)">
       Previous days

@@ -5,10 +5,12 @@ import {computed, inject} from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { CurrentExpensesService } from "@common/services";
 import { toSignal } from "@angular/core/rxjs-interop";
+import { ThemeService } from "@common/services/theme.service";
 
 export abstract class BaseExpensesListComponent {
   readonly currentExpensesService = inject(CurrentExpensesService);
   readonly dialog = inject(MatDialog);
+  readonly theme = inject(ThemeService);
   readonly currentExpenses = toSignal(this.currentExpensesService.currentExpenses$);
 
   async startEditing(expense: ExpenseForDay): Promise<boolean> {

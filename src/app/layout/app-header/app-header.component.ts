@@ -1,11 +1,14 @@
 import {Component, inject} from "@angular/core";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import {MatButtonModule} from '@angular/material/button';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
 import {NavigationEnd, Router, RouterLink, RouterLinkActive} from '@angular/router';
 import {UserProfileComponent} from '../user-profile/user-profile.component';
 import {MatMenu, MatMenuTrigger} from '@angular/material/menu';
 import {filter, map} from 'rxjs';
 import {toSignal} from '@angular/core/rxjs-interop';
+import {ThemeService} from '@common/services/theme.service';
 
 @Component({
   selector: 'app-header',
@@ -14,6 +17,8 @@ import {toSignal} from '@angular/core/rxjs-interop';
   imports: [
     MatToolbarModule,
     MatButtonModule,
+    MatIconButton,
+    MatIcon,
     RouterLink,
     RouterLinkActive,
     UserProfileComponent,
@@ -23,6 +28,7 @@ import {toSignal} from '@angular/core/rxjs-interop';
 })
 export class AppHeader {
   readonly router = inject(Router);
+  readonly themeService = inject(ThemeService);
 
   readonly pages = [
     { url: '/', name: 'Home' },

@@ -1,8 +1,8 @@
 @use '@angular/material' as mat;
 
 :root {
-  --mat-sys-primary: #213448;
-  --mat-sys-primary-container: #c3d6e0;
+  --mat-sys-primary: #37474F;
+  --mat-sys-primary-container: #CFD8DC;
   --mat-toolbar-mobile-height: 48px;
   --mdc-outlined-card-container-color: transparent;
 
@@ -40,6 +40,77 @@
   @include mat.table-overrides((
     background-color: transparent,
     row-item-outline-color: #D0D0D0,
+  ));
+}
+
+.dark-theme {
+  color-scheme: dark;
+  background-color: #111411;
+  color: #e1e4de;
+
+  // System tokens
+  --mat-sys-primary: #E8F5E9;
+  --mat-sys-primary-container: #C8E6C9;
+
+  --mat-sys-on-primary: #003909;
+  --mat-sys-on-primary-container: #9de59f;
+  --mat-sys-background: #111411;
+  --mat-sys-on-background: #e1e4de;
+  --mat-sys-surface: #111411;
+  --mat-sys-on-surface: #e1e4de;
+  --mat-sys-surface-container: #1e221e;
+  --mat-sys-surface-container-low: #191d19;
+  --mat-sys-surface-container-high: #282d28;
+  --mat-sys-surface-container-highest: #333733;
+  --mat-sys-outline: #8b9389;
+  --mat-sys-outline-variant: #404943;
+  --mat-sys-secondary: #b4ccb4;
+  --mat-sys-secondary-container: #303830;
+  --mat-sys-on-secondary: #1f261f;
+  --mat-sys-on-secondary-container: #d0e8d0;
+
+  // Component-level token overrides
+  --mdc-elevated-card-container-color: #1e221e;
+  --mdc-outlined-card-container-color: #1e221e;
+  --mat-table-background-color: transparent;
+  --mat-table-row-item-outline-color: #2e332e;
+  --mdc-dialog-container-color: #1e221e;
+  --mat-menu-container-color: #1e221e;
+  --mdc-list-list-item-container-color: transparent;
+  --mat-select-panel-background-color: #1e221e;
+  --mat-option-selected-state-layer-color: #1b4d1e;
+  --mat-slide-toggle-track-color: #404943;
+
+  // Table row highlights
+  .current-expenses-list {
+    .expense-row {
+      &.today { background-color: #162820; }
+      &.weekend { background-color: #1a1f1a; }
+      &.affected { background-color: #282d28; }
+
+      .mat-column-actual {
+        &:hover, &:focus { background-color: #282d28; }
+      }
+    }
+
+    .mat-column-expected, .mat-column-actual {
+      border-left-color: #2e332e;
+    }
+
+    .amount-cell .amount-row .left-amount { color: #8a9890; }
+    .amount-cell .comment { color: #6a7a6a; }
+    .date-cell .day-of-week { color: #8a9890; }
+  }
+
+  // Toolbar
+  @include mat.toolbar-overrides((
+    container-background-color: #1e221e,
+    container-text-color: #e1e4de,
+  ));
+
+  // Table row divider
+  @include mat.table-overrides((
+    row-item-outline-color: #2e332e,
   ));
 }
 

@@ -10,7 +10,7 @@
   gap: 1rem;
 
   .skeleton-item {
-    background-color: #e5e5e5; /* Light gray background for the skeleton */
+    background-color: var(--mat-sys-outline-variant, #e5e5e5);
     border-radius: 1rem; /* Rounded corners */
     animation: shimmer 1.5s infinite;
   }
