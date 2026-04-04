@@ -60,10 +60,10 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
     );
 
     const colors = {
-      expectedLeft:  dark ? '#80c883' : '#213448',
-      actualLeft:    dark ? '#7ec8e3' : '#94B4C1',
+      expectedLeft:  dark ? '#5a6e5a' : '#213448',
+      actualLeft:    dark ? '#94B4C1' : '#94B4C1',
       expectedSpent: dark ? '#5a6e5a' : '#66717B',
-      neutral:       dark ? '#6e8a8e' : '#A7BAC2',
+      neutral:       dark ? '#94B4C1' : '#94B4C1',
       over:          dark ? '#ef5350' : '#E57373',
       under:         dark ? '#66bb6a' : '#81C784',
     };
@@ -111,12 +111,18 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
     };
   });
 
-  readonly lineChartOptions: ChartOptions<'line' | 'bar'> = {
-    responsive: true,
-    animation: {
-      duration: 0
-    }
-  };
+  readonly lineChartOptions = computed<ChartOptions<'line' | 'bar'>>(() => {
+    const gridColor = this.themeService.isDark() ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)';
+    const tickColor = this.themeService.isDark() ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)';
+    return {
+      responsive: true,
+      animation: { duration: 0 },
+      scales: {
+        x: { grid: { color: gridColor }, ticks: { color: tickColor } },
+        y: { grid: { color: gridColor }, ticks: { color: tickColor } },
+      },
+    };
+  });
 
   readonly onResize = (): void => {
     this.chart()?.chart?.resize();

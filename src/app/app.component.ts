@@ -5,6 +5,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {CurrentExpensesService, DialogManager, DialogType, LoadingService} from '@common/services';
 import {AuthDialogComponent, RegisterDialogComponent, PasswordResetDialogComponent, PasswordChangeDialogComponent} from './dialogs/auth';
 import {UserProfileDialogComponent} from './layout/user-profile/user-profile-dialog';
+import { ThemeService } from '@common/services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +18,7 @@ export class AppComponent implements OnInit {
   readonly dialogManager = inject(DialogManager);
   readonly loading = new LoadingService();
   readonly currentExpensesService = inject(CurrentExpensesService);
+  readonly themeService = inject(ThemeService);
 
   async ngOnInit(): Promise<void> {
     await this.loading.waitObservable(this.currentExpensesService.currentExpenses$);
