@@ -15,7 +15,7 @@ import {ThemeService} from '@common/services/theme.service';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {DATE_UTILS} from '@common/utils/date.utils';
 import {MonthAnalyticsComponent} from '../month-analytics/month-analytics.component';
-import {MatCheckbox} from '@angular/material/checkbox';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 
 interface ExpensesChartConfig {}
 
@@ -25,7 +25,7 @@ interface ExpensesChartConfig {}
     BaseChartDirective,
     MatTableModule,
     MonthAnalyticsComponent,
-    MatCheckbox,
+    MatButtonToggleModule,
   ],
   templateUrl: './expenses-chart.component.html',
 })
@@ -33,7 +33,7 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
   readonly currentExpensesService = inject(CurrentExpensesService);
   readonly themeService = inject(ThemeService);
   readonly expensesChartConfig = signal<ExpensesChartConfig>({});
-  readonly showFromToday = signal(false);
+  readonly dateFilter = signal<'whole' | 'till-today' | 'from-today'>('whole');
   readonly currentExpenses = toSignal(this.currentExpensesService.currentExpenses$);
   readonly monthAnalytics = toSignal(this.currentExpensesService.monthAnalytics$, {
     initialValue: {
@@ -47,8 +47,10 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
     let expenses = this.currentExpenses()?.expenses;
     const dark = this.themeService.isDark();
 
-    if (this.showFromToday()) {
+    if (this.dateFilter() === 'from-today') {
       expenses = expenses?.filter(e => !DATE_UTILS.isBefore(e.date, new Date()));
+    } else if (this.dateFilter() === 'till-today') {
+      expenses = expenses?.filter(e => !DATE_UTILS.isBefore(new Date(), e.date));
     }
 
     if (!expenses) {
@@ -66,6 +68,7 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
       neutral:       dark ? '#94B4C1' : '#94B4C1',
       over:          dark ? '#ef5350' : '#E57373',
       under:         dark ? '#66bb6a' : '#81C784',
+      diff:          dark ? '#dadada' : '#dadada',
     };
 
     const getRow = (idx: number) => expenses[idx];
@@ -88,6 +91,16 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
           backgroundColor: colors.actualLeft,
           data: expenses.map(e => e.actualAmountLeft),
           pointRadius: (ctx) => ctx.dataIndex === todayDateIndex ? 6 : 3,
+        },
+        {
+          type: 'line',
+          label: 'Daily diff',
+          borderColor: colors.diff,
+          backgroundColor: colors.diff,
+          data: expenses.map(e => e.expectedAmountLeft - e.actualAmountLeft),
+          pointRadius: (ctx) => ctx.dataIndex === todayDateIndex ? 6 : 3,
+          borderDash: [4, 4],
+          hidden: true,
         },
         {
           type: 'bar',
