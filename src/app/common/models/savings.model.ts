@@ -6,6 +6,7 @@ export interface SavingModel {
   id: string;
   name: string;
   currency: string;
+  includeInTotals?: boolean;
 
   transactions?: SavingTransactionModel[];
 }

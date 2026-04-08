@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, computed, inject, signal} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -38,16 +38,13 @@ export class SavingDialogComponent {
   readonly dialogRef = inject(MatDialogRef<SavingDialogComponent>);
   readonly data = inject<SavingDialogData>(MAT_DIALOG_DATA);
 
-  name = this.data.saving?.name ?? '';
-  currency = this.data.saving?.currency ?? '';
+  name = signal(this.data.saving?.name ?? '');
+  currency = signal(this.data.saving?.currency ?? '');
 
-  get isEdit(): boolean {
-    return !!this.data.saving;
-  }
-
-  get isValid(): boolean {
-    return this.name.trim().length > 0 && this.currency.trim().length > 0;
-  }
+  readonly isEdit = computed(() => !!this.data.saving);
+  readonly isValid = computed(
+    () => this.name().trim().length > 0 && this.currency().trim().length > 0,
+  );
 
   onCancel(): void {
     this.dialogRef.close(undefined);
@@ -58,10 +55,10 @@ export class SavingDialogComponent {
   }
 
   onSave(): void {
-    if (!this.isValid) return;
+    if (!this.isValid()) return;
     const result: SavingDialogResult = {
-      name: this.name.trim(),
-      currency: this.currency.trim().toUpperCase(),
+      name: this.name().trim(),
+      currency: this.currency().trim().toUpperCase(),
     };
     this.dialogRef.close(result);
   }

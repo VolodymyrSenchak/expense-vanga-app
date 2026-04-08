@@ -52,6 +52,7 @@ export class SavingsPageComponent implements OnInit {
 
   readonly savings = signal<SavingModel[]>([]);
   readonly viewMode = signal<'list' | 'chart'>('list');
+  readonly chartMode = signal<'cumulative' | 'monthly'>('cumulative');
 
   readonly chart = viewChild(BaseChartDirective);
 
@@ -92,6 +93,7 @@ export class SavingsPageComponent implements OnInit {
     const dark = this.themeService.isDark();
 
     const allTx = this.savings()
+      .filter(saving => saving.includeInTotals !== false)
       .flatMap(saving =>
         (saving.transactions ?? []).map(t => ({
           date: t.date,
@@ -131,6 +133,50 @@ export class SavingsPageComponent implements OnInit {
   });
 
   readonly chartOptions = computed<ChartOptions<'line'>>(() => {
+    const gridColor = this.themeService.isDark() ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)';
+    const tickColor = this.themeService.isDark() ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)';
+    return {
+      responsive: true,
+      animation: { duration: 0 },
+      scales: {
+        x: { grid: { color: gridColor }, ticks: { color: tickColor } },
+        y: { grid: { color: gridColor }, ticks: { color: tickColor } },
+      },
+    };
+  });
+
+  readonly monthlyChartData = computed<ChartConfiguration<'bar'>['data']>(() => {
+    const currencies = this.currencies();
+    const defaultCurrency = currencies?.defaultCurrency ?? '';
+    const dark = this.themeService.isDark();
+
+    const monthlyMap = new Map<string, number>();
+    this.savings()
+      .filter(saving => saving.includeInTotals !== false)
+      .forEach(saving => {
+        (saving.transactions ?? []).forEach(t => {
+          const monthKey = t.date.substring(0, 7) + '-01';
+          const amount = this.convertAmount(t.amount, saving.currency, defaultCurrency, currencies);
+          monthlyMap.set(monthKey, (monthlyMap.get(monthKey) ?? 0) + amount);
+        });
+      });
+
+    const sorted = Array.from(monthlyMap.entries()).sort(([a], [b]) => a.localeCompare(b));
+    const barColor = dark ? '#94B4C1' : '#213448';
+
+    return {
+      labels: sorted.map(([month]) => DATE_UTILS.format(month, 'month-year')),
+      datasets: [{
+        label: `Monthly (${defaultCurrency})`,
+        backgroundColor: sorted.map(([, v]) => v >= 0 ? barColor + '99' : '#e5393599'),
+        borderColor: sorted.map(([, v]) => v >= 0 ? barColor : '#e53935'),
+        borderWidth: 1,
+        data: sorted.map(([, amount]) => Math.round(amount * 100) / 100),
+      }],
+    };
+  });
+
+  readonly monthlyChartOptions = computed<ChartOptions<'bar'>>(() => {
     const gridColor = this.themeService.isDark() ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)';
     const tickColor = this.themeService.isDark() ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)';
     return {
@@ -235,15 +281,24 @@ export class SavingsPageComponent implements OnInit {
     await this.persist();
   }
 
+  async toggleIncludeInTotals(saving: SavingModel): Promise<void> {
+    this.savings.update(list =>
+      list.map(s => s.id === saving.id ? { ...s, includeInTotals: !(s.includeInTotals ?? true) } : s)
+    );
+    await this.persist();
+  }
+
   private async persist(): Promise<void> {
     const model: SavingsModel = { savings: this.savings() };
     await firstValueFrom(this.savingsService.saveSavings$(model));
   }
 
   private calculateTotals(currencies: CurrenciesModel | undefined, targetCurrency: string): number {
-    return this.savingTotals().reduce((total, { saving, total: amount }) => {
-      return total + this.convertAmount(amount, saving.currency, targetCurrency, currencies);
-    }, 0);
+    return this.savingTotals()
+      .filter(({ saving }) => saving.includeInTotals !== false)
+      .reduce((total, { saving, total: amount }) => {
+        return total + this.convertAmount(amount, saving.currency, targetCurrency, currencies);
+      }, 0);
   }
 
   private convertAmount(amount: number, from: string, to: string, currencies: CurrenciesModel | undefined): number {

@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{ isEdit ? 'Edit Saving' : 'Add Saving' }}</h2>
+<h2 mat-dialog-title>{{ isEdit() ? 'Edit Saving' : 'Add Saving' }}</h2>
 <mat-dialog-content class="flex-column" style="display: flex; padding-top: 0.5rem">
   <mat-form-field appearance="outline" style="margin-top: 1rem">
     <mat-label>Name</mat-label>
@@ -12,13 +12,13 @@
 <mat-dialog-actions>
   <div class="flex-space-between width-full">
     <div>
-      @if (isEdit) {
+      @if (isEdit()) {
         <button mat-button color="warn" (click)="onDelete()">Delete</button>
       }
     </div>
     <div>
       <button mat-button (click)="onCancel()">Cancel</button>
-      <button mat-flat-button [disabled]="!isValid" (click)="onSave()">Save</button>
+      <button mat-flat-button [disabled]="!isValid()" (click)="onSave()">Save</button>
     </div>
   </div>
 </mat-dialog-actions>
