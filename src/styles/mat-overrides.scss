@@ -79,7 +79,18 @@
   --mdc-list-list-item-container-color: transparent;
   --mat-select-panel-background-color: #1e221e;
   --mat-option-selected-state-layer-color: #1b4d1e;
-  --mat-slide-toggle-track-color: #404943;
+  @include mat.slide-toggle-overrides((
+    unselected-track-color: #404943,
+    unselected-handle-color: #8b9389,
+    unselected-focus-track-color: #4a504a,
+    unselected-hover-track-color: #4a504a,
+    unselected-pressed-track-color: #4a504a,
+    selected-track-color: #2d5a30,
+    selected-handle-color: #b4ccb4,
+    selected-focus-track-color: #375e3a,
+    selected-hover-track-color: #375e3a,
+    selected-pressed-track-color: #375e3a,
+  ));
 
   // Table row highlights
   .current-expenses-list {
