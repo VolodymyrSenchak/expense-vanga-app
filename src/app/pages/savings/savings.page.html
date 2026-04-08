@@ -104,31 +104,7 @@
             </div>
           }
         } @else {
-          @if (allTransactions().length === 0) {
-            <div style="text-align: center; padding: 2rem; opacity: 0.5">No transactions yet</div>
-          } @else {
-            <div class="flex flex-center flex-space-between" style="margin-bottom: 0.75rem">
-              <mat-button-toggle-group [value]="chartMode()" (change)="chartMode.set($any($event).value)">
-                <mat-button-toggle value="cumulative"><mat-icon>show_chart</mat-icon></mat-button-toggle>
-                <mat-button-toggle value="monthly"><mat-icon>bar_chart</mat-icon></mat-button-toggle>
-              </mat-button-toggle-group>
-            </div>
-            @if (chartMode() === 'cumulative') {
-              <canvas baseChart
-                [data]="chartData()"
-                [options]="chartOptions()"
-                [type]="'line'"
-                [legend]="true">
-              </canvas>
-            } @else {
-              <canvas baseChart
-                [data]="monthlyChartData()"
-                [options]="monthlyChartOptions()"
-                [type]="'bar'"
-                [legend]="true">
-              </canvas>
-            }
-          }
+          <app-savings-chart [savings]="savings()" [currencies]="currencies()" />
         }
       </mat-card>
 

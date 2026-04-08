@@ -1,4 +1,4 @@
-import {Component, computed, inject, OnInit, signal, viewChild} from '@angular/core';
+import {Component, computed, inject, OnInit, signal} from '@angular/core';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {RouterLink} from '@angular/router';
@@ -13,15 +13,12 @@ import {DecimalPipe, DatePipe} from '@angular/common';
 import {CurrenciesService} from '@common/services/currencies';
 import {MatDialog} from '@angular/material/dialog';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
-import {ChartConfiguration, ChartOptions} from 'chart.js';
-import {BaseChartDirective} from 'ng2-charts';
-import {ThemeService} from '@common/services/theme.service';
-import {DATE_UTILS} from '@common/utils/date.utils';
 import {SavingDialogComponent, SavingDialogResult} from './saving-dialog/saving-dialog.component';
 import {
   SavingTransactionDialogComponent,
   SavingTransactionDialogResult,
 } from './saving-transaction-dialog/saving-transaction-dialog.component';
+import {SavingsChartComponent} from './savings-chart/savings-chart.component';
 
 interface FlatTransaction {
   transaction: SavingTransactionModel;
@@ -39,7 +36,7 @@ interface FlatTransaction {
     DecimalPipe,
     DatePipe,
     MatButtonToggleModule,
-    BaseChartDirective,
+    SavingsChartComponent,
   ],
   templateUrl: './savings.page.html',
 })
@@ -47,17 +44,13 @@ export class SavingsPageComponent implements OnInit {
   private readonly savingsService = inject(SavingsService);
   private readonly currenciesService = inject(CurrenciesService);
   private readonly dialog = inject(MatDialog);
-  readonly themeService = inject(ThemeService);
   readonly loadingSrv = new LoadingService();
 
   readonly savings = signal<SavingModel[]>([]);
   readonly viewMode = signal<'list' | 'chart'>('list');
-  readonly chartMode = signal<'cumulative' | 'monthly'>('cumulative');
-
-  readonly chart = viewChild(BaseChartDirective);
 
   readonly currencies$ = this.currenciesService.getCurrencies$()
-    .pipe(shareReplay({ bufferSize: 1, refCount: true }));
+    .pipe(shareReplay({bufferSize: 1, refCount: true}));
 
   readonly currencies = toSignal(this.currencies$);
   readonly defaultCurrency = toSignal(this.currencies$.pipe(map(c => c.defaultCurrency)));
@@ -65,17 +58,17 @@ export class SavingsPageComponent implements OnInit {
   readonly allTransactions = computed<FlatTransaction[]>(() =>
     this.savings()
       .flatMap(saving =>
-        (saving.transactions ?? []).map(transaction => ({ transaction, saving }))
+        (saving.transactions ?? []).map(transaction => ({transaction, saving}))
       )
       .sort((a, b) => b.transaction.date.localeCompare(a.transaction.date))
   );
 
-  readonly savingTotals = computed(() => {
-    return this.savings().map(saving => ({
+  readonly savingTotals = computed(() =>
+    this.savings().map(saving => ({
       saving,
       total: (saving.transactions ?? []).reduce((sum, t) => sum + t.amount, 0),
-    }));
-  });
+    }))
+  );
 
   readonly savingsTotals = computed(() =>
     this.calculateTotals(this.currencies(), this.currencies()?.defaultCurrency ?? '')
@@ -87,108 +80,6 @@ export class SavingsPageComponent implements OnInit {
     this.calculateTotals(this.currencies(), 'EUR')
   );
 
-  readonly chartData = computed<ChartConfiguration<'line'>['data']>(() => {
-    const currencies = this.currencies();
-    const defaultCurrency = currencies?.defaultCurrency ?? '';
-    const dark = this.themeService.isDark();
-
-    const allTx = this.savings()
-      .filter(saving => saving.includeInTotals !== false)
-      .flatMap(saving =>
-        (saving.transactions ?? []).map(t => ({
-          date: t.date,
-          amount: this.convertAmount(t.amount, saving.currency, defaultCurrency, currencies),
-        }))
-      )
-      .sort((a, b) => a.date.localeCompare(b.date));
-
-    if (allTx.length === 0) {
-      return { labels: [], datasets: [] };
-    }
-
-    let running = 0;
-    const labels: string[] = [];
-    const data: number[] = [];
-
-    for (const tx of allTx) {
-      running += tx.amount;
-      labels.push(DATE_UTILS.format(tx.date, 'date'));
-      data.push(Math.round(running * 100) / 100);
-    }
-
-    const lineColor = dark ? '#94B4C1' : '#213448';
-    return {
-      labels,
-      datasets: [{
-        type: 'line',
-        label: `Total savings (${defaultCurrency})`,
-        borderColor: lineColor,
-        backgroundColor: lineColor + '33',
-        data,
-        fill: true,
-        pointRadius: 4,
-        tension: 0.3,
-      }],
-    };
-  });
-
-  readonly chartOptions = computed<ChartOptions<'line'>>(() => {
-    const gridColor = this.themeService.isDark() ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)';
-    const tickColor = this.themeService.isDark() ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)';
-    return {
-      responsive: true,
-      animation: { duration: 0 },
-      scales: {
-        x: { grid: { color: gridColor }, ticks: { color: tickColor } },
-        y: { grid: { color: gridColor }, ticks: { color: tickColor } },
-      },
-    };
-  });
-
-  readonly monthlyChartData = computed<ChartConfiguration<'bar'>['data']>(() => {
-    const currencies = this.currencies();
-    const defaultCurrency = currencies?.defaultCurrency ?? '';
-    const dark = this.themeService.isDark();
-
-    const monthlyMap = new Map<string, number>();
-    this.savings()
-      .filter(saving => saving.includeInTotals !== false)
-      .forEach(saving => {
-        (saving.transactions ?? []).forEach(t => {
-          const monthKey = t.date.substring(0, 7) + '-01';
-          const amount = this.convertAmount(t.amount, saving.currency, defaultCurrency, currencies);
-          monthlyMap.set(monthKey, (monthlyMap.get(monthKey) ?? 0) + amount);
-        });
-      });
-
-    const sorted = Array.from(monthlyMap.entries()).sort(([a], [b]) => a.localeCompare(b));
-    const barColor = dark ? '#94B4C1' : '#213448';
-
-    return {
-      labels: sorted.map(([month]) => DATE_UTILS.format(month, 'month-year')),
-      datasets: [{
-        label: `Monthly (${defaultCurrency})`,
-        backgroundColor: sorted.map(([, v]) => v >= 0 ? barColor + '99' : '#e5393599'),
-        borderColor: sorted.map(([, v]) => v >= 0 ? barColor : '#e53935'),
-        borderWidth: 1,
-        data: sorted.map(([, amount]) => Math.round(amount * 100) / 100),
-      }],
-    };
-  });
-
-  readonly monthlyChartOptions = computed<ChartOptions<'bar'>>(() => {
-    const gridColor = this.themeService.isDark() ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)';
-    const tickColor = this.themeService.isDark() ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)';
-    return {
-      responsive: true,
-      animation: { duration: 0 },
-      scales: {
-        x: { grid: { color: gridColor }, ticks: { color: tickColor } },
-        y: { grid: { color: gridColor }, ticks: { color: tickColor } },
-      },
-    };
-  });
-
   async ngOnInit(): Promise<void> {
     const model = await this.loadingSrv.waitObservable(this.savingsService.getSavings$());
     this.savings.set(model.savings);
@@ -197,7 +88,7 @@ export class SavingsPageComponent implements OnInit {
   async openSavingDialog(saving?: SavingModel): Promise<void> {
     const ref = this.dialog.open(SavingDialogComponent, {
       width: '400px',
-      data: { saving },
+      data: {saving},
     });
     const result = await firstValueFrom(ref.afterClosed());
     if (!result) return;
@@ -208,7 +99,7 @@ export class SavingsPageComponent implements OnInit {
       const dialogResult = result as SavingDialogResult;
       if (saving) {
         this.savings.update(list =>
-          list.map(s => s.id === saving.id ? { ...s, ...dialogResult } : s)
+          list.map(s => s.id === saving.id ? {...s, ...dialogResult} : s)
         );
       } else {
         const newSaving: SavingModel = {
@@ -242,22 +133,21 @@ export class SavingsPageComponent implements OnInit {
       this.savings.update(list =>
         list.map(s =>
           s.id === flat.saving.id
-            ? { ...s, transactions: (s.transactions ?? []).filter(t => t.id !== flat.transaction.id) }
+            ? {...s, transactions: (s.transactions ?? []).filter(t => t.id !== flat.transaction.id)}
             : s
         )
       );
     } else {
       const r = result as SavingTransactionDialogResult;
       if (flat) {
-        // Edit: remove from old saving, add to new saving
         this.savings.update(list =>
           list.map(s => {
             if (s.id === flat.saving.id) {
-              return { ...s, transactions: (s.transactions ?? []).filter(t => t.id !== flat.transaction.id) };
+              return {...s, transactions: (s.transactions ?? []).filter(t => t.id !== flat.transaction.id)};
             }
             if (s.id === r.savingId) {
-              const updated: SavingTransactionModel = { ...flat.transaction, amount: r.amount, date: r.date, comment: r.comment };
-              return { ...s, transactions: [...(s.transactions ?? []), updated] };
+              const updated: SavingTransactionModel = {...flat.transaction, amount: r.amount, date: r.date, comment: r.comment};
+              return {...s, transactions: [...(s.transactions ?? []), updated]};
             }
             return s;
           })
@@ -272,7 +162,7 @@ export class SavingsPageComponent implements OnInit {
         this.savings.update(list =>
           list.map(s =>
             s.id === r.savingId
-              ? { ...s, transactions: [...(s.transactions ?? []), newTx] }
+              ? {...s, transactions: [...(s.transactions ?? []), newTx]}
               : s
           )
         );
@@ -283,20 +173,20 @@ export class SavingsPageComponent implements OnInit {
 
   async toggleIncludeInTotals(saving: SavingModel): Promise<void> {
     this.savings.update(list =>
-      list.map(s => s.id === saving.id ? { ...s, includeInTotals: !(s.includeInTotals ?? true) } : s)
+      list.map(s => s.id === saving.id ? {...s, includeInTotals: !(s.includeInTotals ?? true)} : s)
     );
     await this.persist();
   }
 
   private async persist(): Promise<void> {
-    const model: SavingsModel = { savings: this.savings() };
+    const model: SavingsModel = {savings: this.savings()};
     await firstValueFrom(this.savingsService.saveSavings$(model));
   }
 
   private calculateTotals(currencies: CurrenciesModel | undefined, targetCurrency: string): number {
     return this.savingTotals()
-      .filter(({ saving }) => saving.includeInTotals !== false)
-      .reduce((total, { saving, total: amount }) => {
+      .filter(({saving}) => saving.includeInTotals !== false)
+      .reduce((total, {saving, total: amount}) => {
         return total + this.convertAmount(amount, saving.currency, targetCurrency, currencies);
       }, 0);
   }
