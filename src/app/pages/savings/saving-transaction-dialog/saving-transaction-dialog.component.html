@@ -1,0 +1,44 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit Transaction' : 'Add Transaction' }}</h2>
+<mat-dialog-content class="flex-column" style="display: flex; padding-top: 0.5rem">
+
+  <mat-form-field appearance="outline" style="margin-top: 1rem">
+    <mat-label>Saving</mat-label>
+    <mat-select [value]="savingId()" (valueChange)="savingId.set($event)">
+      @for (saving of data.savings; track saving.id) {
+        <mat-option [value]="saving.id">{{ saving.name }} ({{ saving.currency }})</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Amount</mat-label>
+    <input matInput type="number" [ngModel]="amount()" (ngModelChange)="amount.set($event)" (keydown.enter)="onSave()" />
+    <mat-hint>Positive to add, negative to subtract</mat-hint>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" style="margin-top: 0.5rem">
+    <mat-label>Date</mat-label>
+    <input matInput [matDatepicker]="picker" [ngModel]="date()" (ngModelChange)="date.set($event)" />
+    <mat-datepicker-toggle matIconSuffix [for]="picker" />
+    <mat-datepicker #picker />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Comment</mat-label>
+    <input matInput [ngModel]="comment()" (ngModelChange)="comment.set($event)" (keydown.enter)="onSave()" />
+  </mat-form-field>
+
+</mat-dialog-content>
+<mat-dialog-actions>
+  <div class="flex-space-between width-full">
+    <div>
+      @if (isEdit) {
+        <button mat-button color="warn" (click)="onDelete()">Delete</button>
+      }
+    </div>
+    <div>
+      <button mat-button (click)="onCancel()">Cancel</button>
+      <button mat-flat-button [disabled]="!isValid()" (click)="onSave()">Save</button>
+    </div>
+  </div>
+</mat-dialog-actions>

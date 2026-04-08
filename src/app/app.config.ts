@@ -5,12 +5,14 @@ import { routes } from './app.routes';
 import {provideCharts, withDefaultRegisterables} from 'ng2-charts';
 import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {HttpAuthInterceptor, HttpBaseUrlInterceptor} from '@common/interseptors';
+import {provideNativeDateAdapter} from '@angular/material/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideCharts(withDefaultRegisterables()),
+    provideNativeDateAdapter(),
     provideHttpClient(withInterceptors([
       HttpBaseUrlInterceptor,
       HttpAuthInterceptor

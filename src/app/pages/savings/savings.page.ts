@@ -1,20 +1,32 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, computed, inject, OnInit, signal, viewChild} from '@angular/core';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {RouterLink} from '@angular/router';
-import {FormBuilder, ReactiveFormsModule, UntypedFormGroup, Validators} from '@angular/forms';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
 import {MatCardModule} from '@angular/material/card';
 import {LoadingComponent} from '@components/loading';
 import {LoadingService} from '@common/services';
-import {CurrenciesModel, CurrencyModel, SavingModel, SavingsModel} from '@common/models';
+import {CurrenciesModel, SavingModel, SavingTransactionModel, SavingsModel} from '@common/models';
 import {SavingsService} from '@common/services/savings';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {combineLatest, map, shareReplay} from 'rxjs';
+import {firstValueFrom, map, shareReplay} from 'rxjs';
 import {toSignal} from '@angular/core/rxjs-interop';
-import {DecimalPipe} from '@angular/common';
+import {DecimalPipe, DatePipe} from '@angular/common';
 import {CurrenciesService} from '@common/services/currencies';
+import {MatDialog} from '@angular/material/dialog';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {ChartConfiguration, ChartOptions} from 'chart.js';
+import {BaseChartDirective} from 'ng2-charts';
+import {ThemeService} from '@common/services/theme.service';
+import {DATE_UTILS} from '@common/utils/date.utils';
+import {SavingDialogComponent, SavingDialogResult} from './saving-dialog/saving-dialog.component';
+import {
+  SavingTransactionDialogComponent,
+  SavingTransactionDialogResult,
+} from './saving-transaction-dialog/saving-transaction-dialog.component';
+
+interface FlatTransaction {
+  transaction: SavingTransactionModel;
+  saving: SavingModel;
+}
 
 @Component({
   selector: 'app-savings-page',
@@ -22,86 +34,225 @@ import {CurrenciesService} from '@common/services/currencies';
     MatIconModule,
     MatButtonModule,
     RouterLink,
-    ReactiveFormsModule,
-    MatInputModule,
-    MatSelectModule,
     MatCardModule,
     LoadingComponent,
-    MatFormFieldModule,
     DecimalPipe,
+    DatePipe,
+    MatButtonToggleModule,
+    BaseChartDirective,
   ],
   templateUrl: './savings.page.html',
 })
 export class SavingsPageComponent implements OnInit {
-  readonly savingsService = inject(SavingsService);
-  readonly formBuilder = inject(FormBuilder);
-  readonly currenciesService = inject(CurrenciesService);
+  private readonly savingsService = inject(SavingsService);
+  private readonly currenciesService = inject(CurrenciesService);
+  private readonly dialog = inject(MatDialog);
+  readonly themeService = inject(ThemeService);
   readonly loadingSrv = new LoadingService();
 
-  readonly form = this.formBuilder.group({
-    savings: this.formBuilder.array<UntypedFormGroup>([]),
-  });
+  readonly savings = signal<SavingModel[]>([]);
+  readonly viewMode = signal<'list' | 'chart'>('list');
+
+  readonly chart = viewChild(BaseChartDirective);
 
   readonly currencies$ = this.currenciesService.getCurrencies$()
     .pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
+  readonly currencies = toSignal(this.currencies$);
   readonly defaultCurrency = toSignal(this.currencies$.pipe(map(c => c.defaultCurrency)));
-  readonly savingsTotals = toSignal(
-    combineLatest([this.form.valueChanges, this.currencies$]).pipe(
-      map(([formValue, currencies]) => this.calculateTotalsInCurrency(formValue as SavingsModel, currencies, currencies.defaultCurrency))
-    )
+
+  readonly allTransactions = computed<FlatTransaction[]>(() =>
+    this.savings()
+      .flatMap(saving =>
+        (saving.transactions ?? []).map(transaction => ({ transaction, saving }))
+      )
+      .sort((a, b) => b.transaction.date.localeCompare(a.transaction.date))
   );
-  readonly savingsTotalsUsd = toSignal(
-    combineLatest([this.form.valueChanges, this.currencies$]).pipe(
-      map(([formValue, currencies]) => this.calculateTotalsInCurrency(formValue as SavingsModel, currencies, 'USD'))
-    )
+
+  readonly savingTotals = computed(() => {
+    return this.savings().map(saving => ({
+      saving,
+      total: (saving.transactions ?? []).reduce((sum, t) => sum + t.amount, 0),
+    }));
+  });
+
+  readonly savingsTotals = computed(() =>
+    this.calculateTotals(this.currencies(), this.currencies()?.defaultCurrency ?? '')
   );
-  readonly savingsTotalsEur = toSignal(
-    combineLatest([this.form.valueChanges, this.currencies$]).pipe(
-      map(([formValue, currencies]) => this.calculateTotalsInCurrency(formValue as SavingsModel, currencies, 'EUR'))
-    )
+  readonly savingsTotalsUsd = computed(() =>
+    this.calculateTotals(this.currencies(), 'USD')
   );
+  readonly savingsTotalsEur = computed(() =>
+    this.calculateTotals(this.currencies(), 'EUR')
+  );
+
+  readonly chartData = computed<ChartConfiguration<'line'>['data']>(() => {
+    const currencies = this.currencies();
+    const defaultCurrency = currencies?.defaultCurrency ?? '';
+    const dark = this.themeService.isDark();
+
+    const allTx = this.savings()
+      .flatMap(saving =>
+        (saving.transactions ?? []).map(t => ({
+          date: t.date,
+          amount: this.convertAmount(t.amount, saving.currency, defaultCurrency, currencies),
+        }))
+      )
+      .sort((a, b) => a.date.localeCompare(b.date));
+
+    if (allTx.length === 0) {
+      return { labels: [], datasets: [] };
+    }
+
+    let running = 0;
+    const labels: string[] = [];
+    const data: number[] = [];
+
+    for (const tx of allTx) {
+      running += tx.amount;
+      labels.push(DATE_UTILS.format(tx.date, 'date'));
+      data.push(Math.round(running * 100) / 100);
+    }
+
+    const lineColor = dark ? '#94B4C1' : '#213448';
+    return {
+      labels,
+      datasets: [{
+        type: 'line',
+        label: `Total savings (${defaultCurrency})`,
+        borderColor: lineColor,
+        backgroundColor: lineColor + '33',
+        data,
+        fill: true,
+        pointRadius: 4,
+        tension: 0.3,
+      }],
+    };
+  });
+
+  readonly chartOptions = computed<ChartOptions<'line'>>(() => {
+    const gridColor = this.themeService.isDark() ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)';
+    const tickColor = this.themeService.isDark() ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)';
+    return {
+      responsive: true,
+      animation: { duration: 0 },
+      scales: {
+        x: { grid: { color: gridColor }, ticks: { color: tickColor } },
+        y: { grid: { color: gridColor }, ticks: { color: tickColor } },
+      },
+    };
+  });
 
   async ngOnInit(): Promise<void> {
-    const savings = await this.loadingSrv.waitObservable(this.savingsService.getSavings$());
-
-    this.form.controls.savings.clear();
-    savings.savings.forEach(s => this.addSaving(s));
+    const model = await this.loadingSrv.waitObservable(this.savingsService.getSavings$());
+    this.savings.set(model.savings);
   }
 
-  addSaving(saving: SavingModel | undefined = undefined): void {
-    const currency = saving?.currency ?? this.defaultCurrency();
-    this.form.controls.savings.push(this.formBuilder.group({
-      name: [saving?.name ?? '', [Validators.required]],
-      amount: [saving?.amount ?? 0, [Validators.required, Validators.min(0), Validators.max(10000000)]],
-      currency: [currency, [Validators.required]],
-    }) as any);
-  }
+  async openSavingDialog(saving?: SavingModel): Promise<void> {
+    const ref = this.dialog.open(SavingDialogComponent, {
+      width: '400px',
+      data: { saving },
+    });
+    const result = await firstValueFrom(ref.afterClosed());
+    if (!result) return;
 
-  removeSaving(index: number): void {
-    this.form.controls.savings.removeAt(index);
-  }
-
-  async submitForm(): Promise<void> {
-    if (this.form.valid) {
-      const formValue = this.form.value as SavingsModel;
-      await this.loadingSrv.waitObservable(this.savingsService.saveSavings$(formValue), "Saving...");
+    if (result === 'delete' && saving) {
+      this.savings.update(list => list.filter(s => s.id !== saving.id));
+    } else {
+      const dialogResult = result as SavingDialogResult;
+      if (saving) {
+        this.savings.update(list =>
+          list.map(s => s.id === saving.id ? { ...s, ...dialogResult } : s)
+        );
+      } else {
+        const newSaving: SavingModel = {
+          id: crypto.randomUUID(),
+          name: dialogResult.name,
+          currency: dialogResult.currency,
+          transactions: [],
+        };
+        this.savings.update(list => [...list, newSaving]);
+      }
     }
+    await this.persist();
   }
 
-  private calculateTotalsInCurrency(savings: SavingsModel, currenciesModel: CurrenciesModel, targetCurrency: string): number {
-    return savings.savings.reduce((total, saving) => {
-      if (saving.currency === targetCurrency) return total + saving.amount;
-      const currency = currenciesModel.currencies.find(c =>
-        (c.from === saving.currency && c.to === targetCurrency)
-        || (c.from === targetCurrency && c.to === saving.currency)
+  async openTransactionDialog(flat?: FlatTransaction): Promise<void> {
+    const savings = this.savings();
+    if (savings.length === 0) return;
+
+    const ref = this.dialog.open(SavingTransactionDialogComponent, {
+      width: '420px',
+      data: {
+        transaction: flat?.transaction,
+        savingId: flat?.saving.id,
+        savings,
+      },
+    });
+    const result = await firstValueFrom(ref.afterClosed());
+    if (!result) return;
+
+    if (result === 'delete' && flat) {
+      this.savings.update(list =>
+        list.map(s =>
+          s.id === flat.saving.id
+            ? { ...s, transactions: (s.transactions ?? []).filter(t => t.id !== flat.transaction.id) }
+            : s
+        )
       );
-      const rate = !currency ? 1 : (
-        currency.from === saving.currency
-          ? currency.rate
-          : 1 / currency.rate
-      );
-      return total + saving.amount * rate;
+    } else {
+      const r = result as SavingTransactionDialogResult;
+      if (flat) {
+        // Edit: remove from old saving, add to new saving
+        this.savings.update(list =>
+          list.map(s => {
+            if (s.id === flat.saving.id) {
+              return { ...s, transactions: (s.transactions ?? []).filter(t => t.id !== flat.transaction.id) };
+            }
+            if (s.id === r.savingId) {
+              const updated: SavingTransactionModel = { ...flat.transaction, amount: r.amount, date: r.date, comment: r.comment };
+              return { ...s, transactions: [...(s.transactions ?? []), updated] };
+            }
+            return s;
+          })
+        );
+      } else {
+        const newTx: SavingTransactionModel = {
+          id: crypto.randomUUID(),
+          amount: r.amount,
+          date: r.date,
+          comment: r.comment,
+        };
+        this.savings.update(list =>
+          list.map(s =>
+            s.id === r.savingId
+              ? { ...s, transactions: [...(s.transactions ?? []), newTx] }
+              : s
+          )
+        );
+      }
+    }
+    await this.persist();
+  }
+
+  private async persist(): Promise<void> {
+    const model: SavingsModel = { savings: this.savings() };
+    await firstValueFrom(this.savingsService.saveSavings$(model));
+  }
+
+  private calculateTotals(currencies: CurrenciesModel | undefined, targetCurrency: string): number {
+    return this.savingTotals().reduce((total, { saving, total: amount }) => {
+      return total + this.convertAmount(amount, saving.currency, targetCurrency, currencies);
     }, 0);
+  }
+
+  private convertAmount(amount: number, from: string, to: string, currencies: CurrenciesModel | undefined): number {
+    if (from === to || !currencies) return amount;
+    const pair = currencies.currencies.find(c =>
+      (c.from === from && c.to === to) || (c.from === to && c.to === from)
+    );
+    if (!pair) return amount;
+    const rate = pair.from === from ? pair.rate : 1 / pair.rate;
+    return amount * rate;
   }
 }
