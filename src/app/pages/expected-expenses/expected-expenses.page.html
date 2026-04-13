@@ -7,11 +7,11 @@
     />
   } @else {
   <form [formGroup]="form" (ngSubmit)="submitForm()" class="flex-column flex-gap-1">
-    <div class="header flex flex-gap-1">
+    <div class="page-header">
       <a mat-icon-button routerLink='/'>
         <mat-icon>arrow_back</mat-icon>
       </a>
-      <h2>Expected Expenses</h2>
+      <h2 style="flex:1; margin:0">Expected Expenses</h2>
       <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
         Submit
       </button>

@@ -1,10 +1,10 @@
 <div class="expected-expenses-page page-narrow">
   <form [formGroup]="form" (ngSubmit)="submitForm()" class="flex-column flex-gap-1">
-    <div class="header flex flex-gap-1">
+    <div class="page-header">
       <a mat-icon-button routerLink='/'>
         <mat-icon>arrow_back</mat-icon>
       </a>
-      <h2>Currencies</h2>
+      <h2 style="flex:1; margin:0">Currencies</h2>
       <button
         mat-flat-button
         color="primary"

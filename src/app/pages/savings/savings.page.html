@@ -1,10 +1,10 @@
 <div class="expected-expenses-page page-narrow">
   <div class="flex-column flex-gap-1">
-    <div class="header flex flex-gap-1">
+    <div class="page-header">
       <a mat-icon-button routerLink='/'>
         <mat-icon>arrow_back</mat-icon>
       </a>
-      <h2>Savings</h2>
+      <h2 style="flex:1; margin:0">Savings</h2>
       <button mat-flat-button color="primary" type="button" (click)="openSavingDialog()">
         <mat-icon>add</mat-icon>
         Add Saving
@@ -60,7 +60,7 @@
       </mat-card>
 
       <!-- Transactions section -->
-      <mat-card appearance="outlined" class="padding-x-1 padding-y-1">
+      <mat-card appearance="outlined" class="padding-x-1 padding-y-1 margin-bottom-1">
         <div class="flex flex-center flex-space-between" style="margin-bottom: 1rem">
           <div class="flex flex-center flex-gap-1">
             <h3 style="margin: 0">Transactions</h3>

@@ -17,6 +17,7 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
+  background: var(--mat-sys-surface);
 
   &.dark {
     background-color: #111411;
