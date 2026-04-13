@@ -1,0 +1,262 @@
+$cell-border: rgba(0, 0, 0, 0.12);
+$weekend-bg: color-mix(in srgb, var(--mat-sys-primary) 8%, transparent);
+$non-editable-bg: rgba(0, 0, 0, 0.03);
+$non-editable-color: rgba(0, 0, 0, 0.38);
+
+.daily-expenses-calendar {
+  overflow-x: auto;
+}
+
+.weekday-headers {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+  margin-bottom: 0.25rem;
+
+  .weekday-header {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    opacity: 0.55;
+    padding: 0.2rem 0;
+  }
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+  min-width: 560px;
+}
+
+.calendar-cell {
+  border: 1px solid $cell-border;
+  border-radius: 0.5rem;
+  padding: 0.35rem 0.4rem;
+  min-height: 70px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  transition: background-color 0.15s;
+
+  &.non-editable {
+    background-color: $non-editable-bg;
+    color: $non-editable-color;
+    border-color: rgba(0, 0, 0, 0.06);
+    pointer-events: none;
+
+    .cell-date {
+      opacity: 0.5;
+    }
+  }
+
+  &.editable {
+    &:hover {
+      border-color: var(--mat-sys-primary);
+    }
+  }
+
+  &.weekend {
+    background-color: $weekend-bg;
+
+    &.non-editable {
+      background-color: color-mix(in srgb, var(--mat-sys-primary) 4%, $non-editable-bg);
+    }
+  }
+
+  // CDK drop-list highlight while dragging over
+  &.cdk-drop-list-dragging {
+    border-color: var(--mat-sys-primary);
+    border-style: dashed;
+  }
+
+  :host-context(.dark-theme) &.non-editable {
+    background-color: rgba(255, 255, 255, 0.03);
+    color: rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.06);
+  }
+
+  :host-context(.dark-theme) &.weekend {
+    background-color: color-mix(in srgb, var(--mat-sys-primary) 6%, transparent);
+  }
+}
+
+.cell-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .cell-date {
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1;
+
+    .month-label {
+      font-size: 0.65rem;
+      font-weight: 400;
+      opacity: 0.55;
+      margin-right: 0.1rem;
+    }
+  }
+
+  .add-btn {
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    flex-shrink: 0;
+
+    ::ng-deep .mat-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+      line-height: 14px;
+    }
+  }
+}
+
+.expense-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
+}
+
+.expense-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  background: color-mix(in srgb, var(--mat-sys-primary) 12%, transparent);
+  border-radius: 0.35rem;
+  padding: 0.15rem 0.2rem 0.15rem 0.1rem;
+  cursor: grab;
+  user-select: none;
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  &.cdk-drag-preview {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border-radius: 0.35rem;
+    opacity: 0.9;
+    background: color-mix(in srgb, var(--mat-sys-primary) 18%, var(--mat-sys-surface));
+  }
+
+  .drag-handle {
+    display: flex;
+    align-items: center;
+    cursor: grab;
+    opacity: 0.4;
+
+    .handle-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+      line-height: 14px;
+    }
+  }
+
+  .chip-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+
+    .chip-amount {
+      font-size: 0.72rem;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .chip-comment {
+      font-size: 0.62rem;
+      opacity: 0.65;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+    }
+  }
+
+  .chip-delete {
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    flex-shrink: 0;
+    opacity: 0.5;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    ::ng-deep .mat-icon {
+      font-size: 13px;
+      width: 13px;
+      height: 13px;
+      line-height: 13px;
+    }
+  }
+}
+
+.drag-placeholder {
+  height: 28px;
+  border: 1px dashed color-mix(in srgb, var(--mat-sys-primary) 50%, transparent);
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, var(--mat-sys-primary) 6%, transparent);
+}
+
+.add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding-top: 0.2rem;
+
+  .field-amount,
+  .field-comment {
+    width: 100%;
+
+    ::ng-deep {
+      .mat-mdc-form-field-subscript-wrapper {
+        display: none;
+      }
+
+      .mat-mdc-text-field-wrapper {
+        padding: 0 0.4rem;
+      }
+
+      .mat-mdc-form-field-infix {
+        padding-top: 0.4rem;
+        padding-bottom: 0.4rem;
+        min-height: unset;
+      }
+
+      input.mat-mdc-input-element {
+        font-size: 0.75rem;
+      }
+
+      .mat-mdc-floating-label {
+        font-size: 0.75rem;
+      }
+    }
+  }
+
+  .add-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.1rem;
+
+    button {
+      width: 22px;
+      height: 22px;
+      line-height: 22px;
+
+      ::ng-deep .mat-icon {
+        font-size: 15px;
+        width: 15px;
+        height: 15px;
+        line-height: 15px;
+      }
+    }
+  }
+}

@@ -1,14 +1,17 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, inject, OnInit, signal } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { Router, RouterLink } from "@angular/router";
 import { ExpensesService, LoadingService} from "../../common/services";
 import { DayOfWeek, ExpectedExpensesModel, getDefaultExpectedExpensesModel } from "../../common/models";
-import {ReactiveFormsModule, FormBuilder, Validators, FormGroup, UntypedFormGroup, FormArray} from '@angular/forms';
+import {ReactiveFormsModule, FormBuilder, Validators, FormGroup, UntypedFormGroup} from '@angular/forms';
 import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
 import { MatCardModule } from "@angular/material/card";
+import { MatButtonToggleModule } from "@angular/material/button-toggle";
 import { LoadingComponent} from '../../components/loading';
+import { DailyExpensesCalendarComponent } from './daily-expenses-calendar/daily-expenses-calendar.component';
+import { DailyExpensesListComponent } from './daily-expenses-list/daily-expenses-list.component';
 
 @Component({
   selector: 'app-expected-expenses-page',
@@ -21,7 +24,10 @@ import { LoadingComponent} from '../../components/loading';
     MatSelectModule,
     MatIconModule,
     MatCardModule,
-    LoadingComponent
+    LoadingComponent,
+    DailyExpensesCalendarComponent,
+    DailyExpensesListComponent,
+    MatButtonToggleModule,
   ],
   templateUrl: './expected-expenses.page.html',
 })
@@ -30,6 +36,8 @@ export class ExpectedExpensesPageComponent implements OnInit {
   readonly formBuilder = inject(FormBuilder);
   readonly router = inject(Router);
   readonly loadingSrv = new LoadingService();
+
+  readonly dailyExpensesView = signal<'calendar' | 'list'>('calendar');
 
   readonly form = this.formBuilder.group({
     name: [''],
@@ -86,10 +94,6 @@ export class ExpectedExpensesPageComponent implements OnInit {
       dayOfWeek: [day, Validators.required],
       amount: [amount, [Validators.required, Validators.min(0)]]
     }) as any);
-  }
-
-  removeDailyExpense(index: number): void {
-    this.form.controls.dailyExpenses.removeAt(index);
   }
 
   removeEarning(index: number): void {

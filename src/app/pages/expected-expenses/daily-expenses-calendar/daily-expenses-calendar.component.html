@@ -1,0 +1,102 @@
+<div class="daily-expenses-calendar">
+  <div class="weekday-headers">
+    @for (day of weekdays; track day) {
+      <div class="weekday-header">{{ day }}</div>
+    }
+  </div>
+
+  <div class="calendar-grid" cdkDropListGroup>
+    @for (day of calendarDays(); track $index; let i = $index) {
+      <div
+        class="calendar-cell"
+        [class.editable]="day.isEditable"
+        [class.weekend]="day.isWeekend"
+        [class.non-editable]="!day.isEditable"
+        cdkDropList
+        [cdkDropListData]="day"
+        [cdkDropListDisabled]="!day.isEditable"
+        [cdkDropListSortingDisabled]="true"
+        (cdkDropListDropped)="onDrop($event, day)"
+      >
+        <div class="cell-header">
+          <span class="cell-date">
+            @if (day.isFirstOfMonth) {
+              <span class="month-label">{{ day.monthLabel }}</span>
+            }
+            {{ day.dayOfMonth }}
+          </span>
+          @if (day.isEditable && addingToDayIndex() !== i) {
+            <button
+              mat-icon-button
+              class="add-btn"
+              type="button"
+              (click)="openAddForm(i)"
+              title="Add expense"
+            >
+              <mat-icon>add</mat-icon>
+            </button>
+          }
+        </div>
+
+        <div class="expense-list">
+          @for (expense of getExpensesForDay(day); track expense.index) {
+            <div
+              class="expense-chip"
+              cdkDrag
+              [cdkDragData]="expense.index"
+            >
+              <div class="drag-handle" cdkDragHandle>
+                <mat-icon class="handle-icon">drag_indicator</mat-icon>
+              </div>
+              <div class="chip-body">
+                <span class="chip-amount">{{ expense.group.get('amount')?.value }}</span>
+                @if (expense.group.get('comment')?.value) {
+                  <span class="chip-comment">{{ expense.group.get('comment')?.value }}</span>
+                }
+              </div>
+              <button
+                mat-icon-button
+                class="chip-delete"
+                type="button"
+                (click)="removeExpense(expense.index)"
+                title="Remove"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+
+              <div *cdkDragPlaceholder class="drag-placeholder"></div>
+            </div>
+          }
+        </div>
+
+        @if (addingToDayIndex() === i) {
+          <div class="add-form" [formGroup]="addForm">
+            <mat-form-field appearance="outline" class="field-amount">
+              <mat-label>Amount</mat-label>
+              <input matInput type="number" formControlName="amount" min="0">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="field-comment">
+              <mat-label>Comment</mat-label>
+              <input matInput type="text" formControlName="comment">
+            </mat-form-field>
+            <div class="add-form-actions">
+              <button
+                mat-icon-button
+                color="primary"
+                type="button"
+                [disabled]="addForm.invalid"
+                (click)="confirmAdd(day)"
+                title="Confirm"
+              >
+                <mat-icon>check</mat-icon>
+              </button>
+              <button mat-icon-button type="button" (click)="closeAddForm()" title="Cancel">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

@@ -77,32 +77,32 @@
     </mat-card>
 
     <mat-card appearance="outlined" class="padding-x-1">
-      <mat-card-title class="padding-y-1">Daily Expenses</mat-card-title>
-      <mat-card-content formArrayName="dailyExpenses">
-        @for (expenseFormGroup of form.controls.dailyExpenses.controls; track $index) {
-        <div [formGroup]="expenseFormGroup" class="flex flex-gap-1">
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>Day of Month</mat-label>
-            <input matInput type="number" formControlName="dayOfMonth">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>Amount</mat-label>
-            <input matInput type="number" formControlName="amount">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>Comment</mat-label>
-            <input matInput type="text" formControlName="comment">
-          </mat-form-field>
-
-          <button mat-icon-button color="warn" type="button" (click)="removeDailyExpense($index)">
-            <mat-icon>delete</mat-icon>
-          </button>
+      <mat-card-title class="padding-y-1">
+        <div class="flex flex-gap-1" style="align-items: center;">
+          <span style="flex:1">Daily Expenses</span>
+          <mat-button-toggle-group
+            [value]="dailyExpensesView()"
+            (change)="dailyExpensesView.set($any($event).value)"
+            hideSingleSelectionIndicator
+          >
+            <mat-button-toggle value="calendar">
+              <mat-icon>calendar_month</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle value="list">
+              <mat-icon>list</mat-icon>
+            </mat-button-toggle>
+          </mat-button-toggle-group>
         </div>
+      </mat-card-title>
+      <mat-card-content>
+        @if (dailyExpensesView() === 'calendar') {
+          <app-daily-expenses-calendar
+            [salaryDayOfMonth]="form.controls.salaryDayOfMonth.value ?? 1"
+            [dailyExpenses]="form.controls.dailyExpenses"
+          />
+        } @else {
+          <app-daily-expenses-list [dailyExpenses]="form.controls.dailyExpenses" />
         }
-
-        <button mat-button type="button" (click)="addDailyExpense()">Add Daily Expense</button>
       </mat-card-content>
     </mat-card>
   </form>
