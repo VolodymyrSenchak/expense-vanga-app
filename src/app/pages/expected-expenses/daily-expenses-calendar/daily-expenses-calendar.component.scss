@@ -1,5 +1,5 @@
 $cell-border: rgba(0, 0, 0, 0.12);
-$weekend-bg: color-mix(in srgb, var(--mat-sys-primary) 8%, transparent);
+$weekend-bg: color-mix(in srgb, var(--mat-sys-primary) 14%, transparent);
 $non-editable-bg: rgba(0, 0, 0, 0.03);
 $non-editable-color: rgba(0, 0, 0, 0.38);
 
@@ -78,7 +78,7 @@ $non-editable-color: rgba(0, 0, 0, 0.38);
   }
 
   :host-context(.dark-theme) &.weekend {
-    background-color: color-mix(in srgb, var(--mat-sys-primary) 6%, transparent);
+    background-color: color-mix(in srgb, var(--mat-sys-primary) 16%, transparent);
   }
 }
 
