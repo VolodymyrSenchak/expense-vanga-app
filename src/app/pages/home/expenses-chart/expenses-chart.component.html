@@ -2,7 +2,7 @@
   <div class="flex-center flex-space-between flex-gap-1">
     <app-month-analytics [monthAnalytics]="monthAnalytics()" />
 
-    <mat-button-toggle-group [value]="dateFilter()" (change)="dateFilter.set($any($event).value)">
+    <mat-button-toggle-group [value]="dateFilter()" (change)="dateFilter.set($any($event).value)" hideSingleSelectionIndicator>
       <mat-button-toggle value="whole">Whole month</mat-button-toggle>
       <mat-button-toggle value="till-today">Till today</mat-button-toggle>
       <mat-button-toggle value="from-today">From today</mat-button-toggle>

@@ -3,6 +3,7 @@
     <mat-button-toggle-group
       name="view-mode"
       aria-label="View mode"
+      hideSingleSelectionIndicator
       [value]="viewMode()"
       (change)="changeViewMode($event.value)"
     >

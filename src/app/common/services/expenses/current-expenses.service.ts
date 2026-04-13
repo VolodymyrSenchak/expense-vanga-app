@@ -92,9 +92,11 @@ export class CurrentExpensesService {
     for (const date of this.getDatesBetweenSalary(forDate, expectedExpenses.salaryDayOfMonth)) {
       const actualExpense = actualExpenses.expenses.find(d => DATE_UTILS.isSame(d.date, date));
       const weeklyExpectedExpense = expectedExpenses.weeklyExpenses.find(w => DATE_UTILS.isDayOfWeek(date, w.dayOfWeek));
-      const dailyExpectedExpense = expectedExpenses.dailyExpenses.find(w => w.dayOfMonth === date.getDate());
+      const dailyExpectedExpenses = expectedExpenses.dailyExpenses.filter(w => w.dayOfMonth === date.getDate());
+      const dailyExpenseAmount = dailyExpectedExpenses.reduce((sum, e) => sum + e.amount, 0);
+      const dailyExpenseComment = dailyExpectedExpenses.map(e => e.comment).filter(Boolean).join(', ') || undefined;
       const weeklyExpenseAmount = ((weeklyExpectedExpense?.amount ?? 0) * (expectedExpenses.weeklyExpenseCoefficient ?? 1));
-      const expectedExpense = weeklyExpenseAmount + (dailyExpectedExpense?.amount ?? 0);
+      const expectedExpense = weeklyExpenseAmount + dailyExpenseAmount;
 
       const actualExpenseAmount = !actualExpense
         ? expectedExpense
@@ -109,7 +111,7 @@ export class CurrentExpensesService {
         dayOfWeekFormatted: DATE_UTILS.format(date, 'day-of-week'),
         actualExpenseAmount,
         expectedExpenseAmount: expectedExpense,
-        expectedDailyComment: dailyExpectedExpense?.comment,
+        expectedDailyComment: dailyExpenseComment,
         actualDailyComment: actualExpense?.comment,
         expectedAmountLeft,
         actualAmountLeft,

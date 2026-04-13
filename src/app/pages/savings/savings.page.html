@@ -69,7 +69,7 @@
               Add
             </button>
           </div>
-          <mat-button-toggle-group [value]="viewMode()" (change)="viewMode.set($any($event).value)">
+          <mat-button-toggle-group [value]="viewMode()" (change)="viewMode.set($any($event).value)" hideSingleSelectionIndicator>
             <mat-button-toggle value="list"><mat-icon>list</mat-icon></mat-button-toggle>
             <mat-button-toggle value="chart"><mat-icon>bar_chart</mat-icon></mat-button-toggle>
           </mat-button-toggle-group>
