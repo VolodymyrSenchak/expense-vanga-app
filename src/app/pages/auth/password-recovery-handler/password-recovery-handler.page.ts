@@ -1,5 +1,5 @@
 import {Component, inject, OnInit } from '@angular/core';
-import {AuthService, AuthStore } from '@common/services';
+import {AuthService, AuthStore, DialogManager } from '@common/services';
 import {ActivatedRoute, Router} from '@angular/router';
 import {firstValueFrom} from 'rxjs';
 
@@ -13,10 +13,12 @@ export class PasswordRecoveryHandlerPage implements OnInit {
   readonly authStore = inject(AuthStore);
   readonly authService = inject(AuthService);
   readonly router = inject(Router);
+  readonly dialogManager = inject(DialogManager);
 
   async ngOnInit(): Promise<void> {
     await this.tryAuthenticateUser();
-    await this.router.navigateByUrl('/#modal=change-password');
+    await this.router.navigateByUrl('/');
+    this.dialogManager.openDialog('password-reset-forgotten-dialog', {});
   }
 
   private async tryAuthenticateUser(): Promise<void> {

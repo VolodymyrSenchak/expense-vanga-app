@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import {inject, Injectable} from "@angular/core";
 import {Observable, tap} from 'rxjs';
-import {AuthCommand, PasswordChangeCommand, PasswordResetCommand, User} from '@common/models/auth';
+import {AuthCommand, PasswordChangeCommand, PasswordChangeForgottenCommand, PasswordResetCommand, User} from '@common/models/auth';
 import {AuthResult, PasswordResetResult} from '@common/models/auth/auth-result.model';
 import {AuthRegisterCommand} from '@common/models/auth/auth-register-command.model';
 import {AuthStore} from '@common/services/auth.local-store';
@@ -39,6 +39,10 @@ export class AuthService {
 
   changePassword(command: PasswordChangeCommand): Observable<void> {
     return this.http.post<void>(`auth/changePassword`, command);
+  }
+
+  changePasswordForgotten(command: PasswordChangeForgottenCommand): Observable<void> {
+    return this.http.post<void>(`auth/changePasswordForgotten`, command);
   }
 
   private persistAuthResult(authResult: AuthResult): void {

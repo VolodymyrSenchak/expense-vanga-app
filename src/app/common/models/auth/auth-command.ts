@@ -9,5 +9,10 @@ export interface PasswordResetCommand {
 }
 
 export interface PasswordChangeCommand {
-  password: string;
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface PasswordChangeForgottenCommand {
+  newPassword: string;
 }

@@ -5,6 +5,7 @@ export type DialogType =
   'auth-form'
   | 'register-form'
   | 'password-reset-dialog'
+  | 'password-reset-forgotten-dialog'
   | 'user-profile'
   | 'password-change-dialog'
   | 'unknown';

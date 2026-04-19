@@ -6,9 +6,10 @@ import { MatError, MatFormField, MatInput, MatLabel } from "@angular/material/in
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { AuthService, DialogManager } from "@common/services";
 import { firstValueFrom } from "rxjs";
+import { Router } from "@angular/router";
 
 @Component({
-  selector: 'app-password-change-dialog',
+  selector: 'app-password-reset-forgotten-dialog',
   imports: [
     FormsModule,
     MatDialogContent,
@@ -20,15 +21,16 @@ import { firstValueFrom } from "rxjs";
     MatFormField,
     MatError
   ],
-  templateUrl: './password-change-dialog.component.html',
+  templateUrl: './password-reset-forgotten-dialog.component.html',
 })
-export class PasswordChangeDialogComponent {
-  readonly dialogRef = inject(MatDialogRef<PasswordChangeDialogComponent>);
+export class PasswordResetForgottenDialogComponent {
+  readonly dialogRef = inject(MatDialogRef<PasswordResetForgottenDialogComponent>);
 
   readonly fb = inject(FormBuilder);
-  readonly dialogManager = inject(DialogManager);
   readonly authService = inject(AuthService);
   readonly snackBar = inject(MatSnackBar);
+  readonly dialogManager = inject(DialogManager);
+  readonly router = inject(Router);
 
   readonly passwordsMatchValidator: ValidatorFn = (control: AbstractControl) => {
     const password = control.get('password')?.value;
@@ -37,32 +39,31 @@ export class PasswordChangeDialogComponent {
   };
 
   readonly form = this.fb.group({
-    currentPassword: ['', [Validators.required, Validators.minLength(6)]],
     password: ['', [Validators.required, Validators.minLength(6)]],
     confirmPassword: ['', [Validators.required, Validators.minLength(6)]],
   }, { validators: this.passwordsMatchValidator });
 
-  async onChangePassword(): Promise<void> {
+  async onResetPassword(): Promise<void> {
     try {
       if (!this.form.valid) return;
 
       await firstValueFrom(
-        this.authService.changePassword({
-          currentPassword: this.form.value.currentPassword!,
+        this.authService.changePasswordForgotten({
           newPassword: this.form.value.password!,
         }));
-      this.snackBar.open('Password changed successfully', 'Close', { duration: 3000 });
-      this.backToUserProfile();
+      this.snackBar.open('Password reset successfully', 'Close', { duration: 3000 });
+      this.dialogRef.close();
+      await this.router.navigateByUrl('/');
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Password changing failed. Please try again.';
+      const errorMessage = err instanceof Error ? err.message : 'Password reset failed. Please try again.';
       this.snackBar.open(errorMessage, 'Close', {
         duration: 3000,
       });
     }
   }
 
-  backToUserProfile(): void {
+  goBack(): void {
     this.dialogRef.close();
-    this.dialogManager.openDialog("user-profile", {});
+    this.router.navigateByUrl('/');
   }
 }

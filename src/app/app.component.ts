@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { AppHeader } from './layout/app-header/app-header.component';
 import {MatDialog} from '@angular/material/dialog';
 import {CurrentExpensesService, DialogManager, DialogType, LoadingService} from '@common/services';
-import {AuthDialogComponent, RegisterDialogComponent, PasswordResetDialogComponent, PasswordChangeDialogComponent} from './dialogs/auth';
+import {AuthDialogComponent, RegisterDialogComponent, PasswordResetDialogComponent, PasswordChangeDialogComponent, PasswordResetForgottenDialogComponent} from './dialogs/auth';
 import {UserProfileDialogComponent} from './layout/user-profile/user-profile-dialog';
 import { ThemeService } from '@common/services/theme.service';
 
@@ -36,6 +36,7 @@ export class AppComponent implements OnInit {
       case "register-form": return RegisterDialogComponent;
       case "user-profile": return UserProfileDialogComponent;
       case "password-reset-dialog": return PasswordResetDialogComponent;
+      case "password-reset-forgotten-dialog": return PasswordResetForgottenDialogComponent;
       case "password-change-dialog": return PasswordChangeDialogComponent;
       default: return null;
     }
