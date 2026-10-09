@@ -1,8 +1,17 @@
 import {Component, computed, inject, OnInit, signal} from '@angular/core';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
-import {RouterLink} from '@angular/router';
 import {MatCardModule} from '@angular/material/card';
+import {MatInputModule} from '@angular/material/input';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {FormsModule} from '@angular/forms';
+import {
+  AmountComponent,
+  CurrencyAutocompleteComponent,
+  EmptyStateComponent,
+  PageHeaderComponent,
+  StatComponent,
+} from '@components/ui';
 import {LoadingComponent} from '@components/loading';
 import {LoadingService} from '@common/services';
 import {CurrenciesModel, SavingModel, SavingTransactionModel, SavingsModel} from '@common/models';
@@ -31,15 +40,23 @@ interface FlatTransaction {
   imports: [
     MatIconModule,
     MatButtonModule,
-    RouterLink,
     MatCardModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    FormsModule,
     LoadingComponent,
     DecimalPipe,
     DatePipe,
     MatButtonToggleModule,
     SavingsChartComponent,
+    PageHeaderComponent,
+    StatComponent,
+    AmountComponent,
+    EmptyStateComponent,
+    CurrencyAutocompleteComponent,
   ],
   templateUrl: './savings.page.html',
+  styleUrl: './savings.page.scss',
 })
 export class SavingsPageComponent implements OnInit {
   private readonly savingsService = inject(SavingsService);
@@ -49,6 +66,12 @@ export class SavingsPageComponent implements OnInit {
 
   readonly savings = signal<SavingModel[]>([]);
   readonly viewMode = signal<'list' | 'chart'>('list');
+
+  readonly newSavingName = signal('');
+  readonly newSavingCurrency = signal('');
+  readonly canCreateFirstSaving = computed(
+    () => this.newSavingName().trim().length > 0 && this.newSavingCurrency().trim().length > 0,
+  );
 
   readonly currencies$ = this.currenciesService.getCurrencies$()
     .pipe(shareReplay({bufferSize: 1, refCount: true}));
@@ -103,16 +126,32 @@ export class SavingsPageComponent implements OnInit {
           list.map(s => s.id === saving.id ? {...s, ...dialogResult} : s)
         );
       } else {
-        const newSaving: SavingModel = {
-          id: crypto.randomUUID(),
-          name: dialogResult.name,
-          currency: dialogResult.currency,
-          transactions: [],
-        };
-        this.savings.update(list => [...list, newSaving]);
+        this.addSaving(dialogResult);
       }
     }
     await this.persist();
+  }
+
+  /** Inline form shown while there are no savings; same result shape and normalization as the dialog. */
+  async createFirstSaving(): Promise<void> {
+    if (!this.canCreateFirstSaving()) return;
+    this.addSaving({
+      name: this.newSavingName().trim(),
+      currency: this.newSavingCurrency().trim().toUpperCase(),
+    });
+    this.newSavingName.set('');
+    this.newSavingCurrency.set('');
+    await this.persist();
+  }
+
+  private addSaving(result: SavingDialogResult): void {
+    const newSaving: SavingModel = {
+      id: crypto.randomUUID(),
+      name: result.name,
+      currency: result.currency,
+      transactions: [],
+    };
+    this.savings.update(list => [...list, newSaving]);
   }
 
   async openTransactionDialog(flat?: FlatTransaction): Promise<void> {

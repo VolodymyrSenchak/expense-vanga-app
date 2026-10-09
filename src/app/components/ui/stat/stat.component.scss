@@ -45,3 +45,8 @@
     &.hero-2 { font-size: 30px; }
   }
 }
+
+:host(.plain) .label {
+  color: var(--ev-muted);
+  font: var(--ev-text-small);
+}

@@ -1,0 +1,113 @@
+.totals {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 28px;
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ev-space-card);
+  align-items: flex-start;
+}
+
+.savings-card {
+  flex: 1 1 380px;
+  min-width: 0;
+  gap: 20px;
+}
+
+.transactions-card {
+  flex: 2 1 520px;
+  min-width: 0;
+}
+
+.card-text {
+  margin: 6px 0 0;
+}
+
+.create-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  .name { flex: 2 1 180px; }
+  .currency { flex: 1 1 110px; }
+}
+
+.saving-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.saving-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--ev-row-height);
+  border-bottom: 1px solid var(--ev-line);
+
+  &.excluded ev-amount {
+    color: var(--ev-muted);
+  }
+}
+
+.saving-name {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.saving-actions {
+  display: flex;
+  color: var(--ev-muted);
+}
+
+.transactions-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--ev-line);
+}
+
+.transaction-list {
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.transaction-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--ev-row-height);
+  padding: 8px 16px 8px 24px;
+  border-bottom: 1px solid var(--ev-line);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  button {
+    color: var(--ev-muted);
+  }
+}
+
+.transaction-main {
+  flex: 1 1 auto;
+}
+
+.transaction-title {
+  gap: 4px 12px;
+
+  .amount {
+    font-weight: 500;
+  }
+}
+
+.chart-box {
+  padding: 16px 24px 24px;
+}

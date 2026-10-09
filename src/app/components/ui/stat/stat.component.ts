@@ -9,6 +9,7 @@ import {DecimalPipe} from '@angular/common';
   styleUrl: './stat.component.scss',
   host: {
     '[class.expected]': "kind() === 'expected'",
+    '[class.plain]': "kind() === 'plain'",
   },
 })
 export class StatComponent {

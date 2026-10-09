@@ -1,10 +1,10 @@
 @if (!hasTransactions()) {
-  <div style="text-align: center; padding: 2rem; opacity: 0.5">No transactions yet</div>
+  <div class="empty ev-muted">No transactions yet</div>
 } @else {
-  <div class="flex flex-center flex-space-between" style="margin-bottom: 0.75rem">
-    <mat-button-toggle-group [value]="chartMode()" (change)="chartMode.set($any($event).value)" hideSingleSelectionIndicator>
-      <mat-button-toggle value="cumulative"><mat-icon>show_chart</mat-icon></mat-button-toggle>
-      <mat-button-toggle value="monthly"><mat-icon>bar_chart</mat-icon></mat-button-toggle>
+  <div class="toolbar">
+    <mat-button-toggle-group [value]="chartMode()" (change)="chartMode.set($event.value)" aria-label="Chart">
+      <mat-button-toggle value="cumulative">Running total</mat-button-toggle>
+      <mat-button-toggle value="monthly">Per month</mat-button-toggle>
     </mat-button-toggle-group>
   </div>
   @if (chartMode() === 'cumulative') {
