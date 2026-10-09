@@ -1,5 +1,5 @@
 import {computed, inject, Injectable} from '@angular/core';
-import {ChartType, Plugin, ScaleOptionsByType} from 'chart.js';
+import {ChartOptions, ChartType, Plugin} from 'chart.js';
 import {ThemeService} from '@common/services/theme.service';
 
 export interface ChartColors {
@@ -48,7 +48,7 @@ export const withAlpha = (color: string, alpha: number): string => {
 export const chartScales = (
   colors: ChartColors,
   options: {compact?: boolean} = {},
-): {x: Partial<ScaleOptionsByType<'category'>>; y: Partial<ScaleOptionsByType<'linear'>>} => {
+): NonNullable<ChartOptions<'line' | 'bar'>['scales']> => {
   const ticksFont = {family: colors.fontMono, size: 12};
   return {
     x: {

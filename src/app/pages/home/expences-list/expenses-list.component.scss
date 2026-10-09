@@ -1,144 +1,117 @@
-.current-expenses-list {
-  .mdc-data-table__cell, .mdc-data-table__header-cell {
+:host {
+  display: block;
+}
+
+.card-head {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--ev-line);
+}
+
+.skeleton {
+  padding: 16px 24px;
+}
+
+// Below 900 px the table scrolls sideways inside the card.
+.scroller {
+  overflow-x: auto;
+}
+
+.ledger {
+  width: 100%;
+  min-width: 900px;
+
+  th, td {
     padding: 0 8px;
-    line-height: 1.1;
-    vertical-align: baseline;
+
+    &:first-child { padding-left: 24px; }
+    &:last-child { padding-right: 24px; }
   }
 
-  .mat-mdc-header-row {
-    height: 32px;
+  .group-row,
+  .column-row {
+    background: var(--ev-soft);
   }
 
-  .mat-column-dateFormatted {
-    width: 110px;
-    min-width: 110px;
+  .group-row th {
+    height: auto;
+    padding-top: 10px;
+    border-bottom: 0;
+    vertical-align: bottom;
+    font-size: 13px;
+    font-weight: 600;
   }
 
-  .date-cell {
-    display: flex;
-    flex-direction: column;
-    padding: 4px 0;
-
-    .day-of-week {
-      font-size: 0.75em;
-      color: #777;
-    }
+  .group span {
+    display: block;
+    padding-bottom: 6px;
   }
 
-  .mat-column-expected, .mat-column-actual {
-    width: 50%;
-    border-left: 1px solid #e0e0e0;
+  .group.expected span {
+    border-bottom: 2px solid var(--ev-muted);
+    color: var(--ev-muted);
   }
 
-  .column-header {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-
-    .subheader-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.8em;
-      font-weight: 500;
-    }
+  .group.actual span {
+    border-bottom: 3px solid var(--ev-accent);
+    color: var(--ev-ink);
   }
 
-  .list {
-    flex: 1;
+  .num {
+    text-align: right;
   }
 
-  .amount-cell {
-    padding: 4px 0;
-    min-height: 26px;
-
-    .amount-row {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 8px;
-
-      .left-amount {
-        color: #666;
-      }
-    }
-
-    .comment {
-      font-size: 0.8em;
-      opacity: 0.6;
-      font-style: italic;
-      margin-top: 2px;
-      text-align: right;
-      font-weight: 500;
-    }
+  .mat-column-day {
+    width: 140px;
   }
 
-  &.dark {
-    .expense-row.previous-day {
-      color: #555;
-    }
-
-    .expense-row {
-      &.affected, &.today, &.weekend {
-        background-color: color-mix(in srgb, var(--mat-sys-primary) 12%, #000000);
-      }
-
-      .mat-column-actual {
-        &:hover, &:focus {
-          background-color: color-mix(in srgb, var(--mat-sys-primary) 12%, #000000);
-        }
-      }
-
-      .amount-cell .amount-row .left-amount {
-        color: #8a9890;
-      }
-
-      .amount-cell .comment {
-        color: #6a7a6a;
-      }
-
-      .date-cell .day-of-week {
-        color: #8a9890;
-      }
-    }
+  .mat-column-note {
+    width: 26%;
   }
 
-  .expense-row {
+  .mat-column-action {
+    width: 80px;
+    text-align: right;
+  }
+
+  .day {
+    font-weight: 600;
+  }
+
+  .weekday {
+    color: var(--ev-muted);
+    font-size: 12px;
+  }
+
+  .note {
+    font-size: 14px;
+  }
+
+  .ev-over ev-amount,
+  .ev-under ev-amount {
+    color: inherit;
+  }
+
+  tr.mat-mdc-row {
     transition: background-color 0.3s ease;
 
-    &.affected {
-      background-color: #ECECEC;
+    &.weekend { background: var(--ev-soft); }
+    &.today { background: var(--ev-tint); }
+    &.affected { background: var(--ev-tint); }
+    &.previous-day td { color: var(--ev-muted); }
+
+    .mat-mdc-icon-button {
+      color: var(--ev-muted);
     }
+  }
+}
 
-    .mat-column-actual {
-      cursor: pointer;
-      &:hover {
-        background-color: #ECECEC;
-      }
+.more {
+  display: flex;
+  justify-content: center;
+  padding: 8px 24px;
 
-      &:focus {
-        outline: none;
-        background-color: #ECECEC;
-      }
-
-      .less-expected {
-        color: #3e8840;
-      }
-
-      .above-expected {
-        color: #f44336;
-      }
-    }
-
-    &.today {
-      background-color: #f0f8ff;
-    }
-
-    &.weekend {
-      background-color: color-mix(in srgb, var(--mat-sys-primary) 5%, white);
-    }
-
-    &.previous-day {
-      color: #989898;
-    }
+  button {
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 }

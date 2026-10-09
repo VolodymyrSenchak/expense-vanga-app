@@ -5,6 +5,7 @@ import {LoadingComponent} from '@components/loading';
 import {BaseExpensesListComponent} from '../base-expenses-list';
 import {ExpensesDetailsHeaderComponent} from '../expenses-details-header';
 import {DesktopViewMode} from '@common/models';
+import {AmountComponent} from '@components/ui';
 
 interface ExpenseForDayWrapper {
   monthDay: number;
@@ -21,6 +22,7 @@ interface ExpenseForDayWrapper {
   imports: [
     LoadingComponent,
     ExpensesDetailsHeaderComponent,
+    AmountComponent,
   ],
   templateUrl: './expenses-calendar.component.html',
   styleUrl: './expenses-calendar.component.scss'

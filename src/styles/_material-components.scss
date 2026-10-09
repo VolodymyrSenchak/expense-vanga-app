@@ -175,3 +175,9 @@
     border-radius: var(--ev-radius-control);
   }
 }
+
+// Card whose content runs edge to edge (tables); the content sets its own padding.
+.mat-mdc-card.ev-card-flush {
+  padding: 0;
+  overflow: hidden;
+}

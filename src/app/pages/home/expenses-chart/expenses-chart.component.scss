@@ -1,0 +1,22 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.canvas-box {
+  position: relative;
+  height: 280px;
+}
+
+:host(.compact) .canvas-box {
+  height: 200px;
+}

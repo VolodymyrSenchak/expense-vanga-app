@@ -90,6 +90,23 @@ describe('CurrentExpensesService', () => {
     expect(analytics).toEqual({expectedAmountLeft: 3600, actualAmountLeft: 3580, diff: 20});
   });
 
+  it('sums spending from the cycle start through today (D1)', async () => {
+    // Oct 1-9: expected 9 x 100; actual 100+100+150+100+100+80+100+70+100.
+    expect(await firstValueFrom(service.spentSoFar$)).toEqual({
+      fromDate: '2026-10-01', expectedSpent: 900, actualSpent: 900, overPlan: 0,
+    });
+  });
+
+  it('reports overspending since the cycle start (D1)', async () => {
+    expensesService.getActualExpenses$.and.returnValue(of({expenses: [
+      {date: '2026-10-02', amount: 250, isOverridingExpected: false, comment: ''},
+      {date: '2026-10-20', amount: 999, isOverridingExpected: false, comment: 'future, not counted'},
+    ]}));
+    expect(await firstValueFrom(service.spentSoFar$)).toEqual({
+      fromDate: '2026-10-01', expectedSpent: 900, actualSpent: 1150, overPlan: 250,
+    });
+  });
+
   it('derives today\'s actual expense from current balances', async () => {
     await firstValueFrom(service.actualizeActualExpenseForToday$({
       money: [{name: 'Card', amount: 5000, currency: 'USD'}, {name: 'Cash', amount: 1000, currency: 'USD'}],

@@ -1,22 +1,18 @@
-<div class="padding-bottom-1 padding-top-1 flex flex-gap-2 final-results">
-  <div class="flex-column">
-    <h5 class="line-height-1">Expected final left</h5>
-    <span>{{ monthAnalytics().expectedAmountLeft | number:'1.2-2' }}</span>
-  </div>
-  <div class="flex-column">
-    <h5 class="line-height-1">Actual final left</h5>
-    <span>{{ monthAnalytics().actualAmountLeft | number:'1.2-2' }}</span>
-  </div>
-  <div class="flex-column">
-    <h5 class="line-height-1">Monthly diff</h5>
-    <div>
-      @if (monthAnalytics().diff < 0) {
-        <mat-icon style="color: green; vertical-align: middle; margin-left: -6px">keyboard_double_arrow_up</mat-icon>
-      } @else if (monthAnalytics().diff > 0) {
-        <mat-icon style="color: red; vertical-align: middle; margin-left: -6px">keyboard_double_arrow_down</mat-icon>
-      }
-      <span>{{ monthAnalytics()!.diff | expenseSign | number:'1.2-2' }}</span>
-    </div>
-
-  </div>
+<div class="caption ev-muted">Left on {{ endLabel() }}</div>
+<div class="stats">
+  <ev-stat
+    [label]="compact() ? 'Actual' : 'Actual · how it is going'"
+    kind="actual"
+    [size]="compact() ? 'compact' : 'hero'"
+    [value]="monthAnalytics().actualAmountLeft"
+    [currency]="compact() ? undefined : currency()"
+  />
+  <ev-stat
+    [label]="compact() ? 'Expected' : 'Expected · your plan'"
+    kind="expected"
+    [size]="compact() ? 'compact' : 'hero-2'"
+    [value]="monthAnalytics().expectedAmountLeft"
+    [currency]="compact() ? undefined : currency()"
+  />
 </div>
+<ev-diff-chip [diff]="monthAnalytics().diff" [currency]="currency()" />

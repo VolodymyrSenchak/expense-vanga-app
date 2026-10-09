@@ -1,17 +1,23 @@
-<div class="chart-container">
-  <div class="flex-center flex-space-between flex-gap-1">
-    <app-month-analytics [monthAnalytics]="monthAnalytics()" />
+<div class="toolbar">
+  <mat-button-toggle-group [value]="chartView()" (change)="changeChartView($event.value)" aria-label="Chart view">
+    <mat-button-toggle value="balance">Balance</mat-button-toggle>
+    <mat-button-toggle value="daily">Daily</mat-button-toggle>
+  </mat-button-toggle-group>
 
-    <mat-button-toggle-group [value]="dateFilter()" (change)="dateFilter.set($any($event).value)" hideSingleSelectionIndicator>
-      <mat-button-toggle value="whole">Whole month</mat-button-toggle>
-      <mat-button-toggle value="till-today">Till today</mat-button-toggle>
-      <mat-button-toggle value="from-today">From today</mat-button-toggle>
-    </mat-button-toggle-group>
-  </div>
+  <mat-button-toggle-group [value]="dateFilter()" (change)="dateFilter.set($event.value)" aria-label="Chart range">
+    <mat-button-toggle value="whole">Whole month</mat-button-toggle>
+    <mat-button-toggle value="till-today">Till today</mat-button-toggle>
+    <mat-button-toggle value="from-today">From today</mat-button-toggle>
+  </mat-button-toggle-group>
+</div>
 
+<div class="canvas-box">
   <canvas baseChart
     [data]="chartData()"
-    [options]="lineChartOptions()"
-    [legend]="true">
+    [options]="chartOptions()"
+    [plugins]="plugins"
+    [legend]="false">
   </canvas>
 </div>
+
+<ev-legend-key [items]="legend()" />

@@ -1,0 +1,20 @@
+<mat-card>
+  <div class="head">
+    <h2 class="ev-h3">Today</h2>
+    <span class="ev-small ev-muted">{{ dateLabel() }}</span>
+  </div>
+
+  <div class="planned">
+    <div class="ev-small ev-muted">Planned to spend</div>
+    <ev-amount class="planned-value" [value]="today().expectedExpenseAmount" format="spend" />
+  </div>
+
+  <div class="left">
+    <div class="ev-small ev-muted">Left after today</div>
+    <ev-amount-pair [expected]="today().expectedAmountLeft" [actual]="today().actualAmountLeft" />
+  </div>
+
+  @if (showAction()) {
+    <app-actualize-expenses-button class="action" />
+  }
+</mat-card>

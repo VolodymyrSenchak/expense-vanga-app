@@ -1,13 +1,18 @@
 import dayjs from 'dayjs'
 import {DayOfWeek} from '../models';
 
-export type DateFormat = 'date' | 'month-year' | 'month-day' | 'day-of-week';
+export type DateFormat = 'date' | 'month-year' | 'month-day' | 'day-of-week'
+  | 'short-month-day' | 'weekday-month-day' | 'long-weekday-month-day' | 'month-name';
 
 const DATE_FORMATS: Record<DateFormat, string> = {
   'month-year': 'MMM-YY',
   'date': 'YYYY-MM-DD',
   'month-day': 'MMM DD',
   'day-of-week': 'dddd',
+  'short-month-day': 'MMM D',
+  'weekday-month-day': 'ddd, MMM D',
+  'long-weekday-month-day': 'dddd, MMM D',
+  'month-name': 'MMMM',
 };
 
 export const DATE_UTILS = {

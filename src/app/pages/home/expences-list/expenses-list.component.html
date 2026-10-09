@@ -1,99 +1,118 @@
-<div class="current-expenses-list height-full flex-column" [class.dark]="theme.isDark()">
-  <app-expenses-details-header [viewMode]="viewMode()" (viewModeChanged)="viewModeChanged.emit($event)">
-    <mat-slide-toggle [checked]="showPrevious()" (change)="showPrevious.set($event.checked)">
-      Previous days
-    </mat-slide-toggle>
-  </app-expenses-details-header>
-  <div class="list height-0 flex-1 scrollable-content margin-top-1">
-    @if (!currentExpenses()?.expenses) {
-    <div class="padding-top-1">
-      <app-loading [loadingOptions]="{ isLoading: true, message: '' }" mode="skeleton" [skeletonBody]="skeleton" />
-    </div>
-    } @else {
-    <table mat-table [dataSource]="currentExpensesPrepared()" class="mat-elevation-z8">
-      <ng-container matColumnDef="dateFormatted">
-        <th mat-header-cell *matHeaderCellDef>Day</th>
-        <td mat-cell *matCellDef="let element">
-          <div class="date-cell">
-            <span>{{ element.dateFormatted }}</span>
-            <span class="day-of-week">{{ element.dayOfWeekFormatted }}</span>
-          </div>
-        </td>
-      </ng-container>
+<app-expenses-details-header class="card-head" [viewMode]="viewMode()" (viewModeChanged)="viewModeChanged.emit($event)">
+  <mat-checkbox [checked]="showPrevious()" (change)="showPrevious.set($event.checked)">
+    Show previous days
+  </mat-checkbox>
+</app-expenses-details-header>
 
-      <ng-container matColumnDef="expected">
-        <th mat-header-cell *matHeaderCellDef>
-          <div class="column-header">
-            <span>Expected</span>
-            <div class="subheader-row">
-              <span>Left</span>
-              <span>Spent</span>
-            </div>
-          </div>
+@if (!currentExpenses()?.expenses) {
+  <div class="skeleton">
+    <app-loading [loadingOptions]="{ isLoading: true, message: '' }" mode="skeleton" [skeletonBody]="skeleton" />
+  </div>
+} @else {
+  <div class="scroller">
+    <table mat-table [dataSource]="visibleRows()" class="ledger">
+      <!-- Group header row -->
+      <ng-container matColumnDef="groupDay">
+        <th mat-header-cell *matHeaderCellDef></th>
+      </ng-container>
+      <ng-container matColumnDef="groupExpected">
+        <th mat-header-cell *matHeaderCellDef [attr.colspan]="2" class="group expected">
+          <span>Expected · your plan</span>
         </th>
-        <td mat-cell *matCellDef="let element">
-          <div class="amount-cell">
-            <div class="amount-row">
-              <span class="left-amount">{{ element.expectedAmountLeft | number : "1.2-2" }}</span>
-              <span class="spent-amount">{{ element.expectedExpenseAmount | expenseSign | number : "1.2-2" }}</span>
-            </div>
-            @if (element.expectedDailyComment) {
-            <div class="comment">
-              {{ element.expectedExpenseAmount - element.weeklyExpenseAmount + " " + element.expectedDailyComment }}
-            </div>
-            }
-          </div>
-        </td>
       </ng-container>
-
-      <ng-container matColumnDef="actual">
-        <th mat-header-cell *matHeaderCellDef>
-          <div class="column-header">
-            <span>Actual</span>
-            <div class="subheader-row">
-              <span>Left</span>
-              <span>Spent</span>
-            </div>
-          </div>
+      <ng-container matColumnDef="groupActual">
+        <th mat-header-cell *matHeaderCellDef [attr.colspan]="2" class="group actual">
+          <span>Actual · how it is going</span>
         </th>
-        <td
-          mat-cell
-          *matCellDef="let element; let idx"
-          [tabindex]="idx"
-          (click)="startEditing(element)"
-          (keydown.enter)="startEditing(element)"
-        >
-          <div class="amount-cell">
-            <div class="amount-row">
-              <span class="left-amount">{{ element.actualAmountLeft | number : "1.2-2" }}</span>
-              <span
-                class="spent-amount"
-                [class.less-expected]="element.actualExpenseAmount < element.expectedExpenseAmount"
-                [class.above-expected]="element.actualExpenseAmount > element.expectedExpenseAmount"
-              >
-                {{ element.actualExpenseAmount | expenseSign | number : "1.2-2" }}
-              </span>
-            </div>
-            @if (element.actualDailyComment) {
-            <div class="comment">
-              {{ element.actualExpenseAmount - element.weeklyExpenseAmount + " " + element.actualDailyComment }}
-            </div>
-            }
-          </div>
+      </ng-container>
+      <ng-container matColumnDef="groupRest">
+        <th mat-header-cell *matHeaderCellDef [attr.colspan]="2"></th>
+      </ng-container>
+
+      <!-- Columns -->
+      <ng-container matColumnDef="day">
+        <th mat-header-cell *matHeaderCellDef class="ev-label">Day</th>
+        <td mat-cell *matCellDef="let row">
+          <div class="day">{{ row.dateFormatted }}</div>
+          <div class="weekday">{{ row.dayOfWeekFormatted }}@if (row.isToday) { · today}</div>
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+      <ng-container matColumnDef="expectedSpent">
+        <th mat-header-cell *matHeaderCellDef class="ev-label num">Spent</th>
+        <td mat-cell *matCellDef="let row" class="num">
+          <ev-amount [value]="row.expectedExpenseAmount" kind="expected" format="spend" />
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="expectedLeft">
+        <th mat-header-cell *matHeaderCellDef class="ev-label num">Left</th>
+        <td mat-cell *matCellDef="let row" class="num">
+          <ev-amount [value]="row.expectedAmountLeft" kind="expected" />
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actualSpent">
+        <th mat-header-cell *matHeaderCellDef class="ev-label num">Spent</th>
+        <td mat-cell *matCellDef="let row" class="num"
+            [class.ev-over]="row.actualExpenseAmount > row.expectedExpenseAmount"
+            [class.ev-under]="row.actualExpenseAmount < row.expectedExpenseAmount">
+          <ev-amount [value]="row.actualExpenseAmount" format="spend" />
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actualLeft">
+        <th mat-header-cell *matHeaderCellDef class="ev-label num">Left</th>
+        <td mat-cell *matCellDef="let row" class="num">
+          <ev-amount [value]="row.actualAmountLeft" [strong]="true" />
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="note">
+        <th mat-header-cell *matHeaderCellDef class="ev-label">Note</th>
+        <td mat-cell *matCellDef="let row" class="note">
+          @if (row.expectedDailyComment) {
+            <div class="ev-muted">
+              {{ row.expectedDailyComment }} · {{ row.expectedExpenseAmount - row.weeklyExpenseAmount | number:'1.2-2' }}
+            </div>
+          }
+          @if (row.actualDailyComment) {
+            <div>
+              {{ row.actualDailyComment }} · {{ row.actualExpenseAmount - row.weeklyExpenseAmount | number:'1.2-2' }}
+            </div>
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let row" class="action">
+          @if (row.isToday) {
+            <button mat-flat-button (click)="startEditing(row)">Log</button>
+          } @else {
+            <button mat-icon-button (click)="startEditing(row)" [attr.aria-label]="'Edit ' + row.dateFormatted">
+              <mat-icon>edit</mat-icon>
+            </button>
+          }
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="groupColumns" class="group-row"></tr>
+      <tr mat-header-row *matHeaderRowDef="columns" class="column-row"></tr>
       <tr
         mat-row
-        *matRowDef="let row; columns: columnsToDisplay"
-        class="expense-row"
+        *matRowDef="let row; columns: columns"
         [class.today]="row.isToday"
         [class.weekend]="row.isWeekend"
         [class.previous-day]="row.isPreviousDay"
         [class.affected]="row.date === affectedExpenseDate()"
       ></tr>
     </table>
-    }
   </div>
-</div>
+
+  @if (hiddenCount() > 0) {
+    <div class="more">
+      <button mat-button (click)="expanded.set(true)">Show {{ hiddenCount() }} more days, to {{ lastDayLabel() }}</button>
+    </div>
+  }
+}
