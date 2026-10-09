@@ -1,0 +1,6 @@
+@for (item of items(); track item.label) {
+  <span class="item">
+    <span [class]="'mark ' + item.mark + ' ' + item.tone" aria-hidden="true"></span>
+    {{ item.label }}
+  </span>
+}

@@ -1,12 +1,13 @@
 import {Component, computed, inject } from '@angular/core';
 import {AuthStore, DialogManager} from '@common/services';
-import {MatButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
 import {toSignal} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-user-profile',
   imports: [
-    MatButton
+    MatButton,
+    MatIconButton,
   ],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.scss'

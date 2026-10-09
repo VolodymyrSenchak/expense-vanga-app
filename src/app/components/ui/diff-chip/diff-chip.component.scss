@@ -1,0 +1,23 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: var(--ev-radius-pill);
+  background: var(--ev-tint);
+  color: var(--ev-ink);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+:host(.behind) {
+  background: var(--ev-warn-bg);
+  color: var(--ev-warn);
+}
+
+mat-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}

@@ -8,6 +8,8 @@ import {MatFormField, MatInput, MatLabel} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import { switchMap, tap} from 'rxjs';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {CurrencyAutocompleteComponent} from '@components/ui';
 
 @Component({
   selector: 'app-expenses-actualize-dialog',
@@ -22,6 +24,8 @@ import { switchMap, tap} from 'rxjs';
     MatDialogContent,
     MatDialogTitle,
     MatIcon,
+    MatAutocompleteModule,
+    CurrencyAutocompleteComponent,
   ],
   templateUrl: './expenses-actualize-dialog.component.html',
   styleUrl: './expenses-actualize-dialog.component.scss'

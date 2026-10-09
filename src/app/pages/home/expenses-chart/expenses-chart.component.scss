@@ -1,0 +1,34 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.canvas-box {
+  position: relative;
+  height: 280px;
+}
+
+:host(.compact) .canvas-box {
+  height: 200px;
+}
+
+// Phone: each toggle group takes the full row and splits it evenly.
+:host(.compact) .toolbar {
+  mat-button-toggle-group {
+    width: 100%;
+  }
+
+  mat-button-toggle {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}

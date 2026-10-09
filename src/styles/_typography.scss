@@ -1,0 +1,64 @@
+// Text styles from the design. Amounts and date numbers use the mono face.
+
+body {
+  font: var(--ev-text-body);
+  color: var(--ev-ink);
+  background: var(--ev-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+.ev-h1 {
+  margin: 0;
+  font: var(--ev-text-h1);
+  letter-spacing: -0.01em;
+}
+
+.ev-h2 {
+  margin: 0;
+  font: var(--ev-text-h2);
+}
+
+.ev-h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.ev-label {
+  font: var(--ev-text-label);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ev-small {
+  font: var(--ev-text-small);
+}
+
+.ev-muted {
+  color: var(--ev-muted);
+}
+
+.ev-num {
+  font-family: var(--ev-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.ev-hero {
+  font: var(--ev-text-hero);
+  letter-spacing: -0.02em;
+}
+
+.ev-hero-2 {
+  font: var(--ev-text-hero-2);
+  letter-spacing: -0.02em;
+  color: var(--ev-muted);
+}
+
+.ev-over {
+  color: var(--ev-warn);
+}
+
+.ev-under {
+  color: var(--ev-accent);
+}

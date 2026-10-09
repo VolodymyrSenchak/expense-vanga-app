@@ -1,20 +1,30 @@
-<main class="home-page">
+<main class="ev-page">
   @if (isMobile()) {
     <app-expenses-inline-list />
   } @else {
-    <mat-card appearance="outlined" class="padding-x-1 list-view-card">
-      <mat-card-content style="height: 100%; box-sizing: border-box;">
-        @switch (viewMode()) {
-          @case ('calendar') { <app-expenses-calendar [viewMode]="viewMode()" (viewModeChanged)="changeViewMode($event)" /> }
-          @default { <app-expenses-list [viewMode]="viewMode()" (viewModeChanged)="changeViewMode($event)" /> }
-        }
-      </mat-card-content>
-    </mat-card>
-    <mat-card appearance="outlined" class="padding-x-1 chart-view-card">
-      <mat-card-title class="padding-top-1">Analytics</mat-card-title>
-      <mat-card-content>
+    <ev-page-header [title]="title()" [subtitle]="subtitle()">
+      <app-actualize-expenses-button />
+    </ev-page-header>
+
+    <div class="overview">
+      <mat-card class="hero" aria-label="Projected balance">
+        <app-month-analytics [monthAnalytics]="monthAnalytics()" [currency]="currency()" [endLabel]="cycle()?.end" />
         <app-expenses-chart />
-      </mat-card-content>
+      </mat-card>
+
+      <div class="side">
+        @if (today(); as today) {
+          <app-today-card [today]="today" />
+        }
+        <app-spent-card [spentSoFar]="spentSoFar()" />
+      </div>
+    </div>
+
+    <mat-card class="ev-card-flush" aria-label="Day by day">
+      @switch (viewMode()) {
+        @case ('calendar') { <app-expenses-calendar [viewMode]="viewMode()" (viewModeChanged)="changeViewMode($event)" /> }
+        @default { <app-expenses-list [viewMode]="viewMode()" (viewModeChanged)="changeViewMode($event)" /> }
+      }
     </mat-card>
   }
 </main>

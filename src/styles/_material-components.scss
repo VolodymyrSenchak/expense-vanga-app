@@ -1,0 +1,202 @@
+@use '@angular/material' as mat;
+
+// The redesign look for every Material component, in one place.
+// Component .scss files must not restyle Material; add or change it here.
+// Declared on both :root and .dark-theme (body) so token references resolve per theme.
+
+:root,
+.dark-theme {
+  // Buttons: 44 px, 10 px radius, semibold labels.
+  @include mat.button-overrides((
+    filled-container-height: var(--ev-control-height),
+    filled-container-shape: var(--ev-radius-control),
+    filled-horizontal-padding: 20px,
+    filled-label-text-weight: 600,
+    filled-label-text-size: 15px,
+    outlined-container-height: var(--ev-control-height),
+    outlined-container-shape: var(--ev-radius-control),
+    outlined-horizontal-padding: 18px,
+    outlined-outline-color: var(--ev-field-border),
+    outlined-label-text-color: var(--ev-ink),
+    outlined-label-text-weight: 600,
+    outlined-label-text-size: 15px,
+    text-container-height: var(--ev-control-height),
+    text-container-shape: var(--ev-radius-control),
+    text-label-text-color: var(--ev-ink),
+    text-label-text-weight: 600,
+    text-label-text-size: 15px,
+  ));
+
+  @include mat.icon-button-overrides((
+    state-layer-size: var(--ev-control-height),
+    icon-size: 20px,
+  ));
+
+  // Button toggle group = the segmented control (track + raised selected segment, see below).
+  @include mat.button-toggle-overrides((
+    height: 38px,
+    shape: 12px,
+    text-color: var(--ev-muted),
+    background-color: transparent,
+    selected-state-background-color: var(--ev-surface),
+    selected-state-text-color: var(--ev-ink),
+    divider-color: transparent,
+    label-text-size: 15px,
+    label-text-weight: 500,
+  ));
+
+  @include mat.card-overrides((
+    outlined-container-shape: var(--ev-radius-card),
+    outlined-container-color: var(--ev-surface),
+    outlined-outline-color: var(--ev-line),
+    elevated-container-shape: var(--ev-radius-card),
+    elevated-container-color: var(--ev-surface),
+    title-text-size: 18px,
+    title-text-weight: 600,
+    title-text-line-height: 1.4,
+    subtitle-text-color: var(--ev-muted),
+  ));
+
+  @include mat.table-overrides((
+    background-color: transparent,
+    header-container-height: 40px,
+    row-item-container-height: var(--ev-row-height),
+    header-headline-color: var(--ev-muted),
+    header-headline-size: 12px,
+    header-headline-weight: 600,
+    row-item-label-text-color: var(--ev-ink),
+    row-item-label-text-size: 15px,
+    row-item-outline-color: var(--ev-line),
+  ));
+
+  @include mat.form-field-overrides((
+    container-height: var(--ev-control-height),
+    container-vertical-padding: 10px,
+    outlined-container-shape: var(--ev-radius-control),
+    outlined-outline-color: var(--ev-field-border),
+    outlined-label-text-color: var(--ev-muted),
+    container-text-size: 15px,
+  ));
+
+  @include mat.checkbox-overrides((
+    label-text-color: var(--ev-muted),
+    label-text-size: 15px,
+    unselected-icon-color: var(--ev-field-border),
+  ));
+
+  @include mat.dialog-overrides((
+    container-shape: var(--ev-radius-card),
+    container-color: var(--ev-surface),
+    subhead-color: var(--ev-ink),
+    subhead-size: 20px,
+    subhead-weight: 600,
+    supporting-text-color: var(--ev-ink),
+  ));
+
+  @include mat.menu-overrides((
+    container-shape: var(--ev-radius-control),
+    container-color: var(--ev-surface),
+    item-label-text-color: var(--ev-ink),
+  ));
+
+  @include mat.select-overrides((
+    panel-background-color: var(--ev-surface),
+  ));
+
+  @include mat.autocomplete-overrides((
+    background-color: var(--ev-surface),
+  ));
+
+  @include mat.tooltip-overrides((
+    container-shape: 8px,
+    container-color: var(--ev-ink),
+    supporting-text-color: var(--ev-surface),
+  ));
+
+  @include mat.datepicker-overrides((
+    calendar-container-shape: var(--ev-radius-card),
+    calendar-container-background-color: var(--ev-surface),
+  ));
+}
+
+// Segmented control: the group is a soft track, the selected segment a raised surface.
+.mat-button-toggle-group.mat-button-toggle-group-appearance-standard {
+  padding: 3px;
+  gap: 2px;
+  border: 1px solid var(--ev-line);
+  background: var(--ev-soft);
+
+  .mat-button-toggle {
+    border-radius: 9px;
+  }
+
+  .mat-button-toggle + .mat-button-toggle {
+    border-left: none;
+  }
+
+  .mat-button-toggle-checked {
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+  }
+
+  .mat-button-toggle-label-content {
+    padding: 0 14px;
+  }
+}
+
+// Cards: 24 px padding, body content without Material's own inset.
+.mat-mdc-card {
+  padding: var(--ev-space-card);
+
+  .mat-mdc-card-content,
+  .mat-mdc-card-content:first-child,
+  .mat-mdc-card-content:last-child {
+    padding: 0;
+  }
+
+  .mat-mdc-card-title {
+    margin: 0;
+  }
+}
+
+// Dialog actions sit on the dialog's padding grid.
+.mat-mdc-dialog-actions {
+  padding: 8px 24px 20px;
+}
+
+// Icon button with a hairline frame (theme switch, account).
+.mat-mdc-icon-button.ev-icon-outlined {
+  border: 1px solid var(--ev-line);
+  border-radius: var(--ev-radius-control);
+
+  .mat-mdc-button-persistent-ripple,
+  .mat-mdc-button-ripple,
+  .mat-focus-indicator {
+    border-radius: var(--ev-radius-control);
+  }
+}
+
+// Card whose content runs edge to edge (tables); the content sets its own padding.
+.mat-mdc-card.ev-card-flush {
+  padding: 0;
+  overflow: hidden;
+}
+
+// Toggle labels shrink with their segment instead of overflowing it.
+.mat-button-toggle-group .mat-button-toggle .mat-button-toggle-label-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 599.98px) {
+  .mat-mdc-card {
+    padding: 16px;
+  }
+}
+
+// Item being dragged (one-off expense chips).
+.cdk-drag-preview {
+  background: var(--ev-tint);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}

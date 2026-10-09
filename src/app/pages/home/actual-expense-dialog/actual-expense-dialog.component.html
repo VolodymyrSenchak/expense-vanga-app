@@ -1,23 +1,25 @@
-<h2 class="mat-h2" mat-dialog-title>Actual expense for <strong>{{dateFormatted}}</strong></h2>
-<mat-dialog-content class="flex-column" style="display: flex">
-  <mat-form-field appearance="outline" style="margin-top: 1rem">
-    <mat-label>Amount</mat-label>
-    <input matInput type="number" step="10" [(ngModel)]="amount" (keydown.enter)="onConfirm()" />
-  </mat-form-field>
-  <mat-form-field appearance="outline">
-    <mat-label>Comment</mat-label>
-    <input matInput [readonly]="!amount() || amount() === 0" [(ngModel)]="comment" (keydown.enter)="onConfirm()" />
-  </mat-form-field>
-  <mat-checkbox [(ngModel)]="isOverridingExpected">Override expected</mat-checkbox>
+<h2 mat-dialog-title>Actual expense for <strong>{{dateFormatted}}</strong></h2>
+<mat-dialog-content class="ev-dialog-narrow">
+  <div class="ev-form">
+    <mat-form-field>
+      <mat-label>Amount</mat-label>
+      <input matInput class="ev-num" type="number" step="10" [(ngModel)]="amount" (keydown.enter)="onConfirm()" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Comment</mat-label>
+      <input matInput [readonly]="!amount() || amount() === 0" [(ngModel)]="comment" (keydown.enter)="onConfirm()" />
+    </mat-form-field>
+    <mat-checkbox [(ngModel)]="isOverridingExpected">Override expected</mat-checkbox>
+  </div>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <div class="flex-space-between width-full">
+  <div class="ev-form-actions dialog-actions">
     <div>
       @if (isActualExpenseExists()) {
         <button mat-button (click)="onRemove()">Remove</button>
       }
     </div>
-    <div>
+    <div class="ev-form-actions">
       <button mat-button (click)="onCancel()">Cancel</button>
       <button mat-flat-button (click)="onConfirm()">Save</button>
     </div>

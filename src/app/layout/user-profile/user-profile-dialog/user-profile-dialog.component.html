@@ -1,15 +1,14 @@
-<h2 class="mat-h2" mat-dialog-title>User profile</h2>
-<mat-dialog-content class="flex-column" style="display: flex; width: 24rem">
-  <div class="flex-column">
-    <label>User email</label>
-    <span>{{user()?.email}}</span>
-  </div>
+<h2 mat-dialog-title>User profile</h2>
+<mat-dialog-content class="ev-dialog-narrow">
+  <div class="ev-form">
+    <div>
+      <div class="ev-small ev-muted">User email</div>
+      <div>{{user()?.email}}</div>
+    </div>
 
-  <div class="padding-y-1">
-    <button mat-button type="button" (click)="changePassword()">Change password</button>
+    <div class="ev-form-actions">
+      <button mat-stroked-button type="button" (click)="changePassword()">Change password</button>
+      <button mat-button (click)="onLogout()">Logout</button>
+    </div>
   </div>
-
-  <button mat-stroked-button color="primary" (click)="onLogout()">
-    Logout
-  </button>
 </mat-dialog-content>

@@ -1,0 +1,9 @@
+<div class="heading">
+  <h1 class="ev-h1">{{ title() }}</h1>
+  @if (subtitle()) {
+    <p class="subtitle ev-muted">{{ subtitle() }}</p>
+  }
+</div>
+<div class="actions">
+  <ng-content />
+</div>

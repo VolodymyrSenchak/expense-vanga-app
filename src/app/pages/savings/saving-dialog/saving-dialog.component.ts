@@ -11,6 +11,8 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog';
 import {SavingModel} from '@common/models';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {CurrencyAutocompleteComponent} from '@components/ui';
 
 export interface SavingDialogData {
   saving?: SavingModel;
@@ -32,6 +34,8 @@ export interface SavingDialogResult {
     MatDialogTitle,
     MatDialogContent,
     MatDialogActions,
+    MatAutocompleteModule,
+    CurrencyAutocompleteComponent,
   ],
 })
 export class SavingDialogComponent {

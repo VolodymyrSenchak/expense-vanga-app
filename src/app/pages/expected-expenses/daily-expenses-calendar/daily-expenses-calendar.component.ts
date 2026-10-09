@@ -1,6 +1,7 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop, CdkDragPlaceholder, CdkDropList, CdkDropListGroup } from '@angular/cdk/drag-drop';
+import { DecimalPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -15,6 +16,7 @@ export interface CalendarDay {
   weekdayShort: string;
   isFirstOfMonth: boolean;
   monthLabel: string;
+  isToday: boolean;
 }
 
 const WEEKDAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -25,6 +27,8 @@ const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'S
   imports: [
     ReactiveFormsModule,
     CdkDrag,
+    CdkDragPlaceholder,
+    DecimalPipe,
     CdkDropList,
     CdkDropListGroup,
     MatButtonModule,
@@ -101,6 +105,7 @@ export class DailyExpensesCalendarComponent {
         weekdayShort: WEEKDAY_LABELS[wi],
         isFirstOfMonth: dom === 1,
         monthLabel: MONTH_LABELS[mo],
+        isToday: date.toDateString() === today.toDateString(),
       });
 
       cur.setDate(cur.getDate() + 1);

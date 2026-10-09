@@ -1,0 +1,70 @@
+.top-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ev-space-card);
+  align-items: stretch;
+}
+
+.income {
+  flex: 3 1 480px;
+  min-width: 0;
+  gap: 20px;
+}
+
+.week {
+  flex: 2 1 320px;
+  min-width: 0;
+  gap: 20px;
+}
+
+.card-text {
+  margin: 4px 0 0;
+}
+
+.payday {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+
+.payday-field {
+  width: 88px;
+}
+
+.earnings {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.earning-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+
+  .name { flex: 2 1 160px; }
+  .amount { flex: 1 1 110px; }
+  .currency { flex: 0 1 110px; }
+  .remove { color: var(--ev-muted); }
+}
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+  gap: 8px;
+}
+
+input.ev-num {
+  text-align: right;
+}
+
+.one-off-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-bottom: 20px;
+}

@@ -1,0 +1,4 @@
+{{ format() === 'spend' ? (value() | spendAmount) : (value() | number:'1.2-2') }}
+@if (currency()) {
+  <span class="currency">{{ currency() }}</span>
+}

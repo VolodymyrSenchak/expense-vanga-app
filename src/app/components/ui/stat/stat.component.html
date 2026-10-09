@@ -1,0 +1,12 @@
+<div class="label">
+  @if (kind() !== 'plain') {
+    <span class="swatch" aria-hidden="true"></span>
+  }
+  {{ label() }}
+</div>
+<div class="value-row">
+  <span [class]="'value ' + size()">{{ value() | number:'1.2-2' }}</span>
+  @if (currency()) {
+    <span class="currency ev-num">{{ currency() }}</span>
+  }
+</div>

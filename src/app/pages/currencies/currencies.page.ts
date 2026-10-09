@@ -1,7 +1,7 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
-import {RouterLink} from '@angular/router';
+import {PageHeaderComponent} from '@components/ui';
 import {FormBuilder, ReactiveFormsModule, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
@@ -17,7 +17,7 @@ import {CurrenciesService} from '@common/services/currencies';
   imports: [
     MatIconModule,
     MatButtonModule,
-    RouterLink,
+    PageHeaderComponent,
     ReactiveFormsModule,
     MatInputModule,
     MatSelectModule,
@@ -26,6 +26,7 @@ import {CurrenciesService} from '@common/services/currencies';
     MatFormFieldModule,
   ],
   templateUrl: './currencies.page.html',
+  styleUrl: './currencies.page.scss',
 })
 export class CurrenciesPageComponent implements OnInit {
   readonly currenciesService = inject(CurrenciesService);

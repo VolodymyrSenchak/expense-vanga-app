@@ -1,0 +1,16 @@
+:host {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ev-line);
+  color: var(--ev-muted);
+  font-weight: 500;
+}
+
+.value {
+  color: var(--ev-ink);
+  font-size: 18px;
+  font-weight: 500;
+}

@@ -1,14 +1,8 @@
-@use './styles/mat-overrides';
-@use './styles/common';
+@use './styles/tokens';
+@use './styles/material-theme';
+@use './styles/material-components';
+@use './styles/typography';
+@use './styles/layout';
 
 html, body { height: 100%; }
 body { margin: 0; }
-
-label {
-  font: var(--mat-sys-title-small);
-}
-
-h1, h5 {
-  font-weight: 500 !important;
-  margin: 0 !important;
-}

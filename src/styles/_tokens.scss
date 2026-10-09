@@ -1,0 +1,55 @@
+// Expense Vanga design tokens (source: ../redesign/tokens.scss).
+// Light values sit on :root, dark values on .dark-theme (the class ThemeService already toggles).
+
+:root {
+  // Color
+  --ev-bg: #F3F5F1;          // page ground
+  --ev-surface: #FFFFFF;     // cards, header
+  --ev-soft: #F7F8F5;        // table header, weekend rows, segmented-control track
+  --ev-ink: #14211B;         // primary text, actual values
+  --ev-muted: #55635B;       // secondary text, expected values, expected chart line
+  --ev-line: #DCE2DA;        // card borders, row dividers, chart grid
+  --ev-field-border: #7F8C84; // input and outlined-button borders (3:1 on surface)
+  --ev-accent: #1B6E46;      // primary buttons, actual chart line, today outline
+  --ev-accent-ink: #FFFFFF;  // text on accent
+  --ev-tint: #E4F0E8;        // today row, active nav item, "on plan" chip
+  --ev-warn: #8F4308;        // behind-plan text
+  --ev-warn-bg: #FBEBD9;     // behind-plan chip
+
+  // Type
+  --ev-font-display: 'Bricolage Grotesque', sans-serif; // page titles, headline amounts
+  --ev-font-body: 'IBM Plex Sans', system-ui, sans-serif;
+  --ev-font-mono: 'IBM Plex Mono', monospace;           // every amount and date number
+
+  --ev-text-hero: 700 56px/1 var(--ev-font-display);     // actual balance on Nov 1
+  --ev-text-hero-2: 600 40px/1.1 var(--ev-font-display); // expected balance on Nov 1
+  --ev-text-h1: 700 34px/1.1 var(--ev-font-display);
+  --ev-text-h2: 600 18px/1.4 var(--ev-font-body);
+  --ev-text-body: 400 15px/1.4 var(--ev-font-body);
+  --ev-text-small: 400 13px/1.4 var(--ev-font-body);
+  --ev-text-label: 600 12px/1.4 var(--ev-font-body);     // uppercase, letter-spacing 0.06em
+
+  // Shape and spacing
+  --ev-radius-card: 16px;
+  --ev-radius-control: 10px;
+  --ev-radius-pill: 999px;
+  --ev-space-card: 24px;     // card padding and gap between cards
+  --ev-control-height: 44px; // buttons, inputs, nav items, icon buttons
+  --ev-row-height: 56px;     // day-by-day rows
+  --ev-page-width: 1240px;
+}
+
+.dark-theme {
+  --ev-bg: #0F1512;
+  --ev-surface: #171F1B;
+  --ev-soft: #131A16;
+  --ev-ink: #E7ECE8;
+  --ev-muted: #9BA8A0;
+  --ev-line: #2A352F;
+  --ev-field-border: #6F7C74;
+  --ev-accent: #6FCF97;
+  --ev-accent-ink: #0B1A12;
+  --ev-tint: #1C2D24;
+  --ev-warn: #F3B783;
+  --ev-warn-bg: #3A2A1A;
+}

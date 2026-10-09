@@ -1,18 +1,25 @@
-.home-page {
+// Hero and side column share a row; the side column wraps under the hero below ~900 px.
+.overview {
   display: flex;
   flex-wrap: wrap;
-  height: 100%;
-  gap: 1rem;
-  $min-card-width: 480px;
+  gap: var(--ev-space-card);
+  align-items: stretch;
+}
 
-  .list-view-card {
-    height: 100%;
-    max-width: 800px;
-    min-width: $min-card-width
-  }
+.hero {
+  flex: 999 1 560px;
+  min-width: 0;
+  gap: 20px;
+}
 
-  .chart-view-card {
-    flex: 1;
-    min-width: $min-card-width
+.side {
+  flex: 1 1 300px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ev-space-card);
+
+  app-spent-card {
+    flex: 1 1 auto;
   }
 }

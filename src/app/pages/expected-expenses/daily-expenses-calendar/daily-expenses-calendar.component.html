@@ -1,5 +1,5 @@
 <div class="daily-expenses-calendar">
-  <div class="weekday-headers">
+  <div class="weekday-headers" aria-hidden="true">
     @for (day of weekdays; track day) {
       <div class="weekday-header">{{ day }}</div>
     }
@@ -11,7 +11,14 @@
         class="calendar-cell"
         [class.editable]="day.isEditable"
         [class.weekend]="day.isWeekend"
+        [class.today]="day.isToday"
+        [class.has-expenses]="getExpensesForDay(day).length > 0"
         [class.non-editable]="!day.isEditable"
+        [attr.role]="day.isEditable ? 'button' : null"
+        [attr.tabindex]="day.isEditable ? 0 : null"
+        [attr.aria-label]="day.isEditable ? 'Add expense on ' + day.monthLabel + ' ' + day.dayOfMonth : null"
+        (click)="day.isEditable && addingToDayIndex() !== i && openAddForm(i)"
+        (keydown.enter)="day.isEditable && addingToDayIndex() !== i && openAddForm(i)"
         cdkDropList
         [cdkDropListData]="day"
         [cdkDropListDisabled]="!day.isEditable"
@@ -19,22 +26,14 @@
         (cdkDropListDropped)="onDrop($event, day)"
       >
         <div class="cell-header">
-          <span class="cell-date">
+          <span class="cell-date ev-num">
             @if (day.isFirstOfMonth) {
               <span class="month-label">{{ day.monthLabel }}</span>
             }
             {{ day.dayOfMonth }}
           </span>
-          @if (day.isEditable && addingToDayIndex() !== i) {
-            <button
-              mat-icon-button
-              class="add-btn"
-              type="button"
-              (click)="openAddForm(i)"
-              title="Add expense"
-            >
-              <mat-icon>add</mat-icon>
-            </button>
+          @if (day.isToday) {
+            <span class="today-label">Today</span>
           }
         </div>
 
@@ -44,12 +43,13 @@
               class="expense-chip"
               cdkDrag
               [cdkDragData]="expense.index"
+              (click)="$event.stopPropagation()"
             >
-              <div class="drag-handle" cdkDragHandle>
+              <div class="drag-handle">
                 <mat-icon class="handle-icon">drag_indicator</mat-icon>
               </div>
               <div class="chip-body">
-                <span class="chip-amount">{{ expense.group.get('amount')?.value }}</span>
+                <span class="chip-amount ev-num">{{ expense.group.get('amount')?.value | number:'1.2-2' }}</span>
                 @if (expense.group.get('comment')?.value) {
                   <span class="chip-comment">{{ expense.group.get('comment')?.value }}</span>
                 }
@@ -59,7 +59,7 @@
                 class="chip-delete"
                 type="button"
                 (click)="removeExpense(expense.index)"
-                title="Remove"
+                aria-label="Remove"
               >
                 <mat-icon>close</mat-icon>
               </button>
@@ -70,28 +70,28 @@
         </div>
 
         @if (addingToDayIndex() === i) {
-          <div class="add-form" [formGroup]="addForm">
-            <mat-form-field appearance="outline" class="field-amount">
+          <div class="add-form" [formGroup]="addForm" (click)="$event.stopPropagation()">
+            <mat-form-field class="field-amount">
               <mat-label>Amount</mat-label>
-              <input matInput type="number" formControlName="amount" min="0">
+              <input matInput class="ev-num" type="number" formControlName="amount" min="0" (keydown.enter)="$event.preventDefault(); confirmAdd(day)">
             </mat-form-field>
-            <mat-form-field appearance="outline" class="field-comment">
+            <mat-form-field class="field-comment">
               <mat-label>Comment</mat-label>
-              <input matInput type="text" formControlName="comment">
+              <input matInput type="text" formControlName="comment" (keydown.enter)="$event.preventDefault(); confirmAdd(day)">
             </mat-form-field>
             <div class="add-form-actions">
+              <button mat-icon-button type="button" (click)="closeAddForm()" aria-label="Cancel">
+                <mat-icon>close</mat-icon>
+              </button>
               <button
                 mat-icon-button
-                color="primary"
                 type="button"
+                class="confirm"
                 [disabled]="addForm.invalid"
                 (click)="confirmAdd(day)"
-                title="Confirm"
+                aria-label="Add expense"
               >
                 <mat-icon>check</mat-icon>
-              </button>
-              <button mat-icon-button type="button" (click)="closeAddForm()" title="Cancel">
-                <mat-icon>close</mat-icon>
               </button>
             </div>
           </div>

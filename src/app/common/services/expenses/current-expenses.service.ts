@@ -1,13 +1,14 @@
 import {Injectable} from '@angular/core';
 import {ExpensesService} from './expenses.service';
-import {BehaviorSubject, combineLatest, map, Observable, of, shareReplay, switchMap} from 'rxjs';
+import {BehaviorSubject, combineLatest, defer, map, Observable, of, shareReplay, switchMap} from 'rxjs';
 import {CurrentExpensesModel, ExpenseForDay} from '../../models/current-expenses.model';
 import {
   CurrenciesModel,
   CurrencyModel,
   CurrentMoneyAmountModel,
   ExpectedExpensesModel,
-  MonthAnalyticsModel
+  MonthAnalyticsModel,
+  SpentSoFarModel
 } from '../../models';
 import {ActualExpenseModel, ActualExpensesModel} from '../../models/actual-expenses.model';
 import {DATE_UTILS} from '../../utils/date.utils';
@@ -27,6 +28,13 @@ export class CurrentExpensesService {
   );
 
   readonly monthAnalytics$ = this.currentExpenses$.pipe(map((exp) => this.getMonthAnalytics(exp)));
+
+  readonly spentSoFar$ = this.currentExpenses$.pipe(map((exp) => this.getSpentSoFar(exp)));
+
+  readonly defaultCurrency$ = defer(() => this.currenciesService.getCurrencies$()).pipe(
+    map(c => c.defaultCurrency),
+    shareReplay({bufferSize: 1, refCount: true}),
+  );
 
   reloadExpenses(): void {
     this.expensesLoadSub.next(true);
@@ -170,6 +178,19 @@ export class CurrentExpensesService {
       expectedAmountLeft,
       actualAmountLeft,
       diff: expectedAmountLeft - actualAmountLeft,
+    };
+  }
+
+  private getSpentSoFar(currentExpenses: CurrentExpensesModel): SpentSoFarModel {
+    const expenses = currentExpenses?.expenses ?? [];
+    const tillToday = expenses.filter(e => e.isPreviousDay || e.isToday);
+    const expectedSpent = tillToday.reduce((sum, e) => sum + e.expectedExpenseAmount, 0);
+    const actualSpent = tillToday.reduce((sum, e) => sum + e.actualExpenseAmount, 0);
+    return {
+      fromDate: expenses[0]?.date ?? '',
+      expectedSpent,
+      actualSpent,
+      overPlan: actualSpent - expectedSpent,
     };
   }
 }

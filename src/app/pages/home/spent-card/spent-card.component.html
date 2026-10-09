@@ -1,0 +1,16 @@
+<mat-card>
+  <h2 class="ev-h3">Spent since {{ fromLabel() }}</h2>
+  <ev-amount-pair [expected]="spentSoFar().expectedSpent" [actual]="spentSoFar().actualSpent" format="spend" />
+
+  <div class="result" [class.ev-over]="spentSoFar().overPlan > 0" [class.ev-under]="spentSoFar().overPlan < 0">
+    @if (spentSoFar().overPlan > 0) {
+      <span>Over plan by</span>
+      <ev-amount [value]="absOverPlan()" [strong]="true" />
+    } @else if (spentSoFar().overPlan < 0) {
+      <span>Under plan by</span>
+      <ev-amount [value]="absOverPlan()" [strong]="true" />
+    } @else {
+      <span>On plan</span>
+    }
+  </div>
+</mat-card>

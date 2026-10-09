@@ -1,18 +1,13 @@
-<div class="flex-space-between flex-align-items-center">
-  <div class="flex-align-items-center flex-gap-1">
-    <mat-button-toggle-group
-      name="view-mode"
-      aria-label="View mode"
-      hideSingleSelectionIndicator
-      [value]="viewMode()"
-      (change)="changeViewMode($event.value)"
-    >
-      <mat-button-toggle value="table">Table</mat-button-toggle>
-      <mat-button-toggle value="calendar">Calendar</mat-button-toggle>
-    </mat-button-toggle-group>
-
-    <ng-content></ng-content>
-  </div>
-
-  <app-actualize-expenses-button />
+<h2 class="ev-h2">Day by day</h2>
+<div class="controls">
+  <ng-content></ng-content>
+  <mat-button-toggle-group
+    name="view-mode"
+    aria-label="View"
+    [value]="viewMode()"
+    (change)="changeViewMode($event.value)"
+  >
+    <mat-button-toggle value="table">Table</mat-button-toggle>
+    <mat-button-toggle value="calendar">Calendar</mat-button-toggle>
+  </mat-button-toggle-group>
 </div>

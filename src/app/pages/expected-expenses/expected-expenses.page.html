@@ -1,4 +1,4 @@
-<div class="expected-expenses-page page-narrow">
+<div class="ev-page">
   @if (loadingSrv.loadingOptions().isLoading) {
     <app-loading
       [loadingOptions]="loadingSrv.loadingOptions()"
@@ -6,104 +6,101 @@
       [skeletonBody]="[['100%', '100px'], ['100%', '200px'], ['100%', '200px']]"
     />
   } @else {
-  <form [formGroup]="form" (ngSubmit)="submitForm()" class="flex-column flex-gap-1">
-    <div class="page-header">
-      <a mat-icon-button routerLink='/'>
-        <mat-icon>arrow_back</mat-icon>
-      </a>
-      <h2 style="flex:1; margin:0">Expected Expenses</h2>
-      <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
-        Submit
-      </button>
-    </div>
+  <form [formGroup]="form" (ngSubmit)="submitForm()" class="ev-stack">
+    <ev-page-header title="Your plan" subtitle="What comes in and what you expect to spend. The forecast is built from this.">
+      <button mat-flat-button type="submit" [disabled]="form.invalid">Save changes</button>
+    </ev-page-header>
 
-    <mat-card appearance="outlined" class="padding-x-1">
-      <mat-card-title class="padding-y-1">General information</mat-card-title>
-      <mat-card-content>
-        <div class="flex flex-gap-1">
-          <mat-form-field appearance="outline" class="flex-1" style="max-width: 160px">
-            <mat-label>Salary Day of Month</mat-label>
-            <input matInput type="number" formControlName="salaryDayOfMonth">
+    <div class="top-row">
+      <mat-card class="income" aria-label="Income">
+        <h2 class="ev-h2">Income</h2>
+
+        <div class="payday">
+          <span>Salary arrives on day</span>
+          <mat-form-field class="payday-field">
+            <input matInput class="ev-num" type="number" formControlName="salaryDayOfMonth" aria-label="Salary day of month">
           </mat-form-field>
+          <span>of the month</span>
         </div>
 
-        <h3>Earnings</h3>
-        <div formArrayName="earnings">
+        <div formArrayName="earnings" class="earnings">
           @for (earningFormGroup of form.controls.earnings.controls; track $index) {
-            <div [formGroup]="earningFormGroup" class="flex flex-gap-1">
-              <mat-form-field appearance="outline" class="flex-1">
+            <div [formGroup]="earningFormGroup" class="earning-row">
+              <mat-form-field class="name">
                 <mat-label>Name</mat-label>
                 <input matInput type="text" formControlName="name">
               </mat-form-field>
 
-              <mat-form-field appearance="outline" class="flex-1">
+              <mat-form-field class="amount">
                 <mat-label>Amount</mat-label>
-                <input matInput type="number" formControlName="amount">
+                <input matInput class="ev-num" type="number" formControlName="amount">
               </mat-form-field>
 
-              <mat-form-field appearance="outline" class="flex-1">
+              <mat-form-field class="currency">
                 <mat-label>Currency</mat-label>
-                <input matInput type="text" formControlName="currency">
+                <input matInput type="text" formControlName="currency" [matAutocomplete]="earningCurrencies.panel()">
               </mat-form-field>
+              <ev-currency-autocomplete #earningCurrencies />
 
-              <button mat-icon-button color="warn" type="button" (click)="removeEarning($index)">
+              <button mat-icon-button type="button" class="remove" (click)="removeEarning($index)"
+                      [attr.aria-label]="'Remove ' + (earningFormGroup.value.name || 'earning')">
                 <mat-icon>delete</mat-icon>
               </button>
             </div>
           }
-          <button mat-button type="button" (click)="addEarning()">Add Earning</button>
         </div>
 
-      </mat-card-content>
-    </mat-card>
+        <div>
+          <button mat-stroked-button type="button" (click)="addEarning()">
+            <mat-icon>add</mat-icon>
+            Add earning
+          </button>
+        </div>
+      </mat-card>
 
-    <mat-card appearance="outlined" class="padding-x-1">
-      <mat-card-title class="padding-y-1">Weekly Expenses</mat-card-title>
-      <mat-card-content formArrayName="weeklyExpenses">
-        <div style="
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
-          gap: 1rem;">
-          @for(expense of form.controls.weeklyExpenses.controls; track $index) {
-          <div [formGroupName]="$index" class="flex">
-            <mat-form-field appearance="outline" class="flex-1">
-              <mat-label>{{getDayOfWeek(expense)}}</mat-label>
-              <input matInput type="number" formControlName="amount">
+      <mat-card class="week" aria-label="A usual week">
+        <div>
+          <h2 class="ev-h2">A usual week</h2>
+          <p class="ev-muted card-text">What you normally spend on each day of the week.</p>
+        </div>
+
+        <div formArrayName="weeklyExpenses" class="week-grid">
+          @for (expense of form.controls.weeklyExpenses.controls; track $index) {
+            <mat-form-field [formGroupName]="$index">
+              <mat-label>{{ getDayOfWeek(expense).slice(0, 3) }}</mat-label>
+              <input matInput class="ev-num" type="number" formControlName="amount">
             </mat-form-field>
-          </div>
           }
         </div>
-      </mat-card-content>
-    </mat-card>
 
-    <mat-card appearance="outlined" class="padding-x-1 margin-bottom-2">
-      <mat-card-title class="padding-y-1">
-        <div class="flex flex-gap-1" style="align-items: center;">
-          <span style="flex:1">Daily Expenses</span>
-          <mat-button-toggle-group
-            [value]="dailyExpensesView()"
-            (change)="dailyExpensesView.set($any($event).value)"
-            hideSingleSelectionIndicator
-          >
-            <mat-button-toggle value="calendar">
-              <mat-icon>calendar_month</mat-icon>
-            </mat-button-toggle>
-            <mat-button-toggle value="list">
-              <mat-icon>list</mat-icon>
-            </mat-button-toggle>
-          </mat-button-toggle-group>
+        <ev-card-total label="Per week" [value]="weeklyTotal()" />
+      </mat-card>
+    </div>
+
+    <mat-card aria-label="One-off expenses">
+      <div class="one-off-head">
+        <div>
+          <h2 class="ev-h2">One-off expenses</h2>
+          <p class="ev-muted card-text">Extra costs on specific days. Pick a day to add one.</p>
         </div>
-      </mat-card-title>
-      <mat-card-content>
-        @if (dailyExpensesView() === 'calendar') {
-          <app-daily-expenses-calendar
-            [salaryDayOfMonth]="form.controls.salaryDayOfMonth.value ?? 1"
-            [dailyExpenses]="form.controls.dailyExpenses"
-          />
-        } @else {
-          <app-daily-expenses-list [dailyExpenses]="form.controls.dailyExpenses" />
-        }
-      </mat-card-content>
+        <mat-button-toggle-group
+          [value]="dailyExpensesView()"
+          (change)="dailyExpensesView.set($event.value)"
+          aria-label="View"
+        >
+          <mat-button-toggle value="calendar">Calendar</mat-button-toggle>
+          <mat-button-toggle value="list">List</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+
+      @if (dailyExpensesView() === 'calendar') {
+        <app-daily-expenses-calendar
+          [salaryDayOfMonth]="form.controls.salaryDayOfMonth.value ?? 1"
+          [dailyExpenses]="form.controls.dailyExpenses"
+        />
+      } @else {
+        <app-daily-expenses-list [dailyExpenses]="form.controls.dailyExpenses" />
+      }
     </mat-card>
   </form>
   }

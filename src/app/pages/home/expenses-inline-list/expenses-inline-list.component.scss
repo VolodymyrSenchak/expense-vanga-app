@@ -1,63 +1,66 @@
 :host {
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.final-results {
-  border-top: 1px solid #ccc;
-  display: block;
+mat-card {
+  padding: 20px;
 }
 
-.expenses-inline-list {
-  margin-bottom: 2rem;
+mat-card.ev-card-flush {
+  padding: 0;
+}
 
-  .expense-item {
-    transition: background-color 0.3s ease;
-    cursor: pointer;
-    margin-bottom: 1.5rem;
-    padding-top: 1rem;
-    position: relative;
-    border-top: 1px solid #ccc;
+.list-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px 4px;
+}
 
-    .date-separator {
-      background-color: var(--mat-sys-surface, white);
-      position: absolute;
-      top: -10px;
-      left: 12px;
-      border: 1px solid var(--mat-sys-outline-variant, #ccc);
-      padding: 0 0.5rem;
-      border-radius: 1rem;
-    }
+.previous-toggle {
+  align-self: flex-start;
+  margin: 0 8px 4px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 
-    .comment {
-      font-style: italic;
-    }
+.day-row {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--ev-row-height);
+  padding: 10px 20px;
+  border-top: 1px solid var(--ev-line);
+  cursor: pointer;
 
-    &.weekend {
-      .date-separator {
-        color: var(--mat-sys-on-primary);
-        background-color: var(--mat-sys-primary);
-        border-color: var(--mat-sys-primary);
-      }
-    }
+  &.weekend { background: var(--ev-soft); }
+  &.today { background: var(--ev-tint); }
+  &.previous-day .date { color: var(--ev-muted); }
 
-    :host-context(.dark-theme) &.weekend {
-      .date-separator {
-        background-color: var(--mat-sys-secondary-container);
-        color: var(--mat-sys-on-secondary-container);
-        border-color: var(--mat-sys-secondary-container);
-      }
-    }
-
-    &.previous-day {
-      color: #989898;
-    }
-
-    .less-expected {
-      color: darkolivegreen;
-    }
-
-    .above-expected {
-      color: indianred;
-    }
+  &:focus-visible {
+    outline: 2px solid var(--ev-accent);
+    outline-offset: -2px;
   }
+}
+
+.date {
+  font-weight: 600;
+}
+
+.spent .ev-over,
+.spent .ev-under {
+  font-weight: 500;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
 }

@@ -1,113 +1,134 @@
-<div class="expected-expenses-page page-narrow">
-  <div class="flex-column flex-gap-1">
-    <div class="page-header">
-      <a mat-icon-button routerLink='/'>
-        <mat-icon>arrow_back</mat-icon>
-      </a>
-      <h2 style="flex:1; margin:0">Savings</h2>
-      <button mat-flat-button color="primary" type="button" (click)="openSavingDialog()">
-        <mat-icon>add</mat-icon>
-        Add Saving
-      </button>
-    </div>
+<div class="ev-page">
+  <ev-page-header title="Savings" subtitle="Money you have set aside, in any currency.">
+    @if (!loadingSrv.loadingOptions().isLoading) {
+      <div class="totals">
+        <ev-stat label="Total savings" [value]="savingsTotals()" [currency]="defaultCurrency()" />
+        @if (defaultCurrency() !== 'USD') {
+          <ev-stat label="In US dollars" [value]="savingsTotalsUsd()" currency="USD" />
+        }
+        @if (defaultCurrency() !== 'EUR') {
+          <ev-stat label="In euros" [value]="savingsTotalsEur()" currency="EUR" />
+        }
+      </div>
+    }
+  </ev-page-header>
 
-    @if (loadingSrv.loadingOptions().isLoading) {
-      <app-loading
-        [loadingOptions]="loadingSrv.loadingOptions()"
-        [mode]="'skeleton'"
-        [skeletonBody]="[['100%', '120px'], ['100%', '400px']]"
-      />
-    } @else {
-
-      <!-- Totals -->
-      <mat-card appearance="outlined" class="padding-x-1 padding-y-1">
-
-        <!-- Per-saving list -->
-        @if (savingTotals().length > 0) {
-          <div class="flex-column" style="margin-bottom: 0.75rem">
+  @if (loadingSrv.loadingOptions().isLoading) {
+    <app-loading
+      [loadingOptions]="loadingSrv.loadingOptions()"
+      [mode]="'skeleton'"
+      [skeletonBody]="[['100%', '120px'], ['100%', '400px']]"
+    />
+  } @else {
+    <div class="cards">
+      <mat-card class="savings-card" aria-label="Your savings">
+        @if (savingTotals().length === 0) {
+          <div>
+            <h2 class="ev-h2">Start with your first saving</h2>
+            <p class="ev-muted card-text">
+              A saving is one pot of money: an account, a cash envelope, a deposit. Give it a name and the currency it is held in.
+            </p>
+          </div>
+          <div class="create-form">
+            <mat-form-field class="name">
+              <mat-label>Name</mat-label>
+              <input matInput [(ngModel)]="newSavingName" (keydown.enter)="createFirstSaving()" />
+            </mat-form-field>
+            <mat-form-field class="currency">
+              <mat-label>Currency</mat-label>
+              <input matInput [(ngModel)]="newSavingCurrency" [matAutocomplete]="newSavingCurrencies.panel()"
+                     (keydown.enter)="createFirstSaving()" />
+            </mat-form-field>
+            <ev-currency-autocomplete #newSavingCurrencies />
+          </div>
+          <div>
+            <button mat-flat-button type="button" [disabled]="!canCreateFirstSaving()" (click)="createFirstSaving()">
+              <mat-icon>add</mat-icon>
+              Create saving
+            </button>
+          </div>
+        } @else {
+          <h2 class="ev-h2">Your savings</h2>
+          <div class="saving-list">
             @for (item of savingTotals(); track item.saving.id) {
-              <div class="flex flex-center flex-space-between" style="padding: 0.25rem 0; border-bottom: 1px solid rgba(128,128,128,0.12)">
-                <div class="flex flex-center flex-gap-1" style="flex: 1">
-                  <span style="min-width: 120px">{{ item.saving.name }}</span>
-                  <span style="opacity: 0.5; font-size: 0.85rem">{{ item.saving.currency }}</span>
+              <div class="saving-row" [class.excluded]="!(item.saving.includeInTotals ?? true)">
+                <div class="saving-name">
+                  <span>{{ item.saving.name }}</span>
+                  <span class="ev-small ev-muted">{{ item.saving.currency }}</span>
                 </div>
-                <strong style="margin-right: 1rem" [style.opacity]="(item.saving.includeInTotals ?? true) ? 1 : 0.4">{{ item.total | number:'1.2-2' }} {{ item.saving.currency }}</strong>
-                <button mat-icon-button [style.opacity]="(item.saving.includeInTotals ?? true) ? 1 : 0.5" (click)="toggleIncludeInTotals(item.saving)">
-                  <mat-icon>{{ (item.saving.includeInTotals ?? true) ? 'visibility' : 'visibility_off' }}</mat-icon>
-                </button>
-                <button mat-icon-button (click)="openSavingDialog(item.saving)">
+                <ev-amount [value]="item.total" [currency]="item.saving.currency" [strong]="true" />
+                <div class="saving-actions">
+                  <button mat-icon-button (click)="toggleIncludeInTotals(item.saving)"
+                          [attr.aria-label]="(item.saving.includeInTotals ?? true) ? 'Exclude from totals' : 'Include in totals'">
+                    <mat-icon>{{ (item.saving.includeInTotals ?? true) ? 'visibility' : 'visibility_off' }}</mat-icon>
+                  </button>
+                  <button mat-icon-button (click)="openSavingDialog(item.saving)" [attr.aria-label]="'Edit ' + item.saving.name">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+          <div>
+            <button mat-stroked-button type="button" (click)="openSavingDialog()">
+              <mat-icon>add</mat-icon>
+              Add saving
+            </button>
+          </div>
+        }
+      </mat-card>
+
+      <mat-card class="transactions-card ev-card-flush" aria-label="Transactions">
+        <div class="transactions-head">
+          <h2 class="ev-h2">Transactions</h2>
+          <div class="ev-row">
+            @if (savings().length > 0) {
+              <button mat-stroked-button type="button" (click)="openTransactionDialog()">
+                <mat-icon>add</mat-icon>
+                Add transaction
+              </button>
+            }
+            <mat-button-toggle-group [value]="viewMode()" (change)="viewMode.set($event.value)" aria-label="View">
+              <mat-button-toggle value="list">List</mat-button-toggle>
+              <mat-button-toggle value="chart">Chart</mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+        </div>
+
+        @if (allTransactions().length === 0) {
+          <ev-empty-state icon="swap_vert" title="No transactions yet">
+            Once you have a saving, record what you put in and take out. Each entry shows here, and the chart tracks the balance over time.
+          </ev-empty-state>
+        } @else if (viewMode() === 'list') {
+          <div class="transaction-list">
+            @for (flat of allTransactions(); track flat.transaction.id) {
+              <div class="transaction-row">
+                <div class="transaction-main">
+                  <div class="ev-row transaction-title">
+                    <span class="ev-num amount" [class.ev-under]="flat.transaction.amount >= 0" [class.ev-over]="flat.transaction.amount < 0">
+                      {{ flat.transaction.amount >= 0 ? '+' : '' }}{{ flat.transaction.amount | number:'1.2-2' }} {{ flat.saving.currency }}
+                    </span>
+                    <span class="ev-muted">{{ flat.saving.name }}</span>
+                  </div>
+                  <div class="ev-small ev-muted">
+                    {{ flat.transaction.date | date:'mediumDate' }}
+                    @if (flat.transaction.comment) {
+                      · {{ flat.transaction.comment }}
+                    }
+                  </div>
+                </div>
+                <button mat-icon-button (click)="openTransactionDialog(flat)" aria-label="Edit transaction">
                   <mat-icon>edit</mat-icon>
                 </button>
               </div>
             }
           </div>
-        }
-
-        <div class="flex flex-gap-2 flex-center">
-          <div class="flex-column flex-gap-0-5">
-            <label style="font-size: 0.75rem; opacity: 0.6">Total savings</label>
-            <div class="flex flex-gap-2">
-              <span><strong>{{ savingsTotals() | number:'1.2-2' }} {{ defaultCurrency() }}</strong></span>
-              @if (defaultCurrency() !== 'USD') {
-                <span style="opacity: 0.7">{{ savingsTotalsUsd() | number:'1.2-2' }} USD</span>
-              }
-              @if (defaultCurrency() !== 'EUR') {
-                <span style="opacity: 0.7">{{ savingsTotalsEur() | number:'1.2-2' }} EUR</span>
-              }
-            </div>
-          </div>
-        </div>
-      </mat-card>
-
-      <!-- Transactions section -->
-      <mat-card appearance="outlined" class="padding-x-1 padding-y-1 margin-bottom-1">
-        <div class="flex flex-center flex-space-between" style="margin-bottom: 1rem">
-          <div class="flex flex-center flex-gap-1">
-            <h3 style="margin: 0">Transactions</h3>
-            <button mat-flat-button type="button" (click)="openTransactionDialog()" [disabled]="savings().length === 0">
-              <mat-icon>add</mat-icon>
-              Add
-            </button>
-          </div>
-          <mat-button-toggle-group [value]="viewMode()" (change)="viewMode.set($any($event).value)" hideSingleSelectionIndicator>
-            <mat-button-toggle value="list"><mat-icon>list</mat-icon></mat-button-toggle>
-            <mat-button-toggle value="chart"><mat-icon>bar_chart</mat-icon></mat-button-toggle>
-          </mat-button-toggle-group>
-        </div>
-
-        @if (viewMode() === 'list') {
-          @if (allTransactions().length === 0) {
-            <div style="text-align: center; padding: 2rem; opacity: 0.5">No transactions yet</div>
-          } @else {
-            <div class="flex-column scrollable-content" style="gap: 0.5rem; max-height: 480px">
-              @for (flat of allTransactions(); track flat.transaction.id) {
-                <div class="flex flex-center flex-space-between" style="padding: 0.5rem 0; border-bottom: 1px solid rgba(128,128,128,0.15)">
-                  <div class="flex-column" style="gap: 0.15rem; flex: 1">
-                    <div class="flex flex-center flex-gap-1">
-                      <strong [style.color]="flat.transaction.amount >= 0 ? '#4caf50' : 'var(--mat-sys-error)'">
-                        {{ flat.transaction.amount >= 0 ? '+' : '' }}{{ flat.transaction.amount | number:'1.2-2' }} {{ flat.saving.currency }}
-                      </strong>
-                      <span style="opacity: 0.6; font-size: 0.85rem">{{ flat.saving.name }}</span>
-                    </div>
-                    <div class="flex flex-gap-1" style="font-size: 0.8rem; opacity: 0.55">
-                      <span>{{ flat.transaction.date | date:'mediumDate' }}</span>
-                      @if (flat.transaction.comment) {
-                        <span>· {{ flat.transaction.comment }}</span>
-                      }
-                    </div>
-                  </div>
-                  <button mat-icon-button (click)="openTransactionDialog(flat)">
-                    <mat-icon>edit</mat-icon>
-                  </button>
-                </div>
-              }
-            </div>
-          }
         } @else {
-          <app-savings-chart [savings]="savings()" [currencies]="currencies()" />
+          <div class="chart-box">
+            <app-savings-chart [savings]="savings()" [currencies]="currencies()" />
+          </div>
         }
       </mat-card>
-
-    }
-  </div>
+    </div>
+  }
 </div>

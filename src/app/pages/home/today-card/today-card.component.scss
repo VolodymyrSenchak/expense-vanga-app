@@ -1,0 +1,25 @@
+mat-card {
+  gap: 16px;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.planned-value {
+  display: block;
+  margin-top: 2px;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ev-line);
+}
