@@ -1,0 +1,21 @@
+.balances-form {
+  min-width: min(300px, 100%);
+  max-width: 560px;
+}
+
+.intro {
+  margin: 0;
+}
+
+.name { flex: 2 1 140px; }
+.amount { flex: 1 1 110px; }
+.currency { flex: 0 1 100px; }
+.remove { color: var(--ev-muted); }
+
+input.ev-num {
+  text-align: right;
+}
+
+.actions {
+  justify-content: flex-end;
+}

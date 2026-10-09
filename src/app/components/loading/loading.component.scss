@@ -2,6 +2,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  color: var(--ev-muted);
 }
 
 .skeleton-container {
@@ -10,8 +11,13 @@
   gap: 1rem;
 
   .skeleton-item {
-    background-color: var(--mat-sys-outline-variant, #e5e5e5);
-    border-radius: 1rem; /* Rounded corners */
+    background-color: var(--ev-line);
+    border-radius: var(--ev-radius-card);
     animation: shimmer 1.5s infinite;
   }
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
 }

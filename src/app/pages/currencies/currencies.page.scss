@@ -1,0 +1,37 @@
+.currencies-card {
+  max-width: 760px;
+  gap: 20px;
+}
+
+.card-text {
+  margin: 4px 0 0;
+}
+
+.default-currency {
+  width: 200px;
+}
+
+.rates {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rate-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+
+  mat-form-field {
+    flex: 1 1 120px;
+  }
+
+  .remove {
+    color: var(--ev-muted);
+  }
+}
+
+input.ev-num {
+  text-align: right;
+}

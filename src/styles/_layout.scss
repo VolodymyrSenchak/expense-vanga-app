@@ -31,3 +31,35 @@
 .ev-spacer {
   flex: 1 1 auto;
 }
+
+// Forms in dialogs and cards: stacked fields, actions at the end.
+.ev-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.ev-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.ev-form-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.ev-dialog-narrow {
+  width: min(24rem, 100%);
+}
+
+// Dialog footer: destructive action on the left, cancel and confirm on the right.
+.dialog-actions {
+  width: 100%;
+  justify-content: space-between;
+}

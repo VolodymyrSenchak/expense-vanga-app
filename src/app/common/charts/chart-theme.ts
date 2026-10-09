@@ -61,12 +61,12 @@ export const chartScales = (
         autoSkip: !options.compact,
         align: options.compact ? 'inner' : 'center',
         maxTicksLimit: 6,
-        // Compact: only the first and last day.
-        callback: options.compact
-          ? function (value, index, ticks) {
+        // Compact: only the first and last day. (Leave the key out otherwise, so Chart.js keeps its label callback.)
+        ...(options.compact ? {
+          callback: function (value, index, ticks) {
             return index === 0 || index === ticks.length - 1 ? this.getLabelForValue(Number(value)) : '';
-          }
-          : undefined,
+          },
+        } : {}),
       },
     },
     y: {
