@@ -19,6 +19,7 @@ import {
   SavingTransactionDialogResult,
 } from './saving-transaction-dialog/saving-transaction-dialog.component';
 import {SavingsChartComponent} from './savings-chart/savings-chart.component';
+import {SAVINGS_UTILS} from '@common/utils/savings.utils';
 
 interface FlatTransaction {
   transaction: SavingTransactionModel;
@@ -66,7 +67,7 @@ export class SavingsPageComponent implements OnInit {
   readonly savingTotals = computed(() =>
     this.savings().map(saving => ({
       saving,
-      total: (saving.transactions ?? []).reduce((sum, t) => sum + t.amount, 0),
+      total: SAVINGS_UTILS.savingTotal(saving),
     }))
   );
 
@@ -184,20 +185,6 @@ export class SavingsPageComponent implements OnInit {
   }
 
   private calculateTotals(currencies: CurrenciesModel | undefined, targetCurrency: string): number {
-    return this.savingTotals()
-      .filter(({saving}) => saving.includeInTotals !== false)
-      .reduce((total, {saving, total: amount}) => {
-        return total + this.convertAmount(amount, saving.currency, targetCurrency, currencies);
-      }, 0);
-  }
-
-  private convertAmount(amount: number, from: string, to: string, currencies: CurrenciesModel | undefined): number {
-    if (from === to || !currencies) return amount;
-    const pair = currencies.currencies.find(c =>
-      (c.from === from && c.to === to) || (c.from === to && c.to === from)
-    );
-    if (!pair) return amount;
-    const rate = pair.from === from ? pair.rate : 1 / pair.rate;
-    return amount * rate;
+    return SAVINGS_UTILS.calculateTotals(this.savings(), currencies, targetCurrency);
   }
 }

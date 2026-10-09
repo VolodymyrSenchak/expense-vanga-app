@@ -6,6 +6,7 @@ import {BaseChartDirective} from 'ng2-charts';
 import {CurrenciesModel, SavingModel} from '@common/models';
 import {ThemeService} from '@common/services/theme.service';
 import {DATE_UTILS} from '@common/utils/date.utils';
+import {SAVINGS_UTILS} from '@common/utils/savings.utils';
 
 @Component({
   selector: 'app-savings-chart',
@@ -34,7 +35,7 @@ export class SavingsChartComponent {
       .flatMap(saving =>
         (saving.transactions ?? []).map(t => ({
           date: t.date,
-          amount: this.convertAmount(t.amount, saving.currency, defaultCurrency, currencies),
+          amount: SAVINGS_UTILS.convertAmount(t.amount, saving.currency, defaultCurrency, currencies),
         }))
       )
       .sort((a, b) => a.date.localeCompare(b.date));
@@ -82,7 +83,7 @@ export class SavingsChartComponent {
       .forEach(saving => {
         (saving.transactions ?? []).forEach(t => {
           const monthKey = t.date.substring(0, 7) + '-01';
-          const amount = this.convertAmount(t.amount, saving.currency, defaultCurrency, currencies);
+          const amount = SAVINGS_UTILS.convertAmount(t.amount, saving.currency, defaultCurrency, currencies);
           monthlyMap.set(monthKey, (monthlyMap.get(monthKey) ?? 0) + amount);
         });
       });
@@ -115,15 +116,5 @@ export class SavingsChartComponent {
         y: {grid: {color: gridColor}, ticks: {color: tickColor}},
       },
     };
-  }
-
-  private convertAmount(amount: number, from: string, to: string, currencies: CurrenciesModel | undefined): number {
-    if (from === to || !currencies) return amount;
-    const pair = currencies.currencies.find(c =>
-      (c.from === from && c.to === to) || (c.from === to && c.to === from)
-    );
-    if (!pair) return amount;
-    const rate = pair.from === from ? pair.rate : 1 / pair.rate;
-    return amount * rate;
   }
 }
