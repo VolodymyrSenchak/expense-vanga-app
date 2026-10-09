@@ -6,7 +6,7 @@ import {MatIcon} from '@angular/material/icon';
 import {NavigationEnd, Router, RouterLink, RouterLinkActive} from '@angular/router';
 import {UserProfileComponent} from '../user-profile/user-profile.component';
 import {MatMenu, MatMenuTrigger} from '@angular/material/menu';
-import {filter, map} from 'rxjs';
+import {filter, map, startWith} from 'rxjs';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {ThemeService} from '@common/services/theme.service';
 
@@ -40,8 +40,15 @@ export class AppHeader {
   readonly currentPageName = toSignal(
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
-      map(e => (e as NavigationEnd).url),
-      map(url => this.pages.find(page => page.url === url)?.name)
-    )
+      map(e => (e as NavigationEnd).urlAfterRedirects),
+      startWith(this.router.url),
+      map(url => this.getPageName(url))
+    ),
+    { initialValue: this.getPageName(this.router.url) }
   );
+
+  private getPageName(url: string): string {
+    const path = url.split(/[?#]/)[0];
+    return this.pages.find(page => page.url === path)?.name ?? 'Menu';
+  }
 }
