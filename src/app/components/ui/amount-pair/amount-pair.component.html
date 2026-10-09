@@ -1,0 +1,8 @@
+<div class="row">
+  <span class="ev-muted">{{ expectedLabel() }}</span>
+  <ev-amount [value]="expected()" kind="expected" [format]="format()" />
+</div>
+<div class="row">
+  <span class="actual-label">{{ actualLabel() }}</span>
+  <ev-amount [value]="actual()" [format]="format()" [strong]="true" />
+</div>

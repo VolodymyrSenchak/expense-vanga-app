@@ -1,0 +1,10 @@
+@if (diff() > 0) {
+  <mat-icon aria-hidden="true">arrow_downward</mat-icon>
+  <span>{{ absDiff() | number:'1.2-2' }} {{ currency() }} behind your plan</span>
+} @else if (diff() < 0) {
+  <mat-icon aria-hidden="true">check</mat-icon>
+  <span>{{ absDiff() | number:'1.2-2' }} {{ currency() }} ahead of your plan</span>
+} @else {
+  <mat-icon aria-hidden="true">check</mat-icon>
+  <span>On plan</span>
+}
