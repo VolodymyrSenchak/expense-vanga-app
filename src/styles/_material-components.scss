@@ -181,3 +181,9 @@
   padding: 0;
   overflow: hidden;
 }
+
+// Toggle labels shrink with their segment instead of overflowing it.
+.mat-button-toggle-group .mat-button-toggle .mat-button-toggle-label-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

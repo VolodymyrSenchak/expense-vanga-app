@@ -58,8 +58,15 @@ export const chartScales = (
         color: colors.muted,
         font: ticksFont,
         maxRotation: 0,
-        autoSkip: true,
-        maxTicksLimit: options.compact ? 2 : 6,
+        autoSkip: !options.compact,
+        align: options.compact ? 'inner' : 'center',
+        maxTicksLimit: 6,
+        // Compact: only the first and last day.
+        callback: options.compact
+          ? function (value, index, ticks) {
+            return index === 0 || index === ticks.length - 1 ? this.getLabelForValue(Number(value)) : '';
+          }
+          : undefined,
       },
     },
     y: {

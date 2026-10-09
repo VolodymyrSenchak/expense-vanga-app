@@ -20,3 +20,15 @@
 :host(.compact) .canvas-box {
   height: 200px;
 }
+
+// Phone: each toggle group takes the full row and splits it evenly.
+:host(.compact) .toolbar {
+  mat-button-toggle-group {
+    width: 100%;
+  }
+
+  mat-button-toggle {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}

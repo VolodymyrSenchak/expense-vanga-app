@@ -1,81 +1,70 @@
-<div class="expenses-inline-list">
-  @if (!currentExpenses()?.expenses) {
-    <div class="padding-top-1">
-      <app-loading
-        [loadingOptions]="{ isLoading: true, message: '' }"
-        mode="skeleton"
-        [skeletonBody]="skeleton"
-      />
+@if (!currentExpenses()?.expenses) {
+  <app-loading [loadingOptions]="{ isLoading: true, message: '' }" mode="skeleton" [skeletonBody]="skeleton" />
+} @else {
+  <mat-card aria-label="Projected balance">
+    <app-month-analytics
+      [monthAnalytics]="monthAnalytics()"
+      [currency]="currency()"
+      [endLabel]="cycle()?.end"
+      [compact]="true"
+    />
+  </mat-card>
+
+  <mat-card aria-label="Balance chart">
+    <app-expenses-chart [compact]="true" />
+  </mat-card>
+
+  @if (today(); as today) {
+    <app-today-card [today]="today" [showAction]="true" />
+  }
+
+  <mat-card class="ev-card-flush" aria-label="Days">
+    <div class="list-head">
+      <span class="ev-h3">{{ showPrevious() ? 'All days' : 'Coming days' }}</span>
+      <span class="ev-small ev-muted">Left: expected · actual</span>
     </div>
-  } @else {
-    <div class="flex-space-between padding-bottom-1">
-      <mat-slide-toggle
-        [checked]="showPrevious()"
-        (change)="showPrevious.set($event.checked)"
-      >Show previous days
-      </mat-slide-toggle>
+    <button mat-button class="previous-toggle" (click)="showPrevious.set(!showPrevious())">
+      {{ showPrevious() ? 'Hide previous days' : 'Show previous days' }}
+    </button>
 
-      <app-actualize-expenses-button/>
-    </div>
-
-    <app-month-analytics [monthAnalytics]="monthAnalytics()" class="final-results" />
-
-    @for (expense of currentExpensesPrepared(); track $index) {
-      <div class="expense-item"
-           (click)="startEditing(expense)"
-           [class.weekend]="expense.isWeekend"
-           [class.previous-day]="expense.isPreviousDay">
-        <div class="flex-column">
-          <div class="date-separator">
-            <h5>{{ expense.dateFormatted }}, {{ expense.dayOfWeekFormatted }}</h5>
+    @for (expense of currentExpensesPrepared(); track expense.date) {
+      <div
+        class="day-row"
+        matRipple
+        role="button"
+        tabindex="0"
+        [attr.aria-label]="'Edit ' + dayLabel(expense)"
+        [class.weekend]="expense.isWeekend"
+        [class.today]="expense.isToday"
+        [class.previous-day]="expense.isPreviousDay"
+        (click)="startEditing(expense)"
+        (keydown.enter)="startEditing(expense)"
+      >
+        <div class="day">
+          <div class="date">{{ dayLabel(expense) }}</div>
+          <div class="spent ev-small ev-muted">
+            Spent
+            <ev-amount [value]="expense.expectedExpenseAmount" kind="expected" format="spend" />
+            ·
+            <ev-amount
+              [value]="expense.actualExpenseAmount"
+              format="spend"
+              [class.ev-over]="expense.actualExpenseAmount > expense.expectedExpenseAmount"
+              [class.ev-under]="expense.actualExpenseAmount < expense.expectedExpenseAmount"
+            />
           </div>
-
-          <div class="flex">
-            <div class="flex-1" style="opacity: 0.6">
-              <label>Expected</label>
-              <div class="flex-column flex-gap-0-5" style="padding-top: 0.5rem">
-                <div>
-                  <h5 class="line-height-1">Spent</h5>
-                  <span>{{ expense.expectedExpenseAmount | expenseSign | number:'1.2-2' }}</span>
-                  @if (expense.expectedDailyComment) {
-                    <span class="comment">
-                    ({{ (expense.expectedExpenseAmount - expense.weeklyExpenseAmount) + ' ' + expense.expectedDailyComment }})
-                  </span>
-                  }
-                </div>
-
-                <div>
-                  <h5 class="line-height-1">Left</h5>
-                  <span>{{ expense.expectedAmountLeft | number:'1.2-2' }}</span>
-                </div>
-              </div>
-            </div>
-            <div class="flex-1" style="border-left: 1px solid #ccc; padding-left: 1rem">
-              <label>Actual</label>
-              <div class="flex-column flex-gap-0-5" style="padding-top: 0.5rem">
-                <div>
-                  <h5 class="line-height-1">Spent</h5>
-                  <span
-                    [class.less-expected]="expense.actualExpenseAmount < expense.expectedExpenseAmount"
-                    [class.above-expected]="expense.actualExpenseAmount > expense.expectedExpenseAmount">
-                    {{ expense.actualExpenseAmount | expenseSign | number:'1.2-2' }}
-                  </span>
-                    @if (expense.actualDailyComment) {
-                      <span class="comment">
-                      ({{ (expense.actualExpenseAmount - expense.weeklyExpenseAmount) + ' ' + expense.actualDailyComment }})
-                    </span>
-                    }
-                </div>
-                <div>
-                  <h5 class="line-height-1">Left</h5>
-                  <span>{{ expense.actualAmountLeft | number:'1.2-2' }}</span>
-                </div>
-              </div>
-            </div>
-
-          </div>
+          @if (expense.expectedDailyComment) {
+            <div class="note ev-small ev-muted">{{ expense.expectedDailyComment }}</div>
+          }
+          @if (expense.actualDailyComment) {
+            <div class="note ev-small">{{ expense.actualDailyComment }}</div>
+          }
+        </div>
+        <div class="left">
+          <ev-amount [value]="expense.expectedAmountLeft" kind="expected" />
+          <ev-amount [value]="expense.actualAmountLeft" [strong]="true" />
         </div>
       </div>
     }
-  }
-</div>
+  </mat-card>
+}
