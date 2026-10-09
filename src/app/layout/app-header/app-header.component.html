@@ -1,31 +1,59 @@
-<mat-toolbar>
-  <div class="flex-center width-full" style="justify-content: space-between">
-    <div class="flex-center flex-gap-0-5">
-      <img src="images/logo_new.png" alt="App Logo" height="40" width="40">
+<header class="app-header">
+  <div class="header-inner">
+    <a routerLink="/" class="brand">
+      <img src="images/logo_new.png" alt="" height="32" width="32">
+      <span class="brand-name">Expense Vanga</span>
+    </a>
 
-      <div class="pages-list desktop padding-x-1">
-        @for(page of pages; track $index) {
-          <a routerLinkActive="active-button" [routerLinkActiveOptions]="{ exact: true }" mat-button routerLink='{{page.url}}'>{{page.name}}</a>
-        }
-      </div>
+    <nav aria-label="Main" class="desktop-nav">
+      @for (page of pages; track page.url) {
+        <a mat-button routerLink="{{ page.url }}" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+           ariaCurrentWhenActive="page">{{ page.name }}</a>
+      }
+    </nav>
 
-      <div class="pages-list mobile">
-        <button mat-button [matMenuTriggerFor]="menu">{{currentPageName()}}</button>
-        <mat-menu #menu="matMenu">
-          @for(page of pages; track $index) {
-            <div>
-              <a mat-button routerLink='{{page.url}}'>{{page.name}}</a>
-            </div>
-          }
-        </mat-menu>
-      </div>
-    </div>
-    <div class="flex-center flex-gap-1">
-      <button mat-icon-button (click)="themeService.toggle()">
+    <div class="desktop-actions">
+      <button mat-icon-button class="ev-icon-outlined" (click)="themeService.toggle()"
+              [attr.aria-label]="themeService.isDark() ? 'Switch to light theme' : 'Switch to dark theme'">
         <mat-icon>{{ themeService.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
       </button>
       <app-user-profile />
     </div>
-  </div>
 
-</mat-toolbar>
+    <button mat-icon-button class="ev-icon-outlined phone-account" [matMenuTriggerFor]="accountMenu"
+            aria-label="Account and settings">
+      @if (userInitials()) {
+        <span class="initials">{{ userInitials() }}</span>
+      } @else {
+        <mat-icon>person</mat-icon>
+      }
+    </button>
+    <mat-menu #accountMenu="matMenu" xPosition="before">
+      <button mat-menu-item (click)="themeService.toggle()">
+        <mat-icon>{{ themeService.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+        {{ themeService.isDark() ? 'Light theme' : 'Dark theme' }}
+      </button>
+      @if (userInitials()) {
+        <button mat-menu-item (click)="openUserProfile()">
+          <mat-icon>person</mat-icon>
+          Profile
+        </button>
+      } @else {
+        <button mat-menu-item (click)="openAuthDialog()">
+          <mat-icon>login</mat-icon>
+          Log in
+        </button>
+      }
+    </mat-menu>
+  </div>
+</header>
+
+<nav aria-label="Main" class="bottom-nav">
+  @for (page of pages; track page.url) {
+    <a routerLink="{{ page.url }}" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+       ariaCurrentWhenActive="page" matRipple>
+      <mat-icon aria-hidden="true">{{ page.icon }}</mat-icon>
+      <span>{{ page.name }}</span>
+    </a>
+  }
+</nav>

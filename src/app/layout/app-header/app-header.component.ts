@@ -1,54 +1,48 @@
-import {Component, inject} from "@angular/core";
-import { MatToolbarModule } from "@angular/material/toolbar";
+import {Component, computed, inject} from "@angular/core";
 import {MatButtonModule} from '@angular/material/button';
-import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
-import {NavigationEnd, Router, RouterLink, RouterLinkActive} from '@angular/router';
+import {MatRipple} from '@angular/material/core';
+import {RouterLink, RouterLinkActive} from '@angular/router';
 import {UserProfileComponent} from '../user-profile/user-profile.component';
-import {MatMenu, MatMenuTrigger} from '@angular/material/menu';
-import {filter, map, startWith} from 'rxjs';
+import {MatMenuModule} from '@angular/material/menu';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {ThemeService} from '@common/services/theme.service';
+import {AuthStore, DialogManager} from '@common/services';
 
 @Component({
   selector: 'app-header',
   templateUrl: './app-header.component.html',
   styleUrl: './app-header.component.scss',
   imports: [
-    MatToolbarModule,
     MatButtonModule,
-    MatIconButton,
     MatIcon,
+    MatRipple,
     RouterLink,
     RouterLinkActive,
     UserProfileComponent,
-    MatMenu,
-    MatMenuTrigger,
+    MatMenuModule,
   ]
 })
 export class AppHeader {
-  readonly router = inject(Router);
   readonly themeService = inject(ThemeService);
+  readonly authStore = inject(AuthStore);
+  readonly dialogManager = inject(DialogManager);
 
   readonly pages = [
-    { url: '/', name: 'Home' },
-    { url: '/expected-expenses', name: 'Expected Expenses' },
-    { url: '/currencies', name: 'Currencies' },
-    { url: '/savings', name: 'Savings' },
+    { url: '/', name: 'Forecast', icon: 'show_chart' },
+    { url: '/expected-expenses', name: 'Plan', icon: 'event_note' },
+    { url: '/savings', name: 'Savings', icon: 'savings' },
+    { url: '/currencies', name: 'Currencies', icon: 'currency_exchange' },
   ];
 
-  readonly currentPageName = toSignal(
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      map(e => (e as NavigationEnd).urlAfterRedirects),
-      startWith(this.router.url),
-      map(url => this.getPageName(url))
-    ),
-    { initialValue: this.getPageName(this.router.url) }
-  );
+  readonly user = toSignal(this.authStore.user$);
+  readonly userInitials = computed(() => (this.user()?.email?.charAt(0) || '').toUpperCase());
 
-  private getPageName(url: string): string {
-    const path = url.split(/[?#]/)[0];
-    return this.pages.find(page => page.url === path)?.name ?? 'Menu';
+  openAuthDialog(): void {
+    this.dialogManager.openDialog('auth-form', {});
+  }
+
+  openUserProfile(): void {
+    this.dialogManager.openDialog('user-profile', {});
   }
 }

@@ -163,3 +163,15 @@
 .mat-mdc-dialog-actions {
   padding: 8px 24px 20px;
 }
+
+// Icon button with a hairline frame (theme switch, account).
+.mat-mdc-icon-button.ev-icon-outlined {
+  border: 1px solid var(--ev-line);
+  border-radius: var(--ev-radius-control);
+
+  .mat-mdc-button-persistent-ripple,
+  .mat-mdc-button-ripple,
+  .mat-focus-indicator {
+    border-radius: var(--ev-radius-control);
+  }
+}
