@@ -193,3 +193,10 @@
     padding: 16px;
   }
 }
+
+// Item being dragged (one-off expense chips).
+.cdk-drag-preview {
+  background: var(--ev-tint);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}

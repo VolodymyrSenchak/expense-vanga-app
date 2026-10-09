@@ -108,11 +108,6 @@
 
   &:active { cursor: grabbing; }
 
-  &.cdk-drag-preview {
-    background: var(--ev-tint);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  }
-
   .drag-handle {
     display: flex;
     color: var(--ev-muted);

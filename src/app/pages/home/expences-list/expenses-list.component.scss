@@ -11,14 +11,14 @@
   padding: 16px 24px;
 }
 
-// Below 900 px the table scrolls sideways inside the card.
+// On narrow screens the table scrolls sideways inside the card.
 .scroller {
   overflow-x: auto;
 }
 
 .ledger {
   width: 100%;
-  min-width: 900px;
+  min-width: 820px;
 
   th, td {
     padding: 0 8px;
