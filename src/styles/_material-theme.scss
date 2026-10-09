@@ -1,0 +1,53 @@
+@use '@angular/material' as mat;
+
+// Material system theme. Colors come from the --ev-* tokens; the green palette only fills the
+// system roles the tokens do not cover. `color-scheme` makes Material's own values follow the theme.
+html {
+  color-scheme: light;
+
+  @include mat.theme((
+    color: (
+      primary: mat.$green-palette,
+      theme-type: color-scheme,
+    ),
+    typography: (
+      plain-family: ('IBM Plex Sans', system-ui, sans-serif),
+      brand-family: ('IBM Plex Sans', system-ui, sans-serif),
+      regular-weight: 400,
+      medium-weight: 500,
+      bold-weight: 600,
+    ),
+    density: 0,
+  ));
+}
+
+.dark-theme {
+  color-scheme: dark;
+}
+
+// Custom properties resolve where they are declared. ThemeService toggles .dark-theme on <body>,
+// so the mapping is declared on both elements to pick up the dark token values.
+:root,
+.dark-theme {
+  --mat-sys-primary: var(--ev-accent);
+  --mat-sys-on-primary: var(--ev-accent-ink);
+  --mat-sys-primary-container: var(--ev-tint);
+  --mat-sys-on-primary-container: var(--ev-ink);
+  --mat-sys-secondary-container: var(--ev-tint);
+  --mat-sys-on-secondary-container: var(--ev-ink);
+
+  --mat-sys-background: var(--ev-bg);
+  --mat-sys-on-background: var(--ev-ink);
+  --mat-sys-surface: var(--ev-surface);
+  --mat-sys-on-surface: var(--ev-ink);
+  --mat-sys-on-surface-variant: var(--ev-muted);
+  --mat-sys-surface-container-lowest: var(--ev-surface);
+  --mat-sys-surface-container-low: var(--ev-surface);
+  --mat-sys-surface-container: var(--ev-surface);
+  --mat-sys-surface-container-high: var(--ev-surface);
+  --mat-sys-surface-container-highest: var(--ev-soft);
+  --mat-sys-surface-variant: var(--ev-soft);
+
+  --mat-sys-outline: var(--ev-field-border);
+  --mat-sys-outline-variant: var(--ev-line);
+}

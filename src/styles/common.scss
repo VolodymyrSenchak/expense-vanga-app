@@ -101,3 +101,9 @@
   padding: 0.75rem 1rem;
   margin-top: -1rem;
 }
+
+// Legacy heading reset used by pages not yet migrated to .ev-* text styles.
+h1, h5 {
+  font-weight: 500;
+  margin: 0;
+}

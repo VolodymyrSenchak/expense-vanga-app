@@ -1,0 +1,33 @@
+// Page frame and stacking helpers shared by every page.
+
+.ev-page {
+  max-width: var(--ev-page-width);
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ev-space-card);
+
+  @media (max-width: 599.98px) {
+    padding: 16px 16px 32px;
+    gap: 16px;
+  }
+}
+
+.ev-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ev-space-card);
+}
+
+.ev-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.ev-spacer {
+  flex: 1 1 auto;
+}
