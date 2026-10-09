@@ -22,7 +22,7 @@ export const appConfig: ApplicationConfig = {
     ])),
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-      useValue: <MatFormFieldDefaultOptions>{ appearance: 'outline', floatLabel: 'always', subscriptSizing: 'dynamic' },
+      useValue: <MatFormFieldDefaultOptions>{ appearance: 'outline', floatLabel: 'always', subscriptSizing: 'dynamic', hideRequiredMarker: true },
     },
     {
       provide: MAT_BUTTON_TOGGLE_DEFAULT_OPTIONS,

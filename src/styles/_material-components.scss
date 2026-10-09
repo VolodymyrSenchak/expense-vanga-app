@@ -187,3 +187,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+@media (max-width: 599.98px) {
+  .mat-mdc-card {
+    padding: 16px;
+  }
+}

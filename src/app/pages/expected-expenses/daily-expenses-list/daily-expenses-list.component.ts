@@ -15,6 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatFormFieldModule,
   ],
   templateUrl: './daily-expenses-list.component.html',
+  styleUrl: './daily-expenses-list.component.scss',
 })
 export class DailyExpensesListComponent {
   private readonly fb = inject(FormBuilder);

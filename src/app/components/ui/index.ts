@@ -6,3 +6,4 @@ export * from './legend-key/legend-key.component';
 export * from './stat/stat.component';
 export * from './card-total/card-total.component';
 export * from './empty-state/empty-state.component';
+export * from './currency-autocomplete/currency-autocomplete.component';

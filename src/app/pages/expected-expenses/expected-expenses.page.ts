@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
-import { Router, RouterLink } from "@angular/router";
+import { Router } from "@angular/router";
 import { ExpensesService, LoadingService} from "../../common/services";
 import { DayOfWeek, ExpectedExpensesModel, getDefaultExpectedExpensesModel } from "../../common/models";
 import {ReactiveFormsModule, FormBuilder, Validators, FormGroup, UntypedFormGroup} from '@angular/forms';
@@ -12,13 +12,17 @@ import { MatButtonToggleModule } from "@angular/material/button-toggle";
 import { LoadingComponent} from '../../components/loading';
 import { DailyExpensesCalendarComponent } from './daily-expenses-calendar/daily-expenses-calendar.component';
 import { DailyExpensesListComponent } from './daily-expenses-list/daily-expenses-list.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
+import { CardTotalComponent, CurrencyAutocompleteComponent, PageHeaderComponent } from '@components/ui';
 
 @Component({
   selector: 'app-expected-expenses-page',
   imports: [
     MatIconModule,
     MatButtonModule,
-    RouterLink,
+
     ReactiveFormsModule,
     MatInputModule,
     MatSelectModule,
@@ -28,8 +32,13 @@ import { DailyExpensesListComponent } from './daily-expenses-list/daily-expenses
     DailyExpensesCalendarComponent,
     DailyExpensesListComponent,
     MatButtonToggleModule,
+    MatAutocompleteModule,
+    PageHeaderComponent,
+    CardTotalComponent,
+    CurrencyAutocompleteComponent,
   ],
   templateUrl: './expected-expenses.page.html',
+  styleUrl: './expected-expenses.page.scss',
 })
 export class ExpectedExpensesPageComponent implements OnInit {
   readonly expensesService = inject(ExpensesService);
@@ -46,6 +55,14 @@ export class ExpectedExpensesPageComponent implements OnInit {
     dailyExpenses: this.formBuilder.array<UntypedFormGroup>([]),
     weeklyExpenses: this.formBuilder.array<UntypedFormGroup>([]),
   });
+
+  /** Sum of the seven usual-week amounts, as typed. */
+  readonly weeklyTotal = toSignal(
+    this.form.controls.weeklyExpenses.valueChanges.pipe(
+      map(expenses => (expenses as { amount: number }[]).reduce((sum, e) => sum + (Number(e.amount) || 0), 0))
+    ),
+    { initialValue: 0 }
+  );
 
   async ngOnInit(): Promise<void> {
     const expectedExpenses = (await this.loadingSrv.waitObservable(this.expensesService.getExpectedExpenses$()))
