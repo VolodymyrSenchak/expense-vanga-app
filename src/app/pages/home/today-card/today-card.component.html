@@ -5,8 +5,19 @@
   </div>
 
   <div class="planned">
-    <div class="ev-small ev-muted">Planned to spend</div>
-    <ev-amount class="planned-value" [value]="today().expectedExpenseAmount" format="spend" />
+    <div class="ev-small ev-muted">Spent</div>
+    <ev-amount class="planned-value" [value]="today().actualExpenseAmount" format="spend" [class.ev-over]="difference() > 0" [class.ev-under]="difference() < 0"/>
+    @if (difference() !== 0) {
+      <div class="spent ev-small ev-muted">
+        <div>Planned to spend: <ev-amount [value]="today().expectedExpenseAmount" kind="expected" format="spend" /></div>
+        <div>
+          Difference:
+          <span class="ev-num" [class.ev-over]="difference() > 0" [class.ev-under]="difference() < 0">
+            {{ difference() > 0 ? '+' : '−' }}{{ absDifference() | number:'1.2-2' }}
+          </span>
+        </div>
+      </div>
+    }
   </div>
 
   <div class="left">

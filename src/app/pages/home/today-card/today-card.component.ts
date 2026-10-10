@@ -1,4 +1,5 @@
 import {Component, computed, input} from '@angular/core';
+import {DecimalPipe} from '@angular/common';
 import {MatCardModule} from '@angular/material/card';
 import {ExpenseForDay} from '@common/models/current-expenses.model';
 import {DATE_UTILS} from '@common/utils/date.utils';
@@ -9,6 +10,7 @@ import {ActualizeExpensesButtonComponent} from '../actualize-expenses-button/act
 @Component({
   selector: 'app-today-card',
   imports: [
+    DecimalPipe,
     MatCardModule,
     AmountComponent,
     AmountPairComponent,
@@ -23,4 +25,10 @@ export class TodayCardComponent {
   readonly showAction = input(false);
 
   readonly dateLabel = computed(() => DATE_UTILS.format(this.today().date, 'weekday-month-day'));
+  
+  /** Actual minus planned spend for today, rounded to cents; positive means overspent. */
+  readonly difference = computed(() =>
+    Math.round((this.today().actualExpenseAmount - this.today().expectedExpenseAmount) * 100) / 100);
+
+  readonly absDifference = computed(() => Math.abs(this.difference()));
 }
