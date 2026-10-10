@@ -11,25 +11,6 @@
 } @else {
   <div class="scroller">
     <table mat-table [dataSource]="visibleRows()" class="ledger">
-      <!-- Group header row -->
-      <ng-container matColumnDef="groupDay">
-        <th mat-header-cell *matHeaderCellDef></th>
-      </ng-container>
-      <ng-container matColumnDef="groupExpected">
-        <th mat-header-cell *matHeaderCellDef [attr.colspan]="2" class="group expected">
-          <span>Expected · your plan</span>
-        </th>
-      </ng-container>
-      <ng-container matColumnDef="groupActual">
-        <th mat-header-cell *matHeaderCellDef [attr.colspan]="2" class="group actual">
-          <span>Actual · how it is going</span>
-        </th>
-      </ng-container>
-      <ng-container matColumnDef="groupRest">
-        <th mat-header-cell *matHeaderCellDef [attr.colspan]="2"></th>
-      </ng-container>
-
-      <!-- Columns -->
       <ng-container matColumnDef="day">
         <th mat-header-cell *matHeaderCellDef class="ev-label">Day</th>
         <td mat-cell *matCellDef="let row">
@@ -39,30 +20,33 @@
       </ng-container>
 
       <ng-container matColumnDef="expectedSpent">
-        <th mat-header-cell *matHeaderCellDef class="ev-label num">Spent</th>
+        <th mat-header-cell *matHeaderCellDef class="ev-label num">Expected spent</th>
         <td mat-cell *matCellDef="let row" class="num">
           <ev-amount [value]="row.expectedExpenseAmount" kind="expected" format="spend" />
         </td>
       </ng-container>
 
       <ng-container matColumnDef="expectedLeft">
-        <th mat-header-cell *matHeaderCellDef class="ev-label num">Left</th>
+        <th mat-header-cell *matHeaderCellDef class="ev-label num">Expected left</th>
         <td mat-cell *matCellDef="let row" class="num">
           <ev-amount [value]="row.expectedAmountLeft" kind="expected" />
         </td>
       </ng-container>
 
       <ng-container matColumnDef="actualSpent">
-        <th mat-header-cell *matHeaderCellDef class="ev-label num">Spent</th>
+        <th mat-header-cell *matHeaderCellDef class="ev-label num">Actual spent</th>
         <td mat-cell *matCellDef="let row" class="num"
             [class.ev-over]="row.actualExpenseAmount > row.expectedExpenseAmount"
             [class.ev-under]="row.actualExpenseAmount < row.expectedExpenseAmount">
-          <ev-amount [value]="row.actualExpenseAmount" format="spend" />
+          <ev-amount
+            [strong]="row.actualExpenseAmount !== row.expectedExpenseAmount"
+            [value]="row.actualExpenseAmount"
+            format="spend" />
         </td>
       </ng-container>
 
       <ng-container matColumnDef="actualLeft">
-        <th mat-header-cell *matHeaderCellDef class="ev-label num">Left</th>
+        <th mat-header-cell *matHeaderCellDef class="ev-label num">Actual left</th>
         <td mat-cell *matCellDef="let row" class="num">
           <ev-amount [value]="row.actualAmountLeft" [strong]="true" />
         </td>
@@ -97,7 +81,6 @@
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="groupColumns" class="group-row"></tr>
       <tr mat-header-row *matHeaderRowDef="columns" class="column-row"></tr>
       <tr
         mat-row

@@ -27,33 +27,8 @@
     &:last-child { padding-right: 24px; }
   }
 
-  .group-row,
   .column-row {
     background: var(--ev-soft);
-  }
-
-  .group-row th {
-    height: auto;
-    padding-top: 10px;
-    border-bottom: 0;
-    vertical-align: bottom;
-    font-size: 13px;
-    font-weight: 600;
-  }
-
-  .group span {
-    display: block;
-    padding-bottom: 6px;
-  }
-
-  .group.expected span {
-    border-bottom: 2px solid var(--ev-muted);
-    color: var(--ev-muted);
-  }
-
-  .group.actual span {
-    border-bottom: 3px solid var(--ev-accent);
-    color: var(--ev-ink);
   }
 
   .num {

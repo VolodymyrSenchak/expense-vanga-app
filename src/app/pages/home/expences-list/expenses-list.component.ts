@@ -35,7 +35,6 @@ export class ExpensesListComponent extends BaseExpensesListComponent {
   readonly viewModeChanged = output<DesktopViewMode>();
 
   readonly skeleton = Array.from({length: 12}, () => ['100%', '48px']) as [string, string][];
-  readonly groupColumns = ['groupDay', 'groupExpected', 'groupActual', 'groupRest'];
   readonly columns = ['day', 'expectedSpent', 'expectedLeft', 'actualSpent', 'actualLeft', 'note', 'action'];
 
   readonly showPrevious = signal(false);

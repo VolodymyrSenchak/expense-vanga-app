@@ -1,6 +1,10 @@
 @if (!currentExpenses()?.expenses) {
   <app-loading [loadingOptions]="{ isLoading: true, message: '' }" mode="skeleton" [skeletonBody]="skeleton" />
 } @else {
+  @if (today(); as today) {
+    <app-today-card [today]="today" [showAction]="true" />
+  }
+
   <mat-card aria-label="Projected balance">
     <app-month-analytics
       [monthAnalytics]="monthAnalytics()"
@@ -14,14 +18,10 @@
     <app-expenses-chart [compact]="true" />
   </mat-card>
 
-  @if (today(); as today) {
-    <app-today-card [today]="today" [showAction]="true" />
-  }
-
   <mat-card class="ev-card-flush" aria-label="Days">
     <div class="list-head">
       <span class="ev-h3">{{ showPrevious() ? 'All days' : 'Coming days' }}</span>
-      <span class="ev-small ev-muted">Left: expected · actual</span>
+      <span class="ev-small ev-muted">Spent: expected · actual</span>
     </div>
     <button mat-button class="previous-toggle" (click)="showPrevious.set(!showPrevious())">
       {{ showPrevious() ? 'Hide previous days' : 'Show previous days' }}
@@ -42,16 +42,11 @@
       >
         <div class="day">
           <div class="date">{{ dayLabel(expense) }}</div>
-          <div class="spent ev-small ev-muted">
-            Spent
-            <ev-amount [value]="expense.expectedExpenseAmount" kind="expected" format="spend" />
+          <div class="left ev-small ev-muted">
+            Left
+            <ev-amount [value]="expense.expectedAmountLeft" kind="expected" />
             ·
-            <ev-amount
-              [value]="expense.actualExpenseAmount"
-              format="spend"
-              [class.ev-over]="expense.actualExpenseAmount > expense.expectedExpenseAmount"
-              [class.ev-under]="expense.actualExpenseAmount < expense.expectedExpenseAmount"
-            />
+            <ev-amount [strong]="true" [value]="expense.actualAmountLeft" />
           </div>
           @if (expense.expectedDailyComment) {
             <div class="note ev-small ev-muted">{{ expense.expectedDailyComment }}</div>
@@ -60,9 +55,15 @@
             <div class="note ev-small">{{ expense.actualDailyComment }}</div>
           }
         </div>
-        <div class="left">
-          <ev-amount [value]="expense.expectedAmountLeft" kind="expected" />
-          <ev-amount [value]="expense.actualAmountLeft" [strong]="true" />
+        <div class="spent">
+          <ev-amount [value]="expense.expectedExpenseAmount" kind="expected" format="spend" />
+          <ev-amount
+            [value]="expense.actualExpenseAmount"
+            format="spend"
+            [strong]="true"
+            [class.ev-over]="expense.actualExpenseAmount > expense.expectedExpenseAmount"
+            [class.ev-under]="expense.actualExpenseAmount < expense.expectedExpenseAmount"
+          />
         </div>
       </div>
     }
