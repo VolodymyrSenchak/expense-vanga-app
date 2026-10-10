@@ -1,6 +1,10 @@
 @if (isAuthenticated()) {
   <button mat-icon-button class="ev-icon-outlined" (click)="openUserProfile()" aria-label="Profile">
-    <span class="initials">{{ userInitials() }}</span>
+    @if (avatarUrl(); as avatarUrl) {
+      <img class="avatar" [src]="avatarUrl" alt="" referrerpolicy="no-referrer" />
+    } @else {
+      <span class="initials">{{ userInitials() }}</span>
+    }
   </button>
 } @else {
   <button mat-stroked-button (click)="openAuthDialog()">Log in</button>

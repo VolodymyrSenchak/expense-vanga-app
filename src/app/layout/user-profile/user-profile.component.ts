@@ -20,6 +20,11 @@ export class UserProfileComponent {
   readonly isAuthenticated = computed(() => !!this.user());
   readonly userInitials = computed(() => (this.user()?.email?.charAt(0) || '').toUpperCase());
 
+  readonly avatarUrl = computed(() => {
+    const metadata = this.user()?.user_metadata;
+    return metadata?.avatar_url ?? metadata?.picture ?? null;
+  });
+
   openAuthDialog() {
     this.dialogManager.openDialog('auth-form', {});
   }
