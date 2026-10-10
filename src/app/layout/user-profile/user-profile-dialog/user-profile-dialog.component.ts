@@ -31,7 +31,7 @@ export class UserProfileDialogComponent {
   }
 
   onLogout(): void {
-    this.authStore.clearAuth();
+    this.authStore.logout();
     this.dialogRef.close();
   }
 }

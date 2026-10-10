@@ -37,4 +37,10 @@
       <button mat-stroked-button type="button" (click)="onContinueLocally()">Continue locally</button>
     </div>
   </form>
+
+  <div class="google-divider ev-muted">or</div>
+  <div class="google-button" #googleButton></div>
+  @if (googleError(); as error) {
+    <p class="google-error">{{ error }}</p>
+  }
 </mat-dialog-content>

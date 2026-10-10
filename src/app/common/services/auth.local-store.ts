@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Session, User} from '@common/models/auth';
 import {BehaviorSubject} from 'rxjs';
 import {getFromLocalStorage, saveToLocalStorage} from '@common/utils/localStorage.utils';
+import {loadGoogleIdentity} from '@common/utils/google-identity.utils';
 
 @Injectable({ providedIn: "root" })
 export class AuthStore {
@@ -28,5 +29,13 @@ export class AuthStore {
   clearAuth(): void {
     this.setUser(null);
     this.setSession(null);
+  }
+
+  logout(): void {
+    this.clearAuth();
+    // Otherwise Google silently re-picks the same account on the next sign-in.
+    void loadGoogleIdentity()
+      .then((google) => google.disableAutoSelect())
+      .catch(() => undefined);
   }
 }

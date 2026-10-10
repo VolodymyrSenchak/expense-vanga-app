@@ -17,6 +17,13 @@ export class AuthService {
     );
   }
 
+  /** Exchanges a Google ID token for an API session. */
+  loginWithGoogle(idToken: string): Observable<AuthResult> {
+    return this.http.post<AuthResult>(`auth/google`, {idToken}).pipe(
+      tap(res => this.persistAuthResult(res))
+    );
+  }
+
   register(command: AuthRegisterCommand): Observable<AuthResult> {
     return this.http.post<AuthResult>(`auth/register`, command).pipe(
       tap(res => this.persistAuthResult(res))

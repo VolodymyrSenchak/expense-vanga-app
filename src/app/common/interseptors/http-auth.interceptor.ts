@@ -4,7 +4,7 @@ import {AuthService, AuthStore, DialogManager} from '@common/services';
 import {catchError, Observable, switchMap, throwError} from 'rxjs';
 import {AuthResult} from '@common/models/auth/auth-result.model';
 
-const PUBLIC_AUTH_ENDPOINTS = ['auth/login', 'auth/register', 'auth/refreshToken', 'auth/resetPassword'];
+const PUBLIC_AUTH_ENDPOINTS = ['auth/login', 'auth/google', 'auth/register', 'auth/refreshToken', 'auth/resetPassword'];
 
 export const HttpAuthInterceptor: HttpInterceptorFn = (req, next) => {
   const authStore = inject(AuthStore);

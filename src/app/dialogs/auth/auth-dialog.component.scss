@@ -1,0 +1,26 @@
+.google-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+  font-size: 13px;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-top: 1px solid var(--ev-line);
+  }
+}
+
+.google-button {
+  display: flex;
+  justify-content: center;
+  min-height: 44px;
+}
+
+.google-error {
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: var(--mat-sys-error);
+}
