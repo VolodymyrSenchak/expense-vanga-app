@@ -1,0 +1,112 @@
+.onboarding {
+  width: min(32rem, 100%);
+}
+
+.lead {
+  margin: 0 0 16px;
+}
+
+.note {
+  margin: 16px 0 0;
+  font: var(--ev-text-small);
+}
+
+h3 {
+  margin: 8px 0 0;
+  font: 600 15px/1.4 var(--ev-font-body);
+}
+
+.hint {
+  margin: 2px 0 0;
+  font: var(--ev-text-small);
+}
+
+.how-it-works {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  mat-icon {
+    flex: none;
+    box-sizing: content-box;
+    padding: 8px;
+    border-radius: var(--ev-radius-control);
+    background: var(--ev-tint);
+    color: var(--ev-accent);
+  }
+
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+}
+
+.amount { flex: 1 1 150px; }
+.currency { flex: 0 1 110px; }
+.single { width: min(16rem, 100%); }
+.name { flex: 2 1 130px; }
+.bill-amount { flex: 1 1 100px; }
+.bill-day { flex: 0 1 72px; }
+.remove { color: var(--ev-muted); }
+
+.bills {
+  // Bottom room for the button's touch target, which would otherwise make the dialog scroll.
+  padding: 0 0 4px;
+}
+
+input.ev-num {
+  text-align: right;
+}
+
+.summary {
+  margin: 20px 0 0;
+  padding: 12px 16px;
+  border-radius: var(--ev-radius-control);
+  background: var(--ev-tint);
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 20px;
+  padding: 16px;
+  border-radius: var(--ev-radius-control);
+  background: var(--ev-tint);
+
+  strong {
+    font: var(--ev-text-hero-2);
+    font-family: var(--ev-font-display);
+  }
+}
+
+.progress {
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--ev-radius-pill);
+  background: var(--ev-line);
+
+  &.done {
+    background: var(--ev-muted);
+  }
+
+  &.current {
+    width: 20px;
+    background: var(--ev-accent);
+  }
+}

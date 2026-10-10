@@ -2,7 +2,8 @@ import {Component, inject, OnInit} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AppHeader } from './layout/app-header/app-header.component';
 import {MatDialog} from '@angular/material/dialog';
-import {CurrentExpensesService, DialogManager, DialogType, LoadingService} from '@common/services';
+import {CurrentExpensesService, DialogManager, DialogType, LoadingService, UserSettingsStore} from '@common/services';
+import {OnboardingDialogComponent} from './dialogs/onboarding';
 import {AuthDialogComponent, RegisterDialogComponent, PasswordResetDialogComponent, PasswordChangeDialogComponent, PasswordResetForgottenDialogComponent} from './dialogs/auth';
 import {UserProfileDialogComponent} from './layout/user-profile/user-profile-dialog';
 import { ThemeService } from '@common/services/theme.service';
@@ -19,15 +20,20 @@ export class AppComponent implements OnInit {
   readonly loading = new LoadingService();
   readonly currentExpensesService = inject(CurrentExpensesService);
   readonly themeService = inject(ThemeService);
+  readonly userSettingsStore = inject(UserSettingsStore);
 
   async ngOnInit(): Promise<void> {
-    await this.loading.waitObservable(this.currentExpensesService.currentExpenses$);
     this.dialogManager.currentDialog$.subscribe(dialog => {
       const dialogInstance = this.getDialogInstance(dialog.dialogType);
       if (dialogInstance) {
         this.dialog.open(dialogInstance, {data: dialog.params });
       }
     });
+    await this.loading.waitObservable(this.currentExpensesService.currentExpenses$);
+
+    if (!this.userSettingsStore.getUserSettings().onboardingDone) {
+      this.dialogManager.openDialog('onboarding', {});
+    }
   }
 
   private getDialogInstance(type: DialogType): any  {
@@ -38,6 +44,7 @@ export class AppComponent implements OnInit {
       case "password-reset-dialog": return PasswordResetDialogComponent;
       case "password-reset-forgotten-dialog": return PasswordResetForgottenDialogComponent;
       case "password-change-dialog": return PasswordChangeDialogComponent;
+      case "onboarding": return OnboardingDialogComponent;
       default: return null;
     }
   }

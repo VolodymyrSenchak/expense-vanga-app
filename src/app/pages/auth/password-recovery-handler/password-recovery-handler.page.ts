@@ -2,6 +2,7 @@ import {Component, inject, OnInit } from '@angular/core';
 import {AuthService, AuthStore, DialogManager } from '@common/services';
 import {ActivatedRoute, Router} from '@angular/router';
 import {firstValueFrom} from 'rxjs';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-password-recovery-handler-page',
@@ -14,31 +15,40 @@ export class PasswordRecoveryHandlerPage implements OnInit {
   readonly authService = inject(AuthService);
   readonly router = inject(Router);
   readonly dialogManager = inject(DialogManager);
+  readonly snackBar = inject(MatSnackBar);
 
   async ngOnInit(): Promise<void> {
-    await this.tryAuthenticateUser();
+    const isAuthenticated = await this.tryAuthenticateUser();
     await this.router.navigateByUrl('/');
-    this.dialogManager.openDialog('password-reset-forgotten-dialog', {});
+
+    if (isAuthenticated) {
+      this.dialogManager.openDialog('password-reset-forgotten-dialog', {});
+    } else {
+      this.snackBar.open('Recovery link is invalid or has expired. Please request a new one.', 'Close', {duration: 5000});
+      this.dialogManager.openDialog('password-reset-dialog', {});
+    }
   }
 
-  private async tryAuthenticateUser(): Promise<void> {
+  private async tryAuthenticateUser(): Promise<boolean> {
     const fragment = this.activatedRoute.snapshot.fragment;
 
-    if (!fragment) return;
+    if (!fragment) return false;
 
     const params = new URLSearchParams(fragment || '');
     const access_token = params.get('access_token');
     const refresh_token = params.get('refresh_token');
 
-    if (!access_token || !refresh_token) return;
+    if (!access_token || !refresh_token) return false;
 
     this.authStore.setSession({ access_token, refresh_token });
     try {
       const user = await firstValueFrom(this.authService.getUserDetails());
       this.authStore.setUser(user);
+      return true;
     } catch (error) {
       console.error('Failed to fetch user details:', error);
       this.authStore.clearAuth();
+      return false;
     }
   }
 }

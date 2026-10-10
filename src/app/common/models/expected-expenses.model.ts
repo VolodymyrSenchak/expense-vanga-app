@@ -32,6 +32,11 @@ export const getDefaultExpectedExpensesModel = (): ExpectedExpensesModel => {
   }
 }
 
+/** True while the plan is still the untouched sample one, i.e. the user has not set up their own. */
+export const isDefaultExpectedExpensesModel = (model: ExpectedExpensesModel | undefined): boolean => {
+  return !model || JSON.stringify(model) === JSON.stringify(getDefaultExpectedExpensesModel());
+}
+
 export interface Expense {
   amount: number;
 }

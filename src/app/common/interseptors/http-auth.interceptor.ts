@@ -4,13 +4,15 @@ import {AuthService, AuthStore, DialogManager} from '@common/services';
 import {catchError, Observable, switchMap, throwError} from 'rxjs';
 import {AuthResult} from '@common/models/auth/auth-result.model';
 
+const PUBLIC_AUTH_ENDPOINTS = ['auth/login', 'auth/register', 'auth/refreshToken', 'auth/resetPassword'];
+
 export const HttpAuthInterceptor: HttpInterceptorFn = (req, next) => {
   const authStore = inject(AuthStore);
   const authService = inject(AuthService);
   const dialogManager = inject(DialogManager);
   const session = authStore.getSession();
 
-  if (req.url.includes('/auth') && !req.url.includes('auth/userDetails')) {
+  if (PUBLIC_AUTH_ENDPOINTS.some(endpoint => req.url.endsWith(endpoint))) {
     return next(req);
   }
 

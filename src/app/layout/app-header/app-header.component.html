@@ -13,6 +13,9 @@
     </nav>
 
     <div class="desktop-actions">
+      <button mat-icon-button class="ev-icon-outlined" (click)="openGuide()" aria-label="How it works">
+        <mat-icon>help_outline</mat-icon>
+      </button>
       <button mat-icon-button class="ev-icon-outlined" (click)="themeService.toggle()"
               [attr.aria-label]="themeService.isDark() ? 'Switch to light theme' : 'Switch to dark theme'">
         <mat-icon>{{ themeService.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
@@ -32,6 +35,10 @@
       <button mat-menu-item (click)="themeService.toggle()">
         <mat-icon>{{ themeService.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
         {{ themeService.isDark() ? 'Light theme' : 'Dark theme' }}
+      </button>
+      <button mat-menu-item (click)="openGuide()">
+        <mat-icon>help_outline</mat-icon>
+        How it works
       </button>
       @if (userInitials()) {
         <button mat-menu-item (click)="openUserProfile()">

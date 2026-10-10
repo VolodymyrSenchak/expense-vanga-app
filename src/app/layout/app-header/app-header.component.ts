@@ -42,6 +42,10 @@ export class AppHeader {
     this.dialogManager.openDialog('auth-form', {});
   }
 
+  openGuide(): void {
+    this.dialogManager.openDialog('onboarding', {});
+  }
+
   openUserProfile(): void {
     this.dialogManager.openDialog('user-profile', {});
   }

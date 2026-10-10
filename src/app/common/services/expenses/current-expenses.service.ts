@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ExpensesService} from './expenses.service';
-import {BehaviorSubject, combineLatest, defer, map, Observable, of, shareReplay, switchMap} from 'rxjs';
+import {BehaviorSubject, combineLatest, map, Observable, of, shareReplay, switchMap} from 'rxjs';
 import {CurrentExpensesModel, ExpenseForDay} from '../../models/current-expenses.model';
 import {
   CurrenciesModel,
@@ -31,7 +31,8 @@ export class CurrentExpensesService {
 
   readonly spentSoFar$ = this.currentExpenses$.pipe(map((exp) => this.getSpentSoFar(exp)));
 
-  readonly defaultCurrency$ = defer(() => this.currenciesService.getCurrencies$()).pipe(
+  readonly defaultCurrency$ = this.expensesLoadSub.pipe(
+    switchMap(() => this.currenciesService.getCurrencies$()),
     map(c => c.defaultCurrency),
     shareReplay({bufferSize: 1, refCount: true}),
   );

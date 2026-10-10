@@ -1,0 +1,235 @@
+<form class="onboarding" [formGroup]="form" (ngSubmit)="next()">
+  @if (isReady()) {
+    @switch (step()) {
+      @case ('welcome') {
+        <h2 mat-dialog-title>Welcome to Expense Vanga</h2>
+        <mat-dialog-content>
+          <p class="lead">
+            It answers one question: <strong>how much money will I have left when my next salary arrives?</strong>
+          </p>
+          <ol class="how-it-works">
+            <li>
+              <mat-icon aria-hidden="true">event_note</mat-icon>
+              <div>
+                <strong>You make a plan</strong>
+                <span class="ev-muted">What comes in, and what you usually spend on a normal day.</span>
+              </div>
+            </li>
+            <li>
+              <mat-icon aria-hidden="true">show_chart</mat-icon>
+              <div>
+                <strong>It draws the forecast</strong>
+                <span class="ev-muted">Your balance, day by day, from one salary to the next.</span>
+              </div>
+            </li>
+            <li>
+              <mat-icon aria-hidden="true">account_balance_wallet</mat-icon>
+              <div>
+                <strong>You check it against reality</strong>
+                <span class="ev-muted">
+                  Tell it how much you really have, and it shows whether you are ahead of the plan or behind it.
+                </span>
+              </div>
+            </li>
+          </ol>
+          @if (isSetup()) {
+            <p class="ev-muted note">
+              The numbers on screen right now are sample data. Replacing them with yours takes about a minute.
+            </p>
+          }
+        </mat-dialog-content>
+      }
+
+      @case ('income') {
+        <h2 mat-dialog-title>What comes in?</h2>
+        <mat-dialog-content formGroupName="income">
+          <p class="lead">
+            The forecast runs from one salary day to the next, starting with the money you receive.
+          </p>
+          <div class="ev-form">
+            <div class="ev-form-row">
+              <mat-form-field class="amount">
+                <mat-label>Monthly income</mat-label>
+                <input matInput class="ev-num" type="number" step="100" formControlName="amount">
+              </mat-form-field>
+              <mat-form-field class="currency">
+                <mat-label>Currency</mat-label>
+                <input matInput type="text" formControlName="currency" [matAutocomplete]="currencies.panel()">
+              </mat-form-field>
+              <ev-currency-autocomplete #currencies />
+            </div>
+            <mat-form-field class="single">
+              <mat-label>Day of the month it arrives</mat-label>
+              <input matInput class="ev-num" type="number" min="1" max="31" formControlName="salaryDayOfMonth">
+            </mat-form-field>
+          </div>
+          <p class="ev-muted note">More than one income, or another currency? Add them later on the Plan page.</p>
+        </mat-dialog-content>
+      }
+
+      @case ('spending') {
+        <h2 mat-dialog-title>What do you usually spend?</h2>
+        <mat-dialog-content formGroupName="spending">
+          <p class="lead">
+            A rough guess for an ordinary day is enough: food, transport, small things. You can tune each day of the
+            week later.
+          </p>
+          <div class="ev-form">
+            <div class="ev-form-row">
+              <mat-form-field class="amount">
+                <mat-label>On a weekday</mat-label>
+                <input matInput class="ev-num" type="number" step="10" formControlName="weekday">
+              </mat-form-field>
+              <mat-form-field class="amount">
+                <mat-label>On a weekend day</mat-label>
+                <input matInput class="ev-num" type="number" step="10" formControlName="weekend">
+              </mat-form-field>
+            </div>
+
+            <div>
+              <h3>Fixed bills</h3>
+              <p class="ev-muted hint">Rent, loans, subscriptions: costs that land on a known day. Optional.</p>
+            </div>
+            <div formArrayName="bills" class="ev-form bills">
+              @for (bill of form.controls.spending.controls.bills.controls; track bill) {
+                <div [formGroupName]="$index" class="ev-form-row">
+                  <mat-form-field class="name">
+                    <mat-label>What</mat-label>
+                    <input matInput type="text" formControlName="comment">
+                  </mat-form-field>
+                  <mat-form-field class="bill-amount">
+                    <mat-label>Amount</mat-label>
+                    <input matInput class="ev-num" type="number" step="10" formControlName="amount">
+                  </mat-form-field>
+                  <mat-form-field class="bill-day">
+                    <mat-label>Day</mat-label>
+                    <input matInput class="ev-num" type="number" min="1" max="31" formControlName="dayOfMonth">
+                  </mat-form-field>
+                  <button mat-icon-button type="button" class="remove" (click)="removeBill($index)"
+                          aria-label="Remove bill">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              }
+              <div>
+                <button mat-stroked-button type="button" (click)="addBill()">
+                  <mat-icon>add</mat-icon>
+                  Add a bill
+                </button>
+              </div>
+            </div>
+          </div>
+
+          @if (monthlySpending() > 0) {
+            <p class="summary" aria-live="polite">
+              That is about <strong class="ev-num">{{ monthlySpending() | number:'1.0-0' }} {{ currency() }}</strong>
+              a month.
+              @if (income() >= monthlySpending()) {
+                With {{ income() | number:'1.0-0' }} coming in, roughly
+                <strong class="ev-num">{{ income() - monthlySpending() | number:'1.0-0' }} {{ currency() }}</strong>
+                should be left when the next salary arrives.
+              } @else {
+                That is more than the {{ income() | number:'1.0-0' }} coming in, so the forecast will show the money
+                running out before the next salary.
+              }
+            </p>
+          }
+        </mat-dialog-content>
+      }
+
+      @case ('balance') {
+        <h2 mat-dialog-title>How much do you have right now?</h2>
+        <mat-dialog-content formGroupName="balance">
+          <p class="lead">
+            Add up your accounts and cash. This is the reality check: the forecast compares it with where your plan
+            says you should be today.
+          </p>
+          <div class="ev-form">
+            <mat-form-field class="single">
+              <mat-label>Money I have today, in {{ currency() }}</mat-label>
+              <input matInput class="ev-num" type="number" step="10" formControlName="amount">
+            </mat-form-field>
+          </div>
+          <p class="ev-muted note">
+            If you have less than the plan expects, the gap is recorded as extra spending today. That is normal on the
+            first day. Leave it empty to skip this for now.
+          </p>
+        </mat-dialog-content>
+      }
+
+      @case ('routine') {
+        <h2 mat-dialog-title>{{ isSaved() ? 'Your forecast is ready' : 'Keeping it accurate' }}</h2>
+        <mat-dialog-content>
+          @if (forecast(); as result) {
+            <div class="result">
+              <span class="ev-muted">Left on {{ result.date }}</span>
+              <strong class="ev-num">{{ result.amount | number:'1.2-2' }} {{ result.currency }}</strong>
+            </div>
+          }
+          <p class="lead">The forecast is only as good as what you tell it. Three habits keep it honest:</p>
+          <ul class="how-it-works">
+            <li>
+              <mat-icon aria-hidden="true">account_balance_wallet</mat-icon>
+              <div>
+                <strong>Update balances every few days</strong>
+                <span class="ev-muted">
+                  Enter what you really have on the Forecast page. The app works out what you spent.
+                </span>
+              </div>
+            </li>
+            <li>
+              <mat-icon aria-hidden="true">edit</mat-icon>
+              <div>
+                <strong>Or log a single day</strong>
+                <span class="ev-muted">
+                  In the day-by-day list, note how much more (or less) than planned a day cost.
+                </span>
+              </div>
+            </li>
+            <li>
+              <mat-icon aria-hidden="true">event_note</mat-icon>
+              <div>
+                <strong>Put known costs in the Plan</strong>
+                <span class="ev-muted">A trip, a gift, a yearly fee: add it to its day and the forecast adjusts.</span>
+              </div>
+            </li>
+          </ul>
+          <p class="ev-muted note">
+            @if (!isLoggedIn) {
+              Your data is stored in this browser only. Log in to keep it across devices.
+            }
+            You can reopen this guide any time from the help button at the top.
+          </p>
+        </mat-dialog-content>
+      }
+    }
+
+    <mat-dialog-actions>
+      <div class="ev-form-actions dialog-actions">
+        <div class="progress" role="img"
+             [attr.aria-label]="'Step ' + (stepIndex() + 1) + ' of ' + steps().length">
+          @for (s of steps(); track s) {
+            <span class="dot" [class.current]="$index === stepIndex()" [class.done]="$index < stepIndex()"></span>
+          }
+        </div>
+        <div class="ev-form-actions">
+          @if (stepIndex() === 0) {
+            <button mat-button type="button" (click)="close()">
+              {{ isSetup() ? 'Explore the sample first' : 'Close' }}
+            </button>
+          } @else if (!isSaved()) {
+            <button mat-button type="button" (click)="back()" [disabled]="isSaving()">Back</button>
+          }
+          <button mat-flat-button type="submit" cdkFocusInitial [disabled]="!canContinue() || isSaving()">
+            @switch (step()) {
+              @case ('welcome') { {{ isSetup() ? 'Set up my plan' : 'Next' }} }
+              @case ('balance') { {{ isSaving() ? 'Saving...' : 'Show my forecast' }} }
+              @case ('routine') { {{ isSaved() ? 'Open my forecast' : 'Got it' }} }
+              @default { Next }
+            }
+          </button>
+        </div>
+      </div>
+    </mat-dialog-actions>
+  }
+</form>

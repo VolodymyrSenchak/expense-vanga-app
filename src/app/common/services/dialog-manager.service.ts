@@ -8,6 +8,7 @@ export type DialogType =
   | 'password-reset-forgotten-dialog'
   | 'user-profile'
   | 'password-change-dialog'
+  | 'onboarding'
   | 'unknown';
 
 export interface DialogParams {
