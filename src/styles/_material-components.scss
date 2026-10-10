@@ -164,6 +164,15 @@
   padding: 8px 24px 20px;
 }
 
+// Centre the icon whatever its size or the button's border: Material centres with padding
+// computed for the icon-size token, which a 24px mat-icon or a border throws off.
+.mat-mdc-icon-button.mat-mdc-button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
 // Icon button with a hairline frame (theme switch, account).
 .mat-mdc-icon-button.ev-icon-outlined {
   border: 1px solid var(--ev-line);

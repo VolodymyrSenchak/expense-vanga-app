@@ -17,8 +17,33 @@
   height: 280px;
 }
 
+.toolbar-end {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 :host(.compact) .canvas-box {
   height: 200px;
+}
+
+// Expanded: the chart covers the whole window, above the header.
+:host(.expanded) {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  padding: 24px;
+  background: var(--ev-surface);
+
+  .canvas-box {
+    flex: 1;
+    height: auto;
+    min-height: 0;
+  }
+}
+
+:host(.compact) .toolbar-end {
+  width: 100%;
 }
 
 // Phone: each toggle group takes the full row and splits it evenly.

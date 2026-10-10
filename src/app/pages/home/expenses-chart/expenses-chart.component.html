@@ -4,11 +4,24 @@
     <mat-button-toggle value="daily">Daily</mat-button-toggle>
   </mat-button-toggle-group>
 
-  <mat-button-toggle-group [value]="dateFilter()" (change)="dateFilter.set($event.value)" aria-label="Chart range">
-    <mat-button-toggle value="whole">Whole month</mat-button-toggle>
-    <mat-button-toggle value="till-today">Till today</mat-button-toggle>
-    <mat-button-toggle value="from-today">From today</mat-button-toggle>
-  </mat-button-toggle-group>
+  <div class="toolbar-end">
+    <mat-button-toggle-group [value]="dateFilter()" (change)="dateFilter.set($event.value)" aria-label="Chart range">
+      <mat-button-toggle value="whole">Whole month</mat-button-toggle>
+      <mat-button-toggle value="till-today">Till today</mat-button-toggle>
+      <mat-button-toggle value="from-today">From today</mat-button-toggle>
+    </mat-button-toggle-group>
+
+    @if (!compact()) {
+      <button
+        mat-icon-button
+        (click)="expanded.set(!expanded())"
+        [attr.aria-label]="expanded() ? 'Collapse chart' : 'Expand chart'"
+        [matTooltip]="expanded() ? 'Collapse' : 'Expand'"
+      >
+        <mat-icon>{{ expanded() ? 'close_fullscreen' : 'open_in_full' }}</mat-icon>
+      </button>
+    }
+  </div>
 </div>
 
 <div class="canvas-box">

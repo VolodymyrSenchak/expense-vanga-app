@@ -7,6 +7,9 @@ import {UserSettingsStore} from '@common/services';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {DATE_UTILS} from '@common/utils/date.utils';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {ChartView} from '@common/models';
 import {ChartThemeService, chartScales, todayMarkerPlugin, withAlpha} from '@common/charts/chart-theme';
 import {LegendKeyComponent, LegendKeyItem} from '@components/ui';
@@ -22,12 +25,17 @@ type DateFilter = 'whole' | 'till-today' | 'from-today';
   imports: [
     BaseChartDirective,
     MatButtonToggleModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
     LegendKeyComponent,
   ],
   templateUrl: './expenses-chart.component.html',
   styleUrl: './expenses-chart.component.scss',
   host: {
     '[class.compact]': 'compact()',
+    '[class.expanded]': 'expanded()',
+    '(document:keydown.escape)': 'expanded.set(false)',
   },
 })
 export class ExpensesChartComponent implements OnInit, OnDestroy {
@@ -39,6 +47,8 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
   /** Phone layout: shorter chart, two x labels, no y axis. */
   readonly compact = input(false);
 
+  /** Desktop: the chart covers the whole window. */
+  readonly expanded = signal(false);
   readonly dateFilter = signal<DateFilter>('whole');
   readonly chartView = signal<ChartView>(this.userSettingsStore.getUserSettings().chartView ?? 'balance');
   readonly currentExpenses = toSignal(this.currentExpensesService.currentExpenses$);
@@ -160,11 +170,7 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
     const colors = this.chartTheme.colors();
     const expenses = this.expenses();
     const todayIndex = this.todayIndex();
-    const today = expenses[todayIndex];
     const format = (value: number) => formatNumber(value, this.locale, '1.2-2');
-    const todayText = today && this.chartView() === 'balance' && !this.compact()
-      ? `Today · actual ${format(today.actualAmountLeft)} · expected ${format(today.expectedAmountLeft)}`
-      : today && this.chartView() === 'balance' ? `Today · actual ${format(today.actualAmountLeft)}` : '';
 
     return {
       responsive: true,
@@ -187,7 +193,7 @@ export class ExpensesChartComponent implements OnInit, OnDestroy {
             label: ctx => `${ctx.dataset.label}: ${format(ctx.parsed.y)}`,
           },
         },
-        todayMarker: {index: todayIndex, text: todayText, datasetIndex: 1, colors},
+        todayMarker: {index: todayIndex,  datasetIndex: 1, colors},
       },
     };
   });
