@@ -21,6 +21,25 @@
   justify-content: center;
 }
 
+// The logo's forecast dots pulse outward in turn while the app loads.
+.logo-loader .dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: logo-wave 1.2s ease-in-out infinite;
+
+  &.dot-2 { animation-delay: 0.15s; }
+  &.dot-3 { animation-delay: 0.3s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes logo-wave {
+  0%, 60%, 100% { transform: scale(1); fill: #9FE0BC; }
+  30% { transform: scale(1.4); fill: #FFFFFF; }
+}
+
 .app-layout {
   height: 100vh;
   display: flex;

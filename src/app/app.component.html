@@ -1,7 +1,13 @@
 <div class="app-layout">
   @if (loading.loadingOptions().isLoading) {
     <div class="splash">
-      <img src="images/logo.svg" alt="App Logo" height="120" width="120">
+      <svg class="logo-loader" width="120" height="120" viewBox="0 0 64 64" role="img" aria-label="Loading">
+        <rect width="64" height="64" rx="16" fill="#1B6E46"/>
+        <path d="M14 18 L32 46" fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round"/>
+        <circle class="dot" cx="38" cy="36.7" r="3.5" fill="#9FE0BC"/>
+        <circle class="dot dot-2" cx="44" cy="27.3" r="3.5" fill="#9FE0BC"/>
+        <circle class="dot dot-3" cx="50" cy="18" r="3.5" fill="#9FE0BC"/>
+      </svg>
       <h1 class="app-title"><span class="expense">Expense</span> <span class="vanga">Vanga</span></h1>
     </div>
   } @else {
