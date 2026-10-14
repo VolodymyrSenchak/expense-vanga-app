@@ -1,6 +1,7 @@
 import {Component, computed, signal} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
+import {MatIconModule} from '@angular/material/icon';
 import {MatRipple} from '@angular/material/core';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {LoadingComponent} from '@components/loading';
@@ -21,6 +22,7 @@ import {TodayCardComponent} from '../today-card/today-card.component';
   imports: [
     MatButtonModule,
     MatCardModule,
+    MatIconModule,
     MatRipple,
     LoadingComponent,
     AmountComponent,

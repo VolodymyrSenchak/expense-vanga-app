@@ -41,7 +41,17 @@
         (keydown.enter)="startEditing(expense)"
       >
         <div class="day">
-          <div class="date">{{ dayLabel(expense) }}</div>
+          <div class="date">
+            {{ dayLabel(expense) }}
+            @if (expense.isWeekend) {
+              <mat-icon class="day-icon weekend-icon" aria-hidden="false" aria-label="Weekend">weekend</mat-icon>
+            }
+            @if (expense.actualExpenseAmount < expense.expectedExpenseAmount) {
+              <mat-icon class="day-icon under-icon" aria-hidden="false" aria-label="Spent less than planned">arrow_downward</mat-icon>
+            } @else if (expense.actualExpenseAmount > expense.expectedExpenseAmount) {
+              <mat-icon class="day-icon over-icon" aria-hidden="false" aria-label="Spent more than planned">arrow_upward</mat-icon>
+            }
+          </div>
           <div class="left ev-small ev-muted">
             Left
             <ev-amount [value]="expense.expectedAmountLeft" kind="expected" />

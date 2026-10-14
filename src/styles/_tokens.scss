@@ -15,6 +15,7 @@
   --ev-tint: #E4F0E8;        // today row, active nav item, "on plan" chip
   --ev-warn: #8F4308;        // behind-plan text
   --ev-warn-bg: #FBEBD9;     // behind-plan chip
+  --ev-danger: #B3261E;      // over-plan day marker
 
   // Type
   --ev-font-display: 'Bricolage Grotesque', sans-serif; // page titles, headline amounts
@@ -52,4 +53,5 @@
   --ev-tint: #1C2D24;
   --ev-warn: #F3B783;
   --ev-warn-bg: #3A2A1A;
+  --ev-danger: #F2B8B5;
 }

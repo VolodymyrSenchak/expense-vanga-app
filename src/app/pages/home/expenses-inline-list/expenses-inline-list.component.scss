@@ -50,8 +50,21 @@ mat-card.ev-card-flush {
 }
 
 .date {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   font-weight: 600;
 }
+
+.day-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+.weekend-icon { color: var(--ev-muted); }
+.under-icon { color: var(--ev-accent); }
+.over-icon { color: var(--ev-danger); }
 
 .spent {
   display: flex;
