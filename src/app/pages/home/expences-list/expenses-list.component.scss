@@ -49,8 +49,28 @@
   }
 
   .day {
+    display: flex;
+    align-items: center;
+    gap: 4px;
     font-weight: 600;
   }
+
+  .actual-spent {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+  }
+
+  .day-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+  }
+
+  .weekend-icon { color: var(--ev-muted); }
+  .under-icon { color: var(--ev-accent); }
+  .over-icon { color: var(--ev-danger); }
 
   .weekday {
     color: var(--ev-muted);
@@ -61,18 +81,17 @@
     font-size: 14px;
   }
 
-  .ev-over ev-amount,
-  .ev-under ev-amount {
-    color: inherit;
-  }
-
   tr.mat-mdc-row {
     transition: background-color 0.3s ease;
 
     &.weekend { background: var(--ev-soft); }
     &.today { background: var(--ev-tint); }
     &.affected { background: var(--ev-tint); }
-    &.previous-day td { color: var(--ev-muted); }
+    // Past days fade back so the days still ahead stand out; over/under colors stay readable.
+    &.previous-day td {
+      color: var(--ev-muted);
+      opacity: 0.6;
+    }
 
     .mat-mdc-icon-button {
       color: var(--ev-muted);
